@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import MobileNavbar from "./MobileNavbar";
 import Searchbar from "../Searchbar";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 function Navbar() {
   return (
@@ -15,6 +16,11 @@ function Navbar() {
         </Link>
 
         <Searchbar />
+        <SignedOut>
+          <Link href="/sign-in" className="btn">
+            Sign In
+          </Link>
+        </SignedOut>
         <MobileNavbar />
       </div>
       <nav className="mt-8">
