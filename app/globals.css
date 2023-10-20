@@ -28,4 +28,16 @@
   .link {
     @apply hover:opacity-80 focus:opacity-80;
   }
+
+  .secondary-btn {
+    @apply px-4 py-2 text-white rounded-md hover:opacity-80 focus:opacity-80 bg-accent-100;
+  }
+
+  .danger-btn {
+    @apply px-4 py-2 text-white rounded-md hover:opacity-80 focus:opacity-80 bg-red-500;
+  }
+
+  .h3 {
+    @apply text-lg font-bold;
+  }
 }
