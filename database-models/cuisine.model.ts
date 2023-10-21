@@ -21,6 +21,7 @@ const CuisineSchema = new Schema({
   ],
 });
 
-const Cuisine = mongoose.model("Cuisine", CuisineSchema);
+const Cuisine =
+  mongoose.models.Cuisine || mongoose.model("Cuisine", CuisineSchema);
 
 export default Cuisine;

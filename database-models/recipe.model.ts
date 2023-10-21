@@ -3,23 +3,23 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 export interface IRecipe extends mongoose.Document {
-  createdBy: mongoose.Schema.Types.ObjectId;
+  createdBy: string;
   image: string;
   title: string;
   description: string;
   category: mongoose.Schema.Types.ObjectId;
   cuisine: mongoose.Schema.Types.ObjectId;
-  imgredients: { ingredient: string }[];
+  ingredients: { ingredient: string }[];
   method: { step: string }[];
   review: mongoose.Schema.Types.ObjectId[];
   createdAt: Date;
 }
 
-export const RecipeScehma = new Schema({
+const RecipeScehma = new Schema({
   createdBy: {
-    type: Schema.Types.ObjectId,
+    type: String,
     required: true,
-    ref: "User",
+    // ref: "User",
   },
   image: {
     type: String,
@@ -37,12 +37,10 @@ export const RecipeScehma = new Schema({
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
-    required: true,
   },
   cuisine: {
     type: Schema.Types.ObjectId,
     ref: "Cuisine",
-    required: true,
   },
   review: [
     {
@@ -68,4 +66,6 @@ export const RecipeScehma = new Schema({
   },
 });
 
-export const Recipe = mongoose.model("Recipe", RecipeScehma);
+const Recipe = mongoose.models.Recipe || mongoose.model("Recipe", RecipeScehma);
+
+export default Recipe;

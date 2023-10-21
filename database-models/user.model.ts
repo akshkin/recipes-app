@@ -27,4 +27,6 @@ export const UserScehma = new Schema({
   joinedAt: { type: Date, default: Date.now() },
 });
 
-export const User = mongoose.model("User", UserScehma);
+const User = mongoose.models.User || mongoose.model("User", UserScehma);
+
+export default User;
