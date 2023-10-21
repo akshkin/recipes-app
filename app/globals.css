@@ -16,12 +16,16 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer utilities {
+  /* .primary-gradient {
+    background: linear-gradient(129deg, #087c3e 0%, #61b086 100%);
+  } */
+
+  .btn {
+    @apply px-4 py-2 text-white rounded-md hover:opacity-80 focus:opacity-80 bg-primary-500;
+  }
+
+  .link {
+    @apply hover:opacity-80 focus:opacity-80;
+  }
 }
