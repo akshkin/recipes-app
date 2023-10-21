@@ -182,6 +182,7 @@ function CreateRecipeForm() {
         <Input
           name="image"
           type="file"
+          accept="image/*"
           placeholder=""
           onChange={handleImageUpload}
         />
