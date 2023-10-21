@@ -40,8 +40,8 @@ function CreateRecipeForm() {
       category: "",
       cuisine: "",
       author: "author",
-      ingredients: [],
-      method: [],
+      ingredients: [{ ingredient: "" }],
+      method: [{ step: "" }],
     },
   });
 
@@ -68,9 +68,8 @@ function CreateRecipeForm() {
   async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       const file = event?.target?.files[0];
-      const uploadedImageUrl = await uploadImage(file);
-      setImageUrl(uploadedImageUrl);
-      form.setValue("image", uploadedImageUrl);
+      setImageUrl(file.name);
+      form.setValue("image", file.name);
     }
   }
 
@@ -81,9 +80,6 @@ function CreateRecipeForm() {
   }
 
   function onSubmit(values: z.infer<typeof RecipeSchema>) {
-    if (imageUrl) {
-      form.setValue("image", imageUrl);
-    }
     // 2. Define a submit handler.
     form.setValue("author", "author");
     // Do something with the form values.
@@ -101,7 +97,7 @@ function CreateRecipeForm() {
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel className="h3 mt-4">
                 Title <span className="text-red-500">*</span>
               </FormLabel>
@@ -117,64 +113,63 @@ function CreateRecipeForm() {
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel className="h3 mt-4">
                 Description <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="A short description" {...field} />
               </FormControl>
 
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <Select
-              // name="category"
-              value={field.value}
-              onValueChange={(content) => field.onChange(content)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                {CATEGORIES.map((category) => (
-                  <SelectItem key={category.value} value={category.value}>
-                    {category.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
+        <div className="flex flex-col gap-3 w-full sm:flex-row mt-4 ">
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <Select
+                defaultValue={field.value}
+                onValueChange={(content) => field.onChange(content)}
+              >
+                <SelectTrigger className="">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  {CATEGORIES.map((category) => (
+                    <SelectItem key={category.value} value={category.value}>
+                      {category.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="cuisine"
-          render={({ field }) => (
-            <Select
-              value={field.value}
-              onValueChange={(content) => field.onChange(content)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Cuisine" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                {CUISINES.map((cuisine) => (
-                  <SelectItem key={cuisine.value} value={cuisine.value}>
-                    {cuisine.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-
-        {errors.category && <p>{errors.category.message}</p>}
+          <FormField
+            control={form.control}
+            name="cuisine"
+            render={({ field }) => (
+              <Select
+                defaultValue={field.value}
+                onValueChange={(content) => field.onChange(content)}
+              >
+                <SelectTrigger className="">
+                  <SelectValue placeholder="Select cuisine" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  {CUISINES.map((cuisine) => (
+                    <SelectItem key={cuisine.value} value={cuisine.value}>
+                      {cuisine.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
 
         <FormLabel className="h3 mt-4">
           Upload an Image <span className="text-red-500">*</span>
@@ -186,24 +181,6 @@ function CreateRecipeForm() {
           placeholder=""
           onChange={handleImageUpload}
         />
-        {imageUrl && (
-          <>
-            <Image
-              src={imageUrl}
-              alt="uploaded image"
-              width={300}
-              height={200}
-              className="object-contain"
-            />
-            <Button
-              className="danger-btn"
-              type="button"
-              onClick={deletedUploadedImage}
-            >
-              Delete image
-            </Button>
-          </>
-        )}
 
         <FormLabel className="h3 mt-4">
           Ingredients <span className="text-red-500">*</span>
@@ -214,7 +191,7 @@ function CreateRecipeForm() {
             control={form.control}
             name={`ingredients.${index}.ingredient`}
             render={({ field }) => (
-              <FormItem className="flex gap-2 items-baseline">
+              <FormItem className="flex gap-3 items-baseline w-full">
                 <Input {...field} placeholder="Ingredient" />
                 <Button
                   className="danger-btn"
@@ -243,10 +220,10 @@ function CreateRecipeForm() {
             control={form.control}
             name={`method.${index}.step`}
             render={({ field }) => (
-              <FormItem className="flex gap-2 items-baseline justify-center">
-                <Input {...field} placeholder="Step" className="w-full" />
+              <FormItem className="flex gap-3 items-baseline w-full">
+                <Input {...field} placeholder="Step" />
                 <Button
-                  className="danger-btn w-1/3"
+                  className="danger-btn"
                   type="button"
                   onClick={() => removeMethod(index)}
                 >

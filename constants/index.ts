@@ -1,9 +1,5 @@
 export const CATEGORIES = [
   {
-    title: "brownies",
-    value: "brownies",
-  },
-  {
     title: "breakfast",
     value: "breakfast",
   },
@@ -16,12 +12,12 @@ export const CATEGORIES = [
     value: "meals",
   },
   {
-    title: "cookies",
-    value: "cookies",
+    title: "dessert",
+    value: "dessert",
   },
   {
-    title: "pies & cakes",
-    value: "pies_and_cakes",
+    title: "snacks",
+    value: "snacks",
   },
 ];
 

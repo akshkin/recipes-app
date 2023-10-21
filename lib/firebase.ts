@@ -25,12 +25,10 @@ const app = initializeApp(firebaseConfig);
 
 const storage = getStorage(app);
 
-export async function uploadImage(file: any) {
+export async function uploadImage(file: any, user: string) {
   console.log(file);
-  const storageRef = ref(storage, file.name);
+  const storageRef = ref(storage, `${user}/${file.name}`);
   await uploadBytes(storageRef, file);
-  // const imageRef = storageRef.child(file.name);
-  // await imageRef.put(file);
   const downloadURL = await getDownloadURL(storageRef);
   return downloadURL;
 }

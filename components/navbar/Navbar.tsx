@@ -15,13 +15,15 @@ function Navbar() {
           <p className="text-center">Recipes</p>
         </Link>
 
-        <Searchbar />
-        <SignedOut>
-          <Link href="/sign-in" className="btn">
-            Sign In
-          </Link>
-        </SignedOut>
-        <MobileNavbar />
+        <div className="flex gap-3">
+          <Searchbar />
+          <SignedOut>
+            <Link href="/sign-in" className="btn min-w-[100px] text-center">
+              Sign In
+            </Link>
+          </SignedOut>
+          <MobileNavbar />
+        </div>
       </div>
       <nav className="mt-8">
         <div className="flex gap-3 justify-evenly max-lg:hidden">
