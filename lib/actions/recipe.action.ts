@@ -116,7 +116,7 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
       .populate({ path: "cuisine", model: "Cuisine", select: "title" });
 
     if (!recipe) {
-      throw new Error("Recipe not found");
+      return { error: "Recipe not found" };
     }
 
     return { recipe };

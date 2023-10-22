@@ -16,7 +16,7 @@ async function Page({ params }: Props) {
   const result = await getRecipeByTitle({ title: decodedTitle });
 
   if (!result.recipe) {
-    return <p>Recipe not found</p>;
+    return <p className="h3 text-center">Recipe not found</p>;
   }
 
   const {
@@ -55,7 +55,7 @@ async function Page({ params }: Props) {
             Created: <time>{formattedTime}</time>
           </p>
           <p className="text-2xl mt-4">{description}</p>
-          <div className="mb-0 mt-4s flex flex-col sm:flex-row gap-8">
+          <div className="mb-0 mt-4 flex flex-col sm:flex-row gap-8">
             <p>
               <span className="h3">Category</span> :{" "}
               <span className="text-primary-500">
