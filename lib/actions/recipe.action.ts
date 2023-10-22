@@ -5,26 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import Category from "@/database-models/category.model";
 import { revalidatePath } from "next/cache";
 import Cuisine from "@/database-models/cuisine.model";
-import { uploadImage } from "../firebase";
 import { CreateRecipeParams } from "@/types";
-
-// import * as admin from 'firebase-admin';
-
-// // Initialize Firebase with Admin SDK
-// const serviceAccount = require('../../recipes-app.json');
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: 'https://your-project-id.firebaseio.com',
-// });
-
-// // Now you can use Firebase services with the Admin SDK
-// const firestore = admin.firestore();
-// const storage = admin.storage().bucket();
-
-// // Example: Firestore Query
-// const usersRef = firestore.collection('users');
-// const user = await usersRef.doc('someUserId').get();
-// console.log('User data:', user.data());
 
 export async function createRecipe(params: CreateRecipeParams) {
   try {
@@ -42,7 +23,13 @@ export async function createRecipe(params: CreateRecipeParams) {
       path,
     } = params;
 
-    console.log(params);
+    const existingRecipeTitle = await Recipe.findOne({ title });
+
+    if (existingRecipeTitle) {
+      throw new Error(
+        `Recipe title already exists. Please provide another recipe title`
+      );
+    }
 
     const recipe = await Recipe.create({
       title,
@@ -90,37 +77,8 @@ export async function createRecipe(params: CreateRecipeParams) {
       cuisine: existingCuisine?._id || newCuisine._id,
     });
 
-    // Now, the `recipe`, `category`, and `cuisine` models are linked appropriately.
-
-    // const recipe = await Recipe.create({
-    //   title,
-    //   description,
-    //   category:
-    //     existingCategory?._id ||
-    //     (
-    //       await Category.create({ title: category })
-    //     )._id,
-    //   createdBy: userId,
-    //   image,
-    //   cuisine:
-    //     existingCuisine?._id || (await Cuisine.create({ title: cuisine }))._id,
-    //   ingredients,
-    //   method,
-    // });
-
     revalidatePath(path);
-    // create an interaction record for the user's ask-question action
   } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function getImageUrl(params: { image: File; userId: string }) {
-  try {
-    const imageUrl = await uploadImage(params.image, params.userId);
-    console.log(imageUrl);
-    return imageUrl;
-  } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
