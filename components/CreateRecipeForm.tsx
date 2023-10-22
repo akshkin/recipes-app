@@ -24,11 +24,12 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { deleteImage, uploadImage } from "@/lib/firebase";
+// import { deleteImage, uploadImage } from "@/lib/firebase";
 import Image from "next/image";
 import { CATEGORIES, CUISINES } from "@/constants";
 import { usePathname } from "next/navigation";
 import { createRecipe } from "@/lib/actions/recipe.action";
+import { toast } from "react-toastify";
 
 function CreateRecipeForm({ userId }: { userId: string }) {
   const [imageUrl, setImageUrl] = useState<File>();
@@ -49,8 +50,6 @@ function CreateRecipeForm({ userId }: { userId: string }) {
       method: [{ step: "" }],
     },
   });
-
-  const errors = form.formState.errors;
 
   const {
     fields: ingredientsField,
@@ -82,15 +81,20 @@ function CreateRecipeForm({ userId }: { userId: string }) {
     setIsLoading(true);
     try {
       await createRecipe({ ...values, path: pathname });
+      toast.success("Recipe created successfully", {
+        position: "top-right",
+        closeOnClick: true,
+        autoClose: 5000,
+      });
     } catch (error: any) {
       console.log(error);
+      toast.error(error.message, {
+        position: "top-right",
+        closeOnClick: true,
+      });
     } finally {
       setIsLoading(false);
     }
-
-    setTimeout(() => {
-      setErrorMessage("");
-    }, 2000);
   }
 
   return (

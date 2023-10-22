@@ -1,6 +1,8 @@
 import Navbar from "@/components/navbar/Navbar";
 import Sidebar from "@/components/Sidebar";
 import React from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,6 +12,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         <div className="w-full">{children}</div>
         <Sidebar />
       </div>
+      <ToastContainer />
     </div>
   );
 }

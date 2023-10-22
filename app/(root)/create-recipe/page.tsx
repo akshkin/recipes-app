@@ -10,7 +10,7 @@ function Page() {
   return (
     <>
       <h1 className="text-center mb-10 h1">Create recipe</h1>
-      <CreateRecipeForm userId={userId} />
+      <CreateRecipeForm type="create" userId={userId} />
     </>
   );
 }
