@@ -5,7 +5,11 @@ import { connectToDatabase } from "../mongoose";
 import Category from "@/database-models/category.model";
 import { revalidatePath } from "next/cache";
 import Cuisine from "@/database-models/cuisine.model";
-import { CreateRecipeParams, GetAllRecipesParams } from "@/types";
+import {
+  CreateRecipeParams,
+  GetAllRecipesParams,
+  GetRecipeByIdParams,
+} from "@/types";
 
 export async function createRecipe(params: CreateRecipeParams) {
   try {
@@ -98,6 +102,25 @@ export async function getRecipes(params: GetAllRecipesParams) {
     return { recipes };
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+}
+
+export async function getRecipeById(params: GetRecipeByIdParams) {
+  try {
+    connectToDatabase();
+    const { title } = params;
+
+    const recipe = await Recipe.findOne({ title })
+      .populate({ path: "category", model: "Category", select: "title" })
+      .populate({ path: "cuisine", model: "Cuisine", select: "title" });
+
+    if (!recipe) {
+      throw new Error("Recipe not found");
+    }
+
+    return { recipe };
+  } catch (error) {
     throw error;
   }
 }

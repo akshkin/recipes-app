@@ -16,3 +16,7 @@ export interface GetAllRecipesParams {
   pageSize?: number;
   sort?: string;
 }
+
+export interface GetRecipeByIdParams {
+  title: string;
+}
