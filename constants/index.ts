@@ -3,10 +3,7 @@ export const CATEGORIES = [
     title: "breakfast",
     value: "breakfast",
   },
-  {
-    title: "lunch",
-    value: "lunch",
-  },
+
   {
     title: "meals",
     value: "meals",

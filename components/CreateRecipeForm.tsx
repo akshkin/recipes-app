@@ -27,13 +27,13 @@ import { Button } from "@/components/ui/button";
 import { deleteImage, uploadImage } from "@/lib/firebase";
 import Image from "next/image";
 import { CATEGORIES, CUISINES } from "@/constants";
-import { useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { createRecipe } from "@/lib/actions/recipe.action";
 
 function CreateRecipeForm({ userId }: { userId: string }) {
   const [imageUrl, setImageUrl] = useState<File>();
   const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof RecipeSchema>>({
     resolver: zodResolver(RecipeSchema),
@@ -73,18 +73,24 @@ function CreateRecipeForm({ userId }: { userId: string }) {
   async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       const file = event?.target?.files[0];
-      console.log(file);
       setImageUrl(file);
     }
   }
 
   async function onSubmit(values: z.infer<typeof RecipeSchema>) {
     /* TODO: handle image upload **/
+    setIsLoading(true);
     try {
       await createRecipe({ ...values, path: pathname });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
+
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 2000);
   }
 
   return (
@@ -102,10 +108,10 @@ function CreateRecipeForm({ userId }: { userId: string }) {
                 Title <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Title for your recipe" {...field} />
               </FormControl>
 
-              <FormMessage />
+              <FormMessage className="text-red-500" />
             </FormItem>
           )}
         />
@@ -121,7 +127,7 @@ function CreateRecipeForm({ userId }: { userId: string }) {
                 <Input placeholder="A short description" {...field} />
               </FormControl>
 
-              <FormMessage />
+              <FormMessage className="text-red-500" />
             </FormItem>
           )}
         />
@@ -130,21 +136,25 @@ function CreateRecipeForm({ userId }: { userId: string }) {
             control={form.control}
             name="category"
             render={({ field }) => (
-              <Select
-                defaultValue={field.value}
-                onValueChange={(content) => field.onChange(content)}
-              >
-                <SelectTrigger className="">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  {CATEGORIES.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <>
+                <Select
+                  required
+                  defaultValue={field.value}
+                  onValueChange={(content) => field.onChange(content)}
+                >
+                  <SelectTrigger className="">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {CATEGORIES.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-red-500" />
+              </>
             )}
           />
 
@@ -152,21 +162,25 @@ function CreateRecipeForm({ userId }: { userId: string }) {
             control={form.control}
             name="cuisine"
             render={({ field }) => (
-              <Select
-                defaultValue={field.value}
-                onValueChange={(content) => field.onChange(content)}
-              >
-                <SelectTrigger className="">
-                  <SelectValue placeholder="Select cuisine" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  {CUISINES.map((cuisine) => (
-                    <SelectItem key={cuisine.value} value={cuisine.value}>
-                      {cuisine.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <>
+                <Select
+                  required
+                  defaultValue={field.value}
+                  onValueChange={(content) => field.onChange(content)}
+                >
+                  <SelectTrigger className="">
+                    <SelectValue placeholder="Select cuisine" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {CUISINES.map((cuisine) => (
+                      <SelectItem key={cuisine.value} value={cuisine.value}>
+                        {cuisine.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-red-500" />
+              </>
             )}
           />
         </div>
@@ -211,6 +225,7 @@ function CreateRecipeForm({ userId }: { userId: string }) {
         >
           Add Ingredient
         </Button>
+
         <FormLabel className="h3 mt-4">
           Method <span className="text-red-500">*</span>
         </FormLabel>
@@ -241,8 +256,20 @@ function CreateRecipeForm({ userId }: { userId: string }) {
           Add step
         </Button>
 
-        <Button className="btn mt-8" type="submit">
-          Submit
+        <Button disabled={isLoading} className="btn mt-8" type="submit">
+          {isLoading ? (
+            <span className="flex gap-2">
+              <Image
+                src="/assets/icons/bubble-loading.svg"
+                alt="loading"
+                width={20}
+                height={20}
+              />{" "}
+              Submitting
+            </span>
+          ) : (
+            "Submit"
+          )}
         </Button>
       </form>
     </Form>

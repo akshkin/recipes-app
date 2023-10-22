@@ -7,7 +7,12 @@ function Page() {
   if (!userId) {
     return <h2>Please login to create recipe</h2>;
   }
-  return <CreateRecipeForm userId={userId} />;
+  return (
+    <>
+      <h1 className="text-center mb-10 h1">Create recipe</h1>
+      <CreateRecipeForm userId={userId} />
+    </>
+  );
 }
 
 export default Page;
