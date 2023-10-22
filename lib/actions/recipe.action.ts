@@ -5,7 +5,11 @@ import { connectToDatabase } from "../mongoose";
 import Category from "@/database-models/category.model";
 import { revalidatePath } from "next/cache";
 import Cuisine from "@/database-models/cuisine.model";
-import { CreateRecipeParams } from "@/types";
+import {
+  CreateRecipeParams,
+  GetAllRecipesParams,
+  GetRecipeByTitleParams,
+} from "@/types";
 
 export async function createRecipe(params: CreateRecipeParams) {
   try {
@@ -78,6 +82,44 @@ export async function createRecipe(params: CreateRecipeParams) {
     });
 
     revalidatePath(path);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getRecipes(params: GetAllRecipesParams) {
+  try {
+    connectToDatabase();
+    const { page = 1, pageSize = 10 } = params;
+
+    const skipAmount = (page - 1) * pageSize;
+
+    const recipes = await Recipe.find({})
+      .limit(pageSize)
+      .skip(skipAmount)
+      .sort({ createdAt: -1 });
+
+    return { recipes };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
+  try {
+    connectToDatabase();
+    const { title } = params;
+
+    const recipe = await Recipe.findOne({ title })
+      .populate({ path: "category", model: "Category", select: "title" })
+      .populate({ path: "cuisine", model: "Cuisine", select: "title" });
+
+    if (!recipe) {
+      return { error: "Recipe not found" };
+    }
+
+    return { recipe };
   } catch (error) {
     throw error;
   }

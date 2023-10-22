@@ -9,3 +9,14 @@ export interface CreateRecipeParams {
   method: { step: string }[];
   path: string;
 }
+
+export interface GetAllRecipesParams {
+  filter?: string;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
+}
+
+export interface GetRecipeByTitleParams {
+  title: string;
+}

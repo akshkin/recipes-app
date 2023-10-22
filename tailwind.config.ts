@@ -10,11 +10,11 @@ const config: Config = {
     container: {
       center: true,
       padding: "2em",
-      screens: {
-        xs: "320px",
-      },
     },
     extend: {
+      screens: {
+        xs: "450px",
+      },
       colors: {
         primary: {
           700: "#283618",
@@ -31,10 +31,6 @@ const config: Config = {
         light: {
           900: "#FFFFFF",
           800: "#fefae0",
-          // 850: "#FDFDFD",
-          // 700: "#DCE3F1",
-          // 500: "#7B8EC8",
-          // 400: "#858EAD",
         },
 
         accent: {

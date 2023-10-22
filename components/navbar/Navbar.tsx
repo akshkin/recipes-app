@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import MobileNavbar from "./MobileNavbar";
 import Searchbar from "../Searchbar";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 function Navbar() {
   return (
@@ -22,10 +22,15 @@ function Navbar() {
               Sign In
             </Link>
           </SignedOut>
+          <SignedIn>
+            <div className="rounded-full shadow-lg  border-[1px] border-slate-400">
+              <UserButton />
+            </div>
+          </SignedIn>
           <MobileNavbar />
         </div>
       </div>
-      <nav className="mt-8">
+      <nav className="mt-4 max-sm:mt-0">
         <div className="flex gap-3 justify-evenly max-lg:hidden">
           {CATEGORIES.map((category) => (
             <Link key={category.title} href="/">

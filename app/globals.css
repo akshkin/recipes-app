@@ -43,4 +43,8 @@
   .h3 {
     @apply text-lg font-bold;
   }
+
+  .custom-grid {
+    @apply grid max-xs:grid-cols-1 grid-cols-2 xl:grid-cols-3 gap-8;
+  }
 }

@@ -8,7 +8,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="">
       <Navbar />
-      <div className="flex mt-8">
+      <div className="flex">
         <div className="w-full">{children}</div>
         <Sidebar />
       </div>
