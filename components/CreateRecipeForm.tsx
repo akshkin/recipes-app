@@ -83,6 +83,7 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
 
   async function onSubmit(values: z.infer<typeof RecipeSchema>) {
     /* TODO: handle image upload **/
+
     setIsLoading(true);
     try {
       await createRecipe({ ...values, path: pathname });
@@ -92,6 +93,8 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
         closeOnClick: true,
         autoClose: 5000,
       });
+
+      form.reset();
     } catch (error: any) {
       toast.error(error.message, {
         position: "top-right",
@@ -148,7 +151,8 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
               <>
                 <Select
                   required
-                  defaultValue={field.value}
+                  defaultValue={""}
+                  value={field.value}
                   onValueChange={(content) => field.onChange(content)}
                 >
                   <SelectTrigger className="">
@@ -174,7 +178,8 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
               <>
                 <Select
                   required
-                  defaultValue={field.value}
+                  defaultValue={""}
+                  value={field.value}
                   onValueChange={(content) => field.onChange(content)}
                 >
                   <SelectTrigger className="">
