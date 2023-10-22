@@ -79,7 +79,6 @@ export async function createRecipe(params: CreateRecipeParams) {
 
     revalidatePath(path);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

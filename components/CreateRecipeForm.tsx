@@ -31,7 +31,12 @@ import { usePathname } from "next/navigation";
 import { createRecipe } from "@/lib/actions/recipe.action";
 import { toast } from "react-toastify";
 
-function CreateRecipeForm({ userId }: { userId: string }) {
+interface RecipeFormProps {
+  userId: string;
+  type: string;
+}
+
+function CreateRecipeForm({ userId, type }: RecipeFormProps) {
   const [imageUrl, setImageUrl] = useState<File>();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
@@ -81,13 +86,13 @@ function CreateRecipeForm({ userId }: { userId: string }) {
     setIsLoading(true);
     try {
       await createRecipe({ ...values, path: pathname });
-      toast.success("Recipe created successfully", {
+      const messageVariable = type === "create" ? "created" : "edited";
+      toast.success(`Recipe ${messageVariable} successfully`, {
         position: "top-right",
         closeOnClick: true,
         autoClose: 5000,
       });
     } catch (error: any) {
-      console.log(error);
       toast.error(error.message, {
         position: "top-right",
         closeOnClick: true,
