@@ -1,4 +1,4 @@
-import { getRecipeById } from "@/lib/actions/recipe.action";
+import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -13,7 +13,7 @@ async function Page({ params }: Props) {
   const title = params.title;
   const decodedTitle = decodeURIComponent(title);
 
-  const result = await getRecipeById({ title: decodedTitle });
+  const result = await getRecipeByTitle({ title: decodedTitle });
 
   if (!result.recipe) {
     return <p>Recipe not found</p>;
@@ -55,7 +55,7 @@ async function Page({ params }: Props) {
             Created: <time>{formattedTime}</time>
           </p>
           <p className="text-2xl mt-4">{description}</p>
-          <div className="mb-0 mt-4 flex flex-col sm:flex-row gap-8">
+          <div className="mb-0 mt-4s flex flex-col sm:flex-row gap-8">
             <p>
               <span className="h3">Category</span> :{" "}
               <span className="text-primary-500">

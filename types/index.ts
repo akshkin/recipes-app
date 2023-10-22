@@ -17,6 +17,6 @@ export interface GetAllRecipesParams {
   sort?: string;
 }
 
-export interface GetRecipeByIdParams {
+export interface GetRecipeByTitleParams {
   title: string;
 }

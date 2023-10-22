@@ -8,7 +8,7 @@ import Cuisine from "@/database-models/cuisine.model";
 import {
   CreateRecipeParams,
   GetAllRecipesParams,
-  GetRecipeByIdParams,
+  GetRecipeByTitleParams,
 } from "@/types";
 
 export async function createRecipe(params: CreateRecipeParams) {
@@ -106,7 +106,7 @@ export async function getRecipes(params: GetAllRecipesParams) {
   }
 }
 
-export async function getRecipeById(params: GetRecipeByIdParams) {
+export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
   try {
     connectToDatabase();
     const { title } = params;
