@@ -26,7 +26,6 @@ function RecipeCard({ title, image }: RecipeProps) {
       </h2>
     </Link>
   );
-  ebar;
 }
 
 export default RecipeCard;

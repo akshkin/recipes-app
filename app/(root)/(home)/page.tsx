@@ -8,7 +8,6 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col items-center p-8">
       <h1 className="h1">All recipes</h1>
       {/**Filters */}
-      {/* <div className="flex flex-wrap gap-6 my-6 justify-center"> */}
       <div className="custom-grid my-8">
         {result.recipes.map((recipe) => (
           <RecipeCard
