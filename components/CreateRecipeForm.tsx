@@ -27,19 +27,24 @@ import { Button } from "@/components/ui/button";
 import { deleteImage, uploadImage } from "@/lib/firebase";
 import Image from "next/image";
 import { CATEGORIES, CUISINES } from "@/constants";
+import { useAuth } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
+import { createRecipe } from "@/lib/actions/recipe.action";
 
-function CreateRecipeForm() {
-  const [imageUrl, setImageUrl] = useState("");
+function CreateRecipeForm({ userId }: { userId: string }) {
+  const [imageUrl, setImageUrl] = useState<File>();
+  const pathname = usePathname();
 
   const form = useForm<z.infer<typeof RecipeSchema>>({
     resolver: zodResolver(RecipeSchema),
     defaultValues: {
       title: "",
       description: "",
-      image: "",
+      image:
+        "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGZvb2R8ZW58MHx8MHx8fDA%3D",
       category: "",
       cuisine: "",
-      author: "author",
+      userId: userId,
       ingredients: [{ ingredient: "" }],
       method: [{ step: "" }],
     },
@@ -68,23 +73,18 @@ function CreateRecipeForm() {
   async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       const file = event?.target?.files[0];
-      setImageUrl(file.name);
-      form.setValue("image", file.name);
+      console.log(file);
+      setImageUrl(file);
     }
   }
 
-  async function deletedUploadedImage() {
-    await deleteImage(imageUrl);
-    setImageUrl("");
-    form.setValue("image", "");
-  }
-
-  function onSubmit(values: z.infer<typeof RecipeSchema>) {
-    // 2. Define a submit handler.
-    form.setValue("author", "author");
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof RecipeSchema>) {
+    /* TODO: handle image upload **/
+    try {
+      await createRecipe({ ...values, path: pathname });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -171,7 +171,7 @@ function CreateRecipeForm() {
           />
         </div>
 
-        <FormLabel className="h3 mt-4">
+        {/* <FormLabel className="h3 mt-4">
           Upload an Image <span className="text-red-500">*</span>
         </FormLabel>
         <Input
@@ -180,7 +180,7 @@ function CreateRecipeForm() {
           accept="image/*"
           placeholder=""
           onChange={handleImageUpload}
-        />
+        /> */}
 
         <FormLabel className="h3 mt-4">
           Ingredients <span className="text-red-500">*</span>
