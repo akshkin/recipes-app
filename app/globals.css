@@ -16,6 +16,16 @@
   }
 }
 
+body {
+  font-family: "Inter", sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Cormorant", serif;
+}
+
 @layer utilities {
   /* .primary-gradient {
     background: linear-gradient(129deg, #087c3e 0%, #61b086 100%);
@@ -26,11 +36,11 @@
   }
 
   .link {
-    @apply hover:opacity-80 focus:opacity-80;
+    @apply hover:opacity-80 focus:opacity-80 font-inter;
   }
 
   .secondary-btn {
-    @apply px-4 py-2 text-white rounded-md hover:opacity-80 focus:opacity-80 bg-accent-100;
+    @apply px-4 py-2 text-white rounded-md hover:opacity-80 focus:opacity-80 bg-accent-500;
   }
 
   .danger-btn {
@@ -38,13 +48,16 @@
   }
 
   .h1 {
-    @apply text-3xl font-bold;
+    @apply text-3xl font-medium;
+  }
+  .h2 {
+    @apply text-2xl;
   }
   .h3 {
     @apply text-lg font-bold;
   }
 
   .custom-grid {
-    @apply grid max-xs:grid-cols-1 grid-cols-2 xl:grid-cols-3 gap-8;
+    @apply grid max-xs:grid-cols-1 grid-cols-2 xl:grid-cols-3 gap-8 justify-items-center items-center;
   }
 }

@@ -5,17 +5,18 @@ import React from "react";
 import MobileNavbar from "./MobileNavbar";
 import Searchbar from "../Searchbar";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import NavbarCategories from "./NavbarCategories";
 
 function Navbar() {
   return (
-    <header className="px-4 py-3 flex flex-col">
+    <header className=" py-3 flex flex-col">
       <div className="flex justify-between gap-6 items-center">
         <Link href="/" className="flex flex-col items-center link">
           <Image src="/assets/logo.svg" alt="logo" width={150} height={100} />
           <p className="text-center">Recipes</p>
         </Link>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 px-4">
           <Searchbar />
           <SignedOut>
             <Link href="/sign-in" className="btn min-w-[100px] text-center">
@@ -31,15 +32,7 @@ function Navbar() {
         </div>
       </div>
       <nav className="mt-4 max-sm:mt-0">
-        <div className="flex gap-3 justify-evenly max-lg:hidden">
-          {CATEGORIES.map((category) => (
-            <Link key={category.title} href={`/category/${category.title}`}>
-              <p className="uppercase font-bold text-xl text-primary-500 link">
-                {category.title}
-              </p>
-            </Link>
-          ))}
-        </div>
+        <NavbarCategories />
       </nav>
     </header>
   );

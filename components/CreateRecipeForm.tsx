@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 // import { deleteImage, uploadImage } from "@/lib/firebase";
 import Image from "next/image";
 import { CATEGORIES, CUISINES } from "@/constants";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createRecipe } from "@/lib/actions/recipe.action";
 import { toast } from "react-toastify";
 
@@ -40,6 +40,7 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
   const [imageUrl, setImageUrl] = useState<File>();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof RecipeSchema>>({
     resolver: zodResolver(RecipeSchema),
@@ -93,6 +94,7 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
         closeOnClick: true,
         autoClose: 5000,
       });
+      router.push("/");
 
       form.reset();
     } catch (error: any) {
