@@ -84,23 +84,45 @@ async function Page({ params }: Props) {
       <section className="flex flex-col lg:flex-row justify-center lg:items-start max-w-6xl gap-12 p-8 mx-auto">
         <div className="lg:w-[50%] ">
           <h3 className="font-bold text-xl my-4">Ingredients</h3>
-          <ol className="list-disc px-8">
+          <ul className="list-none ml-0 pl-0 bg-primary-100 rounded-lg ">
             {ingredients.map(
-              (ingredient: { _id: string; ingredient: string }) => (
-                <li key={ingredient._id} className="">
+              (
+                ingredient: { _id: string; ingredient: string },
+                index: number
+              ) => (
+                <li
+                  key={ingredient._id}
+                  className={`mx-3 py-2.5 
+                ${
+                  index !== ingredients.length - 1
+                    ? "border-b-[1px] border-slate-400"
+                    : "first-line:"
+                }
+                  `}
+                >
                   {ingredient.ingredient}
                 </li>
               )
             )}
-          </ol>
+          </ul>
         </div>
         <div className="lg:w-[50%]">
           <h3 className="font-bold text-xl my-4">Method</h3>
-          <ol className="list-decimal px-8">
-            {method.map((item: { _id: string; step: string }) => (
-              <li key={item._id}>{item.step}</li>
-            ))}
-          </ol>
+          <ul className="list-none ml-0 pl-0 rounded-lg">
+            {method.map(
+              (item: { _id: string; step: string }, index: number) => (
+                <li
+                  className={`px-6 py-2.5 bg-primary-100 rounded-lg my-3 `}
+                  key={item._id}
+                >
+                  <span className="text-accent-500 text-xl font-bold">
+                    {index + 1}{" "}
+                  </span>
+                  {item.step}
+                </li>
+              )
+            )}
+          </ul>
         </div>
       </section>
     </main>
