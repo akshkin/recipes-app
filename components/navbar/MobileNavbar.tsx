@@ -25,7 +25,7 @@ function MobileNavbar() {
         <SheetClose asChild>
           <div className="flex flex-col gap-3 mt-16">
             {CATEGORIES.map((category) => (
-              <Link key={category.title} href="/">
+              <Link key={category.title} href={`/category/${category.title}`}>
                 <p className="uppercase font-bold text-xl text-primary-500 link">
                   {category.title}
                 </p>
