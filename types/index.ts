@@ -20,3 +20,6 @@ export interface GetAllRecipesParams {
 export interface GetRecipeByTitleParams {
   title: string;
 }
+export interface GetRecipeByCategoryTitleParams {
+  title: string;
+}

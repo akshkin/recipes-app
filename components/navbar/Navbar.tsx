@@ -33,7 +33,7 @@ function Navbar() {
       <nav className="mt-4 max-sm:mt-0">
         <div className="flex gap-3 justify-evenly max-lg:hidden">
           {CATEGORIES.map((category) => (
-            <Link key={category.title} href="/">
+            <Link key={category.title} href={`/category/${category.title}`}>
               <p className="uppercase font-bold text-xl text-primary-500 link">
                 {category.title}
               </p>
