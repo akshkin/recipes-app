@@ -20,7 +20,6 @@ function MobileNavbar() {
       <SheetContent className="border-none">
         <Link href="/" className="flex flex-col items-center link">
           <Image src="/assets/logo.svg" alt="logo" width={150} height={100} />
-          <p className="text-center">Recipes</p>
         </Link>
         <SheetClose asChild>
           <div className="flex flex-col gap-3 mt-16">
