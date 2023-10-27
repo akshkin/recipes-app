@@ -11,10 +11,11 @@ export interface IUser extends mongoose.Document {
   image?: string;
   bio?: string;
   saved: mongoose.Schema.Types.ObjectId[];
-  createdAt: Date;
+  joinedAt: Date;
+  socialLinks: [{ instagram: string; facebook: string; youTube: string }];
 }
 
-export const UserScehma = new Schema({
+export const UserSchema = new Schema({
   clerkId: { type: String, required: true },
   name: { type: String, required: true },
   username: { type: String, required: true, unique: true },
@@ -22,10 +23,17 @@ export const UserScehma = new Schema({
   password: { type: String },
   bio: { type: String },
   image: { type: String },
-  saved: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
-  joinedAt: { type: Date, default: Date.now() },
+  saved: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+  joinedAt: { type: Date, default: Date.now },
+  socialLinks: [
+    {
+      instagram: { type: String },
+      facebook: { type: String },
+      youTube: { type: String },
+    },
+  ],
 });
 
-const User = mongoose.models.User || mongoose.model("User", UserScehma);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;
