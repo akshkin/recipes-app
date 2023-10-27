@@ -39,8 +39,8 @@ async function Page({ params }: Props) {
 
   return (
     <main className="">
-      <section className="p-8 bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12">
-        <div className="lg:w-[50%]">
+      <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:h-[70vh]">
+        <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center items-start lg:w-[50%]">
           <h1 className="text-4xl font-bold mb-4 lg:text-6xl">
             {decodedTitle}
           </h1>
@@ -51,7 +51,7 @@ async function Page({ params }: Props) {
             </Link>
           </p>
 
-          <p>
+          <p className="text-gray-700">
             Created: <time>{formattedTime}</time>
           </p>
           <p className="text-2xl mt-4">{description}</p>
@@ -70,37 +70,59 @@ async function Page({ params }: Props) {
             </p>
           </div>
         </div>
-        <div className="sm:w-full lg:w-[50%] ">
-          <Image
-            className="w-full object-cover max-h-[60vh]"
-            src={image}
-            alt={title}
-            width={300}
-            height={200}
-          />
-        </div>
+        {/* <div className="sm:w-full bg-slate-400 h-full lg:w-[50%] "> */}
+        <Image
+          className="max-lg:h-[50vh] lg:w-[50%] w-full object-cover h-full"
+          src={image}
+          alt={title}
+          width={300}
+          height={400}
+        />
+        {/* </div> */}
       </section>
 
       <section className="flex flex-col lg:flex-row justify-center lg:items-start max-w-6xl gap-12 p-8 mx-auto">
         <div className="lg:w-[50%] ">
           <h3 className="font-bold text-xl my-4">Ingredients</h3>
-          <ol className="list-disc px-8">
+          <ul className="list-none ml-0 pl-0 bg-primary-100 rounded-lg ">
             {ingredients.map(
-              (ingredient: { _id: string; ingredient: string }) => (
-                <li key={ingredient._id} className="">
+              (
+                ingredient: { _id: string; ingredient: string },
+                index: number
+              ) => (
+                <li
+                  key={ingredient._id}
+                  className={`mx-3 py-2.5 
+                ${
+                  index !== ingredients.length - 1
+                    ? "border-b-[1px] border-slate-400"
+                    : "first-line:"
+                }
+                  `}
+                >
                   {ingredient.ingredient}
                 </li>
               )
             )}
-          </ol>
+          </ul>
         </div>
         <div className="lg:w-[50%]">
           <h3 className="font-bold text-xl my-4">Method</h3>
-          <ol className="list-decimal px-8">
-            {method.map((item: { _id: string; step: string }) => (
-              <li key={item._id}>{item.step}</li>
-            ))}
-          </ol>
+          <ul className="list-none ml-0 pl-0 rounded-lg">
+            {method.map(
+              (item: { _id: string; step: string }, index: number) => (
+                <li
+                  className={`px-6 py-2.5 bg-primary-100 rounded-lg my-3 `}
+                  key={item._id}
+                >
+                  <span className="text-accent-500 text-xl font-bold">
+                    {index + 1}{" "}
+                  </span>
+                  {item.step}
+                </li>
+              )
+            )}
+          </ul>
         </div>
       </section>
     </main>

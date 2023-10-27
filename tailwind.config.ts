@@ -15,11 +15,15 @@ const config: Config = {
       screens: {
         xs: "450px",
       },
+      fontFamily: {
+        inter: ["var(--font-inter)"],
+        cormorant: ["var(--font-cormorant)"],
+      },
       colors: {
         primary: {
           700: "#283618",
           500: "#606c38",
-          100: "#FFf1e6",
+          100: "#eef3e1",
         },
         dark: {
           100: "#000000",

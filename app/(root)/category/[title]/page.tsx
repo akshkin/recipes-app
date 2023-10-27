@@ -15,7 +15,7 @@ async function Page({ params }: Props) {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-8">
-      <h1 className="h1 text-center mt-8">{params.title}</h1>
+      <h1 className="h1 text-center mt-4">{params.title.toUpperCase()}</h1>
       {result?.recipes.recipes.length ? (
         <div className="custom-grid my-8">
           {result?.recipes?.recipes.map((recipe: IRecipe) => (
@@ -30,11 +30,8 @@ async function Page({ params }: Props) {
       ) : (
         <div>
           <h3 className="my-6">No recipes to show yet</h3>
-          <Link
-            href="/create-recipe"
-            className="link text-accent-500 underline mt-4"
-          >
-            Be the first to create!
+          <Link href="/create-recipe" className="secondary-btn">
+            Be the first to create
           </Link>
         </div>
       )}

@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 // import { deleteImage, uploadImage } from "@/lib/firebase";
 import Image from "next/image";
 import { CATEGORIES, CUISINES } from "@/constants";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createRecipe } from "@/lib/actions/recipe.action";
 import { toast } from "react-toastify";
 
@@ -40,6 +40,7 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
   const [imageUrl, setImageUrl] = useState<File>();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof RecipeSchema>>({
     resolver: zodResolver(RecipeSchema),
@@ -47,7 +48,7 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
       title: "",
       description: "",
       image:
-        "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGZvb2R8ZW58MHx8MHx8fDA%3D",
+        "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjd8fGZvb2R8ZW58MHx8MHx8fDA%3D",
       category: "",
       cuisine: "",
       userId: userId,
@@ -93,6 +94,7 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
         closeOnClick: true,
         autoClose: 5000,
       });
+      router.push("/");
 
       form.reset();
     } catch (error: any) {
