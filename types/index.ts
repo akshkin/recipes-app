@@ -23,3 +23,25 @@ export interface GetRecipeByTitleParams {
 export interface GetRecipeByCategoryTitleParams {
   title: string;
 }
+
+export interface CreateUserParams {
+  clerkId: string;
+  name: string;
+  username: string;
+  image: string;
+  email: string;
+}
+export interface UpdateUserParams {
+  clerkId: string;
+  updateData: {
+    name: string;
+    username: string;
+    image: string;
+    email: string;
+  };
+  path: string;
+}
+
+export interface DeleteUserParams {
+  clerkId: string;
+}
