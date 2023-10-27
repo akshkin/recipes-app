@@ -13,7 +13,6 @@ function Navbar() {
       <div className="flex justify-between gap-3 items-center ml-3">
         <Link href="/" className="flex flex-col items-center link max-sm:pb-3">
           <Image src="/assets/logo.svg" alt="logo" width={100} height={70} />
-          {/* <p className="text-center text-2xl font-bold">Recipes</p> */}
         </Link>
 
         <div className="flex items-center gap-3 px-4 pb-4 sm:py-3 ">
