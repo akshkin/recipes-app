@@ -64,3 +64,19 @@ export async function deleteUser(params: DeleteUserParams) {
     throw new Error(error);
   }
 }
+
+export async function getUserById(clerkId: string) {
+  try {
+    connectToDatabase();
+
+    const user = await User.findOne({ clerkId });
+
+    if (!user) {
+      return { message: "User not found" };
+    }
+    return { user };
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error?.message);
+  }
+}
