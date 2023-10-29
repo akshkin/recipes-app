@@ -76,8 +76,6 @@ export async function getUserById(clerkId: string) {
 
     const user = await User.findOne({ clerkId });
 
-    console.log(user);
-
     if (!user) {
       return { message: "User not found" };
     }
@@ -102,5 +100,16 @@ export async function updateUserBioAndLinks(
   } catch (error: any) {
     console.log(error);
     throw new Error(error);
+  }
+}
+
+export async function getMongoUserFromClerkId(clerkId: string) {
+  try {
+    connectToDatabase();
+
+    const user = await User.findOneAndUpdate({ clerkId });
+    return user;
+  } catch (error) {
+    console.log(error);
   }
 }

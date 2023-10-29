@@ -10,7 +10,6 @@ export const RecipeSchema = z.object({
     .string()
     .min(20, { message: "Description must contain at least 20 characters" }),
   image: z.string().min(1),
-  userId: z.string().min(1),
   category: z.string().min(1, { message: "Selecting category is required" }),
   cuisine: z.string().min(3, { message: "Selecting cuisine is required" }),
   ingredients: z.array(z.object({ ingredient: z.string().min(1) })).min(1),

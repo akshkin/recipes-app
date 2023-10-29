@@ -3,7 +3,7 @@ export interface CreateRecipeParams {
   description: string;
   category: string;
   image: string;
-  userId: string;
+  createdBy: string;
   cuisine: string;
   ingredients: { ingredient: string }[];
   method: { step: string }[];

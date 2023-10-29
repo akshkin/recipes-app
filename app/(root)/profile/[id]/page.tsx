@@ -1,5 +1,8 @@
 import React from "react";
-import { getUserById } from "@/lib/actions/user.action";
+import {
+  getMongoUserFromClerkId,
+  getUserById,
+} from "@/lib/actions/user.action";
 import { getRecipesByUserId } from "@/lib/actions/recipe.action";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,11 +19,17 @@ async function Page({ params }: ParamsProps) {
   const { id: clerkId } = params;
   const { userId } = auth();
 
+  if (!userId) {
+    return <p className="text-center">User not found</p>;
+  }
+
+  const mongoUser = await getMongoUserFromClerkId(clerkId);
+
   const result = await getUserById(clerkId);
-  const userRecipes = await getRecipesByUserId(clerkId);
+  const userRecipes = await getRecipesByUserId(mongoUser._id);
 
   if (!result.user) {
-    return <p className="text-center">User not found!</p>;
+    <p className="text-center">User not found</p>;
   }
 
   const { instagram, facebook, youtube } = result?.user.socialLinks;

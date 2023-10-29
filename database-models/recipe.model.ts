@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 export interface IRecipe extends mongoose.Document {
-  createdBy: string;
+  createdBy: mongoose.Schema.Types.ObjectId;
   image: string;
   title: string;
   description: string;
@@ -17,9 +17,9 @@ export interface IRecipe extends mongoose.Document {
 
 const RecipeScehma = new Schema({
   createdBy: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
-    // ref: "User",
+    ref: "User",
   },
   image: {
     type: String,
