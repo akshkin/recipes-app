@@ -12,7 +12,11 @@ export interface IUser extends mongoose.Document {
   bio?: string;
   saved: mongoose.Schema.Types.ObjectId[];
   joinedAt: Date;
-  socialLinks: [{ instagram: string; facebook: string; youTube: string }];
+  socialLinks?: {
+    instagram: string;
+    facebook: string;
+    youTube: string;
+  };
 }
 
 export const UserSchema = new Schema({
@@ -25,13 +29,11 @@ export const UserSchema = new Schema({
   image: { type: String },
   saved: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   joinedAt: { type: Date, default: Date.now },
-  socialLinks: [
-    {
-      instagram: { type: String },
-      facebook: { type: String },
-      youTube: { type: String },
-    },
-  ],
+  socialLinks: {
+    instagram: { type: String },
+    facebook: { type: String },
+    youTube: { type: String },
+  },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

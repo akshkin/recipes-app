@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { isUrlValid } from "./utils";
 
 export const RecipeSchema = z.object({
   title: z
@@ -16,4 +17,28 @@ export const RecipeSchema = z.object({
   method: z
     .array(z.object({ step: z.string().min(1) }))
     .min(1, { message: "Adding at least 1 step is required" }),
+});
+
+export const ProfileSchema = z.object({
+  bio: z.string().optional(),
+  socialLinks: z.object({
+    instagram: z
+      .string()
+      .optional()
+      .refine((value) => !value || isUrlValid(value), {
+        message: "Please enter a valid URL for Facebook",
+      }),
+    facebook: z
+      .string()
+      .optional()
+      .refine((value) => !value || isUrlValid(value), {
+        message: "Please enter a valid URL for Facebook",
+      }),
+    youtube: z
+      .string()
+      .optional()
+      .refine((value) => !value || isUrlValid(value), {
+        message: "Please enter a valid URL for Facebook",
+      }),
+  }),
 });

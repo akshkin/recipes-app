@@ -1,6 +1,6 @@
+import React from "react";
 import { getUserById } from "@/lib/actions/user.action";
 import { getRecipesByUserId } from "@/lib/actions/recipe.action";
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import RecipeCard from "@/components/RecipeCard";
@@ -23,8 +23,10 @@ async function Page({ params }: ParamsProps) {
     return <p className="text-center">User not found!</p>;
   }
 
+  const { instagram, facebook, youtube } = result?.user.socialLinks;
+
   return (
-    <div className="m-8 flex flex-col justify-center items-center gap-4">
+    <div className="m-8 flex flex-col justify-center items-center gap-6">
       <div className="flex items-center gap-4 justify-center">
         <Image
           src={result?.user?.image}
@@ -34,10 +36,10 @@ async function Page({ params }: ParamsProps) {
           className="object-cover rounded-full border-[1px] border-primary-500"
         />
         <div>
-          <div className="flex justify-between">
+          <div className="flex gap-4 justify-between">
             <h1 className="h1">{result?.user?.name.toUpperCase()}</h1>
             {clerkId === userId && (
-              <Link className="secondary-outline-btn" href="/edit/profile">
+              <Link className="secondary-outline-btn" href="/profile/edit">
                 Edit profile
               </Link>
             )}
@@ -46,18 +48,45 @@ async function Page({ params }: ParamsProps) {
           {result.user.bio && <p>{result.user.bio}</p>}
         </div>
       </div>
-      {result?.user?.socialLinks?.length ? (
-        <>
-          <p>Find me here</p>
-          {result?.user?.socialLinks?.map((link: any) => (
-            <Link key={link._id} href={link}>
-              {link}
-            </Link>
-          ))}
-        </>
+      {result?.user?.socialLinks ? (
+        <div className="flex gap-3 -ml-5 mb-6">
+          <p>Find me here: </p>
+          <div className="flex gap-4">
+            {instagram && (
+              <a href={instagram} target="_blank" className="link">
+                <Image
+                  src="/assets/icons/instagram.svg"
+                  alt="instagram"
+                  width={30}
+                  height={30}
+                />
+              </a>
+            )}
+            {facebook && (
+              <a href={facebook} target="_blank" className="link">
+                <Image
+                  src="/assets/icons/facebook.svg"
+                  alt="facebook"
+                  width={30}
+                  height={30}
+                />
+              </a>
+            )}
+            {youtube && (
+              <a href={youtube} target="_blank" className="link">
+                <Image
+                  src="/assets/icons/youtube.svg"
+                  alt="youtube"
+                  width={30}
+                  height={30}
+                />
+              </a>
+            )}
+          </div>
+        </div>
       ) : null}
       <div>
-        {userRecipes?.length && (
+        {userRecipes && userRecipes.length > 0 && (
           <>
             <h2 className="h2 text-center">My recipes</h2>
             <div className="custom-grid mt-6">

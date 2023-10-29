@@ -45,3 +45,16 @@ export interface UpdateUserParams {
 export interface DeleteUserParams {
   clerkId: string;
 }
+
+export interface UpdateUserBioAndLinksParams {
+  clerkId: string;
+  updateData: {
+    bio?: string;
+    socialLinks: {
+      instagram?: string;
+      facebook?: string;
+      youtube?: string;
+    };
+  };
+  path: string;
+}
