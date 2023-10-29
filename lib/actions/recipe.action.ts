@@ -124,3 +124,13 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
     throw error;
   }
 }
+
+export async function getRecipesByUserId(clerkId: string) {
+  try {
+    connectToDatabase();
+    const recipes = await Recipe.find({ createdBy: clerkId });
+    return recipes;
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -2,19 +2,23 @@ export const CATEGORIES = [
   {
     title: "breakfast",
     value: "breakfast",
+    image: "/assets/icons/breakfast.svg",
   },
 
   {
     title: "meals",
     value: "meals",
+    image: "/assets/icons/spaghetti.svg",
   },
   {
     title: "dessert",
     value: "dessert",
+    image: "/assets/icons/cupcake.svg",
   },
   {
     title: "snacks",
     value: "snacks",
+    image: "/assets/icons/popcorn.svg",
   },
 ];
 

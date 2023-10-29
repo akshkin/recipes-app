@@ -46,7 +46,7 @@ async function Page({ params }: Props) {
           </h1>
           <p className="italic mb-6">
             Author:{" "}
-            <Link className="text-accent-500" href={`/user/${createdBy}`}>
+            <Link className="text-accent-500" href={`/profile/${createdBy}`}>
               {createdBy}
             </Link>
           </p>
