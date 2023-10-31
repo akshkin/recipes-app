@@ -55,45 +55,45 @@ async function Page({ params }: ParamsProps) {
           </div>
           <p className="text-accent-500 my-1">@{result?.user?.username}</p>
           {result.user.bio && <p>{result.user.bio}</p>}
+          {result?.user?.socialLinks ? (
+            <div className="flex gap-3 mt-6">
+              <p>Find me here: </p>
+              <div className="flex gap-4">
+                {instagram && (
+                  <a href={instagram} target="_blank" className="link">
+                    <Image
+                      src="/assets/icons/instagram.svg"
+                      alt="instagram"
+                      width={30}
+                      height={30}
+                    />
+                  </a>
+                )}
+                {facebook && (
+                  <a href={facebook} target="_blank" className="link">
+                    <Image
+                      src="/assets/icons/facebook.svg"
+                      alt="facebook"
+                      width={30}
+                      height={30}
+                    />
+                  </a>
+                )}
+                {youtube && (
+                  <a href={youtube} target="_blank" className="link">
+                    <Image
+                      src="/assets/icons/youtube.svg"
+                      alt="youtube"
+                      width={30}
+                      height={30}
+                    />
+                  </a>
+                )}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
-      {result?.user?.socialLinks ? (
-        <div className="flex gap-3 -ml-5 mb-6">
-          <p>Find me here: </p>
-          <div className="flex gap-4">
-            {instagram && (
-              <a href={instagram} target="_blank" className="link">
-                <Image
-                  src="/assets/icons/instagram.svg"
-                  alt="instagram"
-                  width={30}
-                  height={30}
-                />
-              </a>
-            )}
-            {facebook && (
-              <a href={facebook} target="_blank" className="link">
-                <Image
-                  src="/assets/icons/facebook.svg"
-                  alt="facebook"
-                  width={30}
-                  height={30}
-                />
-              </a>
-            )}
-            {youtube && (
-              <a href={youtube} target="_blank" className="link">
-                <Image
-                  src="/assets/icons/youtube.svg"
-                  alt="youtube"
-                  width={30}
-                  height={30}
-                />
-              </a>
-            )}
-          </div>
-        </div>
-      ) : null}
       <div>
         {userRecipes && userRecipes.length > 0 && (
           <>
