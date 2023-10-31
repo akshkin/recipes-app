@@ -1,4 +1,8 @@
+import CreateReview from "@/components/CreateReview";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
+import { getReviews } from "@/lib/actions/review.action";
+import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -18,6 +22,16 @@ async function Page({ params }: Props) {
   if (!result.recipe) {
     return <p className="h3 text-center">Recipe not found</p>;
   }
+
+  let mongoUser;
+
+  const { userId: clerkId } = auth();
+
+  if (clerkId) {
+    mongoUser = await getMongoUserFromClerkId(clerkId);
+  }
+
+  const reviewsResult = await getReviews({ recipe: result?.recipe?._id });
 
   const {
     _id,
@@ -128,6 +142,37 @@ async function Page({ params }: Props) {
           </ul>
         </div>
       </section>
+
+      <CreateReview recipe={_id.toString()} user={mongoUser?._id.toString()} />
+
+      {reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
+        <div className="mb-4  px-8 max-w-6xl mx-auto">
+          <h3 className="font-bold h3 mb-4">Reviews</h3>
+          <ul className="">
+            {reviewsResult?.reviews.map((review) => (
+              <li className="mb-4" key={review._id}>
+                <h4 className="font-semibold flex gap-4">
+                  {review.user.name}{" "}
+                  <div className="flex items-center">
+                    {Array.from({ length: review.rating }, (_, i) => (
+                      <span key={i}>
+                        <Image
+                          src="/assets/icons/star.svg"
+                          alt="star"
+                          width={20}
+                          height={20}
+                          className="mr-1"
+                        />
+                      </span>
+                    ))}
+                  </div>
+                </h4>
+                <p>{review.comment}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </main>
   );
 }

@@ -113,9 +113,25 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
     const { title } = params;
 
     const recipe = await Recipe.findOne({ title })
+      .populate({
+        path: "createdBy",
+        model: User,
+        select: "name clerkId",
+      })
       .populate({ path: "category", model: "Category", select: "title" })
-      .populate({ path: "cuisine", model: "Cuisine", select: "title" })
-      .populate({ path: "createdBy", model: "User", select: "name clerkId" });
+      .populate({ path: "cuisine", model: "Cuisine", select: "title" });
+    // try {
+    //   await recipe
+    //     .populate({
+    //       path: "createdBy",
+    //       model: "User",
+    //       select: "_id name clerkId",
+    //     })
+    //     .execPopulate();
+    // } catch (error) {
+    //   console.error("Error during population:", error);
+    //   return { error: "An error occurred while populating createdBy" };
+    // }
 
     if (!recipe) {
       return { error: "Recipe not found" };

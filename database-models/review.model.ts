@@ -8,6 +8,7 @@ export interface IReview extends mongoose.Document {
   rating: number;
   comment: string;
   createdAt: Date;
+  replies: { user: mongoose.Schema.Types.ObjectId; comment: string }[];
 }
 
 const ReviewSchema = new Schema({
@@ -33,6 +34,17 @@ const ReviewSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  replies: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      comment: {
+        type: String,
+      },
+    },
+  ],
 });
 
 const Review = mongoose.models.Review || mongoose.model("Review", ReviewSchema);
