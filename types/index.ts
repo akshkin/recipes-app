@@ -70,3 +70,7 @@ export interface CreateReviewParams {
 export interface GetReviewParams {
   recipe: string;
 }
+export interface DeleteReviewParams {
+  reviewId: string;
+  path: string;
+}

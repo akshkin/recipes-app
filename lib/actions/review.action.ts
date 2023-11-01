@@ -2,7 +2,11 @@
 
 import { connectToDatabase } from "../mongoose";
 import Review from "@/database-models/review.model";
-import { CreateReviewParams, GetReviewParams } from "@/types";
+import {
+  CreateReviewParams,
+  DeleteReviewParams,
+  GetReviewParams,
+} from "@/types";
 import { revalidatePath } from "next/cache";
 
 export async function createReview(params: CreateReviewParams) {
@@ -34,10 +38,22 @@ export async function getReviews(params: GetReviewParams) {
     const reviews = await Review.find({ recipe }).populate({
       path: "user",
       model: "User",
-      select: "name",
+      select: "name clerkId image",
     });
+
     return { reviews };
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function deleteReview(params: DeleteReviewParams) {
+  try {
+    connectToDatabase();
+    const { reviewId, path } = params;
+    await Review.findByIdAndDelete(reviewId);
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(error);
   }
 }

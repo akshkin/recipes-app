@@ -26,13 +26,13 @@ async function Page({ params }: ParamsProps) {
   const mongoUser = await getMongoUserFromClerkId(clerkId);
 
   const result = await getUserById(clerkId);
-  const userRecipes = await getRecipesByUserId(mongoUser._id);
+  const userRecipes = await getRecipesByUserId(mongoUser?._id);
 
   if (!result.user) {
     <p className="text-center">User not found</p>;
   }
 
-  const { instagram, facebook, youtube } = result?.user.socialLinks;
+  const { instagram, facebook, youtube } = result?.user?.socialLinks;
 
   return (
     <div className="m-8 flex flex-col justify-center items-center gap-6">

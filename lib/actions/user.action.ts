@@ -16,7 +16,7 @@ export async function createUser(params: CreateUserParams) {
     connectToDatabase();
 
     const { clerkId, email, name, image, username } = params;
-
+    console.log(clerkId);
     const user = await User.create({ ...params });
     return user;
   } catch (error: any) {
@@ -30,7 +30,7 @@ export async function updateUser(params: UpdateUserParams) {
     connectToDatabase();
 
     const { clerkId, updateData, path } = params;
-
+    console.log(clerkId);
     await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
 
     revalidatePath(path);
@@ -107,7 +107,7 @@ export async function getMongoUserFromClerkId(clerkId: string) {
   try {
     connectToDatabase();
 
-    const user = await User.findOneAndUpdate({ clerkId });
+    const user = await User.findOne({ clerkId });
     return user;
   } catch (error) {
     console.log(error);

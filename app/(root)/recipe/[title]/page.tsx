@@ -1,4 +1,5 @@
 import CreateReview from "@/components/CreateReview";
+import ReviewCard, { ReviewProps } from "@/components/ReviewCard";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import { getReviews } from "@/lib/actions/review.action";
 import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
@@ -62,9 +63,9 @@ async function Page({ params }: Props) {
             Author:{" "}
             <Link
               className="text-accent-500"
-              href={`/profile/${createdBy.clerkId}`}
+              href={`/profile/${createdBy?.clerkId}`}
             >
-              {createdBy.name}
+              {createdBy?.name}
             </Link>
           </p>
 
@@ -148,29 +149,18 @@ async function Page({ params }: Props) {
       {reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
         <div className="mb-4  px-8 max-w-6xl mx-auto">
           <h3 className="font-bold h3 mb-4">Reviews</h3>
-          <ul className="">
-            {reviewsResult?.reviews.map((review) => (
-              <li className="mb-4" key={review._id}>
-                <h4 className="font-semibold flex gap-4">
-                  {review.user.name}{" "}
-                  <div className="flex items-center">
-                    {Array.from({ length: review.rating }, (_, i) => (
-                      <span key={i}>
-                        <Image
-                          src="/assets/icons/star.svg"
-                          alt="star"
-                          width={20}
-                          height={20}
-                          className="mr-1"
-                        />
-                      </span>
-                    ))}
-                  </div>
-                </h4>
-                <p>{review.comment}</p>
-              </li>
-            ))}
-          </ul>
+          {reviewsResult?.reviews.map((review) => (
+            <ReviewCard
+              key={review._id}
+              userImage={review.user.image}
+              userName={review.user.name}
+              comment={review.comment}
+              _id={review._id.toString()}
+              rating={review.rating}
+              userClerkId={review.user.clerkId}
+              date={review.createdAt}
+            />
+          ))}
         </div>
       ) : null}
     </main>
