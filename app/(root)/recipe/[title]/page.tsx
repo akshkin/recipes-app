@@ -1,4 +1,9 @@
+import CreateReview from "@/components/CreateReview";
+import ReviewCard, { ReviewProps } from "@/components/ReviewCard";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
+import { getReviews } from "@/lib/actions/review.action";
+import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -18,6 +23,16 @@ async function Page({ params }: Props) {
   if (!result.recipe) {
     return <p className="h3 text-center">Recipe not found</p>;
   }
+
+  let mongoUser;
+
+  const { userId: clerkId } = auth();
+
+  if (clerkId) {
+    mongoUser = await getMongoUserFromClerkId(clerkId);
+  }
+
+  const reviewsResult = await getReviews({ recipe: result?.recipe?._id });
 
   const {
     _id,
@@ -44,13 +59,13 @@ async function Page({ params }: Props) {
           <h1 className="text-4xl font-bold mb-4 lg:text-6xl">
             {decodedTitle}
           </h1>
-          <p className="italic mb-6">
+          <p className="italic mb-4">
             Author:{" "}
             <Link
               className="text-accent-500"
-              href={`/profile/${createdBy.clerkId}`}
+              href={`/profile/${createdBy?.clerkId}`}
             >
-              {createdBy.name}
+              {createdBy?.name}
             </Link>
           </p>
 
@@ -128,6 +143,26 @@ async function Page({ params }: Props) {
           </ul>
         </div>
       </section>
+
+      <CreateReview recipe={_id.toString()} user={mongoUser?._id.toString()} />
+
+      {reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
+        <div className="mb-4  px-8 max-w-6xl mx-auto">
+          <h3 className="font-bold h3 mb-4">Reviews</h3>
+          {reviewsResult?.reviews.map((review) => (
+            <ReviewCard
+              key={review._id}
+              userImage={review.user.image}
+              userName={review.user.name}
+              comment={review.comment}
+              _id={review._id.toString()}
+              rating={review.rating}
+              userClerkId={review.user.clerkId}
+              date={review.createdAt}
+            />
+          ))}
+        </div>
+      ) : null}
     </main>
   );
 }

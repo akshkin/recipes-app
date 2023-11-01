@@ -10,11 +10,12 @@ async function Page() {
   }
 
   const mongoUser = await getMongoUserFromClerkId(userId);
+  console.log(mongoUser?._id);
 
   return (
     <>
       <h1 className="text-center mb-10 h1">Create recipe</h1>
-      <CreateRecipeForm type="create" mongoUserId={mongoUser._id.toString()} />
+      <CreateRecipeForm type="create" mongoUserId={mongoUser?._id.toString()} />
     </>
   );
 }

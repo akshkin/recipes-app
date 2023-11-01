@@ -58,3 +58,19 @@ export interface UpdateUserBioAndLinksParams {
   };
   path: string;
 }
+
+export interface CreateReviewParams {
+  user: string;
+  recipe: string;
+  rating: number;
+  comment: string;
+  path: string;
+}
+
+export interface GetReviewParams {
+  recipe: string;
+}
+export interface DeleteReviewParams {
+  reviewId: string;
+  path: string;
+}

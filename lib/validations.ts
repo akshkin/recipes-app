@@ -41,3 +41,7 @@ export const ProfileSchema = z.object({
       }),
   }),
 });
+
+export const ReviewSchema = z.object({
+  comment: z.string().min(3),
+});
