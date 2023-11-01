@@ -59,7 +59,7 @@ async function Page({ params }: Props) {
           <h1 className="text-4xl font-bold mb-4 lg:text-6xl">
             {decodedTitle}
           </h1>
-          <p className="italic mb-6">
+          <p className="italic mb-4">
             Author:{" "}
             <Link
               className="text-accent-500"

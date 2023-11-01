@@ -30,8 +30,6 @@ function ReviewCard({
   const pathname = usePathname();
   const { userId } = useAuth();
 
-  console.log(userId);
-  console.log(userClerkId);
   async function handleClick() {
     try {
       if (window.confirm("Are you sure you want to delete this review?")) {
@@ -45,7 +43,7 @@ function ReviewCard({
 
   return (
     <div className="mb-4 max-w-[500px] bg-light-800 p-3 rounded-lg">
-      <h4 className="font-semibold flex gap-4 items-center">
+      <h4 className="font-semibold flex gap-2 items-center">
         <Image
           src={userImage}
           alt="avatar"
@@ -68,17 +66,24 @@ function ReviewCard({
           ))}
         </div>
       </h4>
-      <div className="flex justify-between items-center mt-2">
-        <p>{comment}</p>
+      <p className="my-3">{comment}</p>
+      <div className="flex justify-between items-end">
+        <small className="italic text-gray-500">
+          posted {date.toDateString()}
+        </small>
         {userId === userClerkId && (
           <Button className="danger-btn" onClick={handleClick}>
             Delete
+            <Image
+              src="/assets/icons/delete.svg"
+              alt="delete"
+              width={20}
+              height={20}
+              className="ml-1"
+            />
           </Button>
         )}
       </div>
-      <small className="italic text-gray-500">
-        posted {date.toDateString()}
-      </small>
     </div>
   );
 }
