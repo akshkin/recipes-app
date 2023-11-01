@@ -55,10 +55,20 @@ async function Page({ params }: Props) {
   return (
     <main className="">
       <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:h-[70vh]">
-        <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center items-start lg:w-[50%]">
-          <h1 className="text-4xl font-bold mb-4 lg:text-6xl">
-            {decodedTitle}
-          </h1>
+        <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
+          <div className="w-full flex items-start justify-between">
+            <h1 className="text-4xl font-bold mb-4 lg:text-6xl">
+              {decodedTitle}
+            </h1>
+            {clerkId === createdBy?.clerkId && (
+              <Link
+                className="secondary-btn text-center lg:w-[160px]"
+                href="/recipe/edit"
+              >
+                Edit recipe
+              </Link>
+            )}
+          </div>
           <p className="italic mb-4">
             Author:{" "}
             <Link
