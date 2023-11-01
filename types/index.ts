@@ -3,7 +3,7 @@ export interface CreateRecipeParams {
   description: string;
   category: string;
   image: string;
-  userId: string;
+  createdBy: string;
   cuisine: string;
   ingredients: { ingredient: string }[];
   method: { step: string }[];
@@ -44,4 +44,17 @@ export interface UpdateUserParams {
 
 export interface DeleteUserParams {
   clerkId: string;
+}
+
+export interface UpdateUserBioAndLinksParams {
+  clerkId: string;
+  updateData: {
+    bio?: string;
+    socialLinks: {
+      instagram?: string;
+      facebook?: string;
+      youtube?: string;
+    };
+  };
+  path: string;
 }

@@ -10,6 +10,7 @@ import {
   GetAllRecipesParams,
   GetRecipeByTitleParams,
 } from "@/types";
+import User from "@/database-models/user.model";
 
 export async function createRecipe(params: CreateRecipeParams) {
   try {
@@ -20,7 +21,7 @@ export async function createRecipe(params: CreateRecipeParams) {
       description,
       category,
       image,
-      userId,
+      createdBy,
       cuisine,
       ingredients,
       method,
@@ -38,7 +39,7 @@ export async function createRecipe(params: CreateRecipeParams) {
     const recipe = await Recipe.create({
       title,
       description,
-      createdBy: userId,
+      createdBy,
       ingredients,
       method,
       image,
@@ -113,7 +114,8 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
 
     const recipe = await Recipe.findOne({ title })
       .populate({ path: "category", model: "Category", select: "title" })
-      .populate({ path: "cuisine", model: "Cuisine", select: "title" });
+      .populate({ path: "cuisine", model: "Cuisine", select: "title" })
+      .populate({ path: "createdBy", model: "User", select: "name clerkId" });
 
     if (!recipe) {
       return { error: "Recipe not found" };
@@ -122,5 +124,15 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
     return { recipe };
   } catch (error) {
     throw error;
+  }
+}
+
+export async function getRecipesByUserId(id: string) {
+  try {
+    connectToDatabase();
+    const recipes = await Recipe.find({ createdBy: id });
+    return recipes;
+  } catch (error) {
+    console.log(error);
   }
 }

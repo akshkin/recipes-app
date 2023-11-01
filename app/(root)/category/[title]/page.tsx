@@ -16,7 +16,7 @@ async function Page({ params }: Props) {
   return (
     <main className="flex min-h-screen flex-col items-center p-8">
       <h1 className="h1 text-center mt-4">{params.title.toUpperCase()}</h1>
-      {result?.recipes.recipes.length ? (
+      {result?.recipes?.recipes.length ? (
         <div className="custom-grid my-8">
           {result?.recipes?.recipes.map((recipe: IRecipe) => (
             <RecipeCard

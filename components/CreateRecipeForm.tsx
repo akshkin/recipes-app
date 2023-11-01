@@ -32,11 +32,11 @@ import { createRecipe } from "@/lib/actions/recipe.action";
 import { toast } from "react-toastify";
 
 interface RecipeFormProps {
-  userId: string;
+  mongoUserId: string;
   type: string;
 }
 
-function CreateRecipeForm({ userId, type }: RecipeFormProps) {
+function CreateRecipeForm({ mongoUserId, type }: RecipeFormProps) {
   const [imageUrl, setImageUrl] = useState<File>();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +51,6 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
         "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjd8fGZvb2R8ZW58MHx8MHx8fDA%3D",
       category: "",
       cuisine: "",
-      userId: userId,
       ingredients: [{ ingredient: "" }],
       method: [{ step: "" }],
     },
@@ -87,7 +86,7 @@ function CreateRecipeForm({ userId, type }: RecipeFormProps) {
 
     setIsLoading(true);
     try {
-      await createRecipe({ ...values, path: pathname });
+      await createRecipe({ ...values, createdBy: mongoUserId, path: pathname });
       const messageVariable = type === "create" ? "created" : "edited";
       toast.success(`Recipe ${messageVariable} successfully`, {
         position: "top-right",

@@ -2,7 +2,12 @@
 
 import User from "@/database-models/user.model";
 import { connectToDatabase } from "../mongoose";
-import { CreateUserParams, DeleteUserParams, UpdateUserParams } from "@/types";
+import {
+  CreateUserParams,
+  DeleteUserParams,
+  UpdateUserBioAndLinksParams,
+  UpdateUserParams,
+} from "@/types";
 import { revalidatePath } from "next/cache";
 import Recipe from "@/database-models/recipe.model";
 
@@ -62,5 +67,49 @@ export async function deleteUser(params: DeleteUserParams) {
   } catch (error: any) {
     console.log(error);
     throw new Error(error);
+  }
+}
+
+export async function getUserById(clerkId: string) {
+  try {
+    connectToDatabase();
+
+    const user = await User.findOne({ clerkId });
+
+    if (!user) {
+      return { message: "User not found" };
+    }
+    return { user };
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error?.message);
+  }
+}
+
+export async function updateUserBioAndLinks(
+  params: UpdateUserBioAndLinksParams
+) {
+  try {
+    connectToDatabase();
+
+    const { clerkId, updateData, path } = params;
+
+    await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
+
+    revalidatePath(path);
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error);
+  }
+}
+
+export async function getMongoUserFromClerkId(clerkId: string) {
+  try {
+    connectToDatabase();
+
+    const user = await User.findOneAndUpdate({ clerkId });
+    return user;
+  } catch (error) {
+    console.log(error);
   }
 }
