@@ -20,6 +20,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { createReview } from "@/lib/actions/review.action";
 import { Textarea } from "./ui/textarea";
+import Rating from "./Rating";
 
 interface CreateReviewProps {
   recipe: string;
@@ -30,12 +31,11 @@ function CreateReview({ recipe, user }: CreateReviewProps) {
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const [ratingValue, setRatingValue] = useState(0);
 
-  console.log(user);
   const form = useForm<z.infer<typeof ReviewSchema>>({
     resolver: zodResolver(ReviewSchema),
     defaultValues: {
-      rating: 4,
       comment: "",
     },
   });
@@ -47,11 +47,19 @@ function CreateReview({ recipe, user }: CreateReviewProps) {
       router.push("/sign-in");
     }
     if (!values) return;
+
+    if (ratingValue < 1) {
+      toast.error("Please provide a rating", {
+        position: "top-right",
+        closeOnClick: true,
+      });
+      return;
+    }
     try {
       await createReview({
         recipe,
         user,
-        rating: Number(values.rating),
+        rating: ratingValue,
         comment: values.comment,
         path: pathname,
       });
@@ -61,6 +69,7 @@ function CreateReview({ recipe, user }: CreateReviewProps) {
         autoClose: 5000,
       });
       form.reset();
+      setRatingValue(0);
     } catch (error: any) {
       toast.error(error.message, {
         position: "top-right",
@@ -77,23 +86,10 @@ function CreateReview({ recipe, user }: CreateReviewProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="m-8 mt-0 flex flex-col items-start justify-center gap-4 max-w-[500px]"
       >
-        <FormField
-          control={form.control}
-          name="rating"
-          render={({ field }) => (
-            <FormItem className="w-full flex gap-4 items-baseline">
-              <FormLabel className="mt-4">Rating</FormLabel>
-              <FormControl>
-                <Input
-                  value={field.value}
-                  onChange={(event) => field.onChange(+event.target.value)}
-                  type="number"
-                />
-              </FormControl>
-              <FormMessage className="text-red-400 w-full" />
-            </FormItem>
-          )}
-        />
+        <div className="flex gap-2">
+          <FormLabel>Rating</FormLabel>
+          <Rating ratingValue={ratingValue} setRatingValue={setRatingValue} />
+        </div>
 
         <FormField
           control={form.control}

@@ -36,7 +36,6 @@ export async function getReviews(params: GetReviewParams) {
       model: "User",
       select: "name",
     });
-    console.log(reviews);
     return { reviews };
   } catch (error) {
     console.log(error);

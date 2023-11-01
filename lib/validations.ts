@@ -43,6 +43,5 @@ export const ProfileSchema = z.object({
 });
 
 export const ReviewSchema = z.object({
-  rating: z.number(),
   comment: z.string().min(3),
 });
