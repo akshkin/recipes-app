@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import Cuisine from "@/database-models/cuisine.model";
 import {
   CreateRecipeParams,
+  DeleteRecipeParams,
   EditRecipeParams,
   GetAllRecipesParams,
   GetRecipeByTitleParams,
@@ -192,6 +193,20 @@ export async function editRecipe(params: EditRecipeParams) {
     revalidatePath(path);
   } catch (error: any) {
     console.log(error.message);
+    throw error;
+  }
+}
+
+export async function deleteRecipe(params: DeleteRecipeParams) {
+  try {
+    connectToDatabase();
+    const { id, path } = params;
+
+    const recipe = await Recipe.findByIdAndDelete(id);
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 }

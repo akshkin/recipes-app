@@ -89,3 +89,8 @@ export interface DeleteReviewParams {
   reviewId: string;
   path: string;
 }
+
+export interface DeleteRecipeParams {
+  id: string;
+  path: string;
+}

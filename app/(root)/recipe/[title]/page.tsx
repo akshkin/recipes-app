@@ -1,4 +1,5 @@
 import CreateReview from "@/components/CreateReview";
+import DeleteAction from "@/components/DeleteAction";
 import ReviewCard, { ReviewProps } from "@/components/ReviewCard";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import { getReviews } from "@/lib/actions/review.action";
@@ -54,19 +55,26 @@ async function Page({ params }: Props) {
 
   return (
     <main className="">
-      <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:h-[70vh]">
+      <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:h-[75vh]">
         <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
-          <div className="w-full flex items-start justify-between">
+          <div className="w-full flex items-start justify-between lg:flex-col-reverse">
             <h1 className="text-4xl font-bold mb-4 lg:text-6xl">
               {decodedTitle}
             </h1>
             {clerkId === createdBy?.clerkId && (
-              <Link
-                className="secondary-btn text-center lg:w-[160px]"
-                href={`/recipe/edit/${_id}`}
-              >
-                Edit recipe
-              </Link>
+              <div className="flex justify-end gap-2 w-1/2 lg:w-full lg:mb-2">
+                <Link
+                  className="secondary-btn text-center lg:w-[160px]"
+                  href={`/recipe/edit/${_id}`}
+                >
+                  Edit recipe
+                </Link>
+                <DeleteAction
+                  userClerkId={createdBy?.clerkId}
+                  id={_id.toString()}
+                  type="recipe"
+                />
+              </div>
             )}
           </div>
           <p className="italic mb-4">
