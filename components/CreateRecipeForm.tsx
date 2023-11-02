@@ -28,32 +28,41 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CATEGORIES, CUISINES } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
-import { createRecipe } from "@/lib/actions/recipe.action";
+import { createRecipe, editRecipe } from "@/lib/actions/recipe.action";
 import { toast } from "react-toastify";
 
 interface RecipeFormProps {
   mongoUserId: string;
   type: string;
+  recipe?: string;
 }
 
-function CreateRecipeForm({ mongoUserId, type }: RecipeFormProps) {
+function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
   const [imageUrl, setImageUrl] = useState<File>();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const parsedRecipe = recipe ? JSON.parse(recipe) : "";
+
   const form = useForm<z.infer<typeof RecipeSchema>>({
     resolver: zodResolver(RecipeSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      image:
-        "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjd8fGZvb2R8ZW58MHx8MHx8fDA%3D",
-      category: "",
-      cuisine: "",
-      ingredients: [{ ingredient: "" }],
-      method: [{ step: "" }],
-    },
+    defaultValues: parsedRecipe
+      ? {
+          ...parsedRecipe,
+          image:
+            "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&q=60&w=400&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D",
+        }
+      : {
+          title: parsedRecipe ? parsedRecipe.title : "",
+          description: "",
+          image:
+            "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjd8fGZvb2R8ZW58MHx8MHx8fDA%3D",
+          category: "",
+          cuisine: "",
+          ingredients: [{ ingredient: "" }],
+          method: [{ step: "" }],
+        },
   });
 
   const {
@@ -86,16 +95,34 @@ function CreateRecipeForm({ mongoUserId, type }: RecipeFormProps) {
 
     setIsLoading(true);
     try {
-      await createRecipe({ ...values, createdBy: mongoUserId, path: pathname });
+      if (type === "create") {
+        await createRecipe({
+          ...values,
+          createdBy: mongoUserId,
+          path: pathname,
+        });
+      } else if (type === "edit") {
+        await editRecipe({
+          _id: parsedRecipe._id,
+          updateData: {
+            ...values,
+            createdBy: mongoUserId,
+          },
+          path: pathname,
+        });
+      }
+
       const messageVariable = type === "create" ? "created" : "edited";
       toast.success(`Recipe ${messageVariable} successfully`, {
         position: "top-right",
         closeOnClick: true,
         autoClose: 5000,
       });
-      router.push("/");
 
       form.reset();
+      // console.log(recipeTitle);
+      // recipeTitle ? router.push(`/recipe/${recipeTitle}`) : router.push("/");
+      router.push("/");
     } catch (error: any) {
       toast.error(error.message, {
         position: "top-right",
@@ -144,61 +171,63 @@ function CreateRecipeForm({ mongoUserId, type }: RecipeFormProps) {
             </FormItem>
           )}
         />
-        <div className="flex flex-col gap-3 w-full sm:flex-row mt-4 ">
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <>
-                <Select
-                  required
-                  defaultValue={""}
-                  value={field.value}
-                  onValueChange={(content) => field.onChange(content)}
-                >
-                  <SelectTrigger className="">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {CATEGORIES.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-red-500" />
-              </>
-            )}
-          />
+        {type === "create" && (
+          <div className="flex flex-col gap-3 w-full sm:flex-row mt-4 ">
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <>
+                  <Select
+                    required
+                    defaultValue={""}
+                    value={field.value}
+                    onValueChange={(content) => field.onChange(content)}
+                  >
+                    <SelectTrigger className="">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {CATEGORIES.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>
+                          {category.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-500" />
+                </>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="cuisine"
-            render={({ field }) => (
-              <>
-                <Select
-                  required
-                  defaultValue={""}
-                  value={field.value}
-                  onValueChange={(content) => field.onChange(content)}
-                >
-                  <SelectTrigger className="">
-                    <SelectValue placeholder="Select cuisine" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {CUISINES.map((cuisine) => (
-                      <SelectItem key={cuisine.value} value={cuisine.value}>
-                        {cuisine.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-red-500" />
-              </>
-            )}
-          />
-        </div>
+            <FormField
+              control={form.control}
+              name="cuisine"
+              render={({ field }) => (
+                <>
+                  <Select
+                    required
+                    defaultValue={""}
+                    value={field.value}
+                    onValueChange={(content) => field.onChange(content)}
+                  >
+                    <SelectTrigger className="">
+                      <SelectValue placeholder="Select cuisine" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {CUISINES.map((cuisine) => (
+                        <SelectItem key={cuisine.value} value={cuisine.value}>
+                          {cuisine.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-500" />
+                </>
+              )}
+            />
+          </div>
+        )}
 
         {/* <FormLabel className="h3 mt-4">
           Upload an Image <span className="text-red-500">*</span>

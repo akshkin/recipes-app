@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import Cuisine from "@/database-models/cuisine.model";
 import {
   CreateRecipeParams,
+  EditRecipeParams,
   GetAllRecipesParams,
   GetRecipeByTitleParams,
 } from "@/types";
@@ -120,18 +121,6 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
       })
       .populate({ path: "category", model: "Category", select: "title" })
       .populate({ path: "cuisine", model: "Cuisine", select: "title" });
-    // try {
-    //   await recipe
-    //     .populate({
-    //       path: "createdBy",
-    //       model: "User",
-    //       select: "_id name clerkId",
-    //     })
-    //     .execPopulate();
-    // } catch (error) {
-    //   console.error("Error during population:", error);
-    //   return { error: "An error occurred while populating createdBy" };
-    // }
 
     if (!recipe) {
       return { error: "Recipe not found" };
@@ -150,5 +139,59 @@ export async function getRecipesByUserId(id: string) {
     return recipes;
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getRecipeById(id: string) {
+  try {
+    connectToDatabase();
+    const recipe = await Recipe.findById(id)
+      .populate({ path: "category", model: "Category", select: "title" })
+      .populate({ path: "cuisine", model: "Cuisine", select: "title" });
+
+    if (!recipe) {
+      return { message: "Recipe not found" };
+    }
+    return { recipe };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function editRecipe(params: EditRecipeParams) {
+  try {
+    connectToDatabase();
+    const { _id, updateData, path } = params;
+
+    const [existingCategory, existingCuisine] = await Promise.all([
+      Category.findOne({ title: updateData.category }),
+      Cuisine.findOne({ title: updateData.cuisine }),
+    ]);
+
+    const existingTitle = await Recipe.findOne({
+      _id: { $ne: _id },
+      title: updateData.title,
+    });
+
+    if (existingTitle) {
+      throw new Error(
+        "Recipe title already exists. Please choose another title."
+      );
+    }
+
+    const recipe = await Recipe.findByIdAndUpdate(
+      _id,
+      {
+        ...updateData,
+        category: existingCategory._id,
+        cuisine: existingCuisine._id,
+      },
+      { new: true }
+    );
+
+    revalidatePath(path);
+  } catch (error: any) {
+    console.log(error.message);
+    throw error;
   }
 }

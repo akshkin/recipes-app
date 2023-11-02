@@ -24,6 +24,21 @@ export interface GetRecipeByCategoryTitleParams {
   title: string;
 }
 
+export interface EditRecipeParams {
+  _id: string;
+  updateData: {
+    title: string;
+    description: string;
+    category: string;
+    cuisine: string;
+    image: string;
+    ingredients: { ingredient: string }[];
+    method: { step: string }[];
+    createdBy: string;
+  };
+  path: string;
+}
+
 export interface CreateUserParams {
   clerkId: string;
   name: string;

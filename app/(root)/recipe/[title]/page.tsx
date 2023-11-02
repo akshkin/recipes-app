@@ -63,7 +63,7 @@ async function Page({ params }: Props) {
             {clerkId === createdBy?.clerkId && (
               <Link
                 className="secondary-btn text-center lg:w-[160px]"
-                href="/recipe/edit"
+                href={`/recipe/edit/${_id}`}
               >
                 Edit recipe
               </Link>
