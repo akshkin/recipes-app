@@ -10,7 +10,6 @@ async function Page() {
   }
 
   const mongoUser = await getMongoUserFromClerkId(userId);
-  console.log(mongoUser?._id);
 
   return (
     <>
