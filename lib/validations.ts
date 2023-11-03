@@ -4,6 +4,7 @@ import { isUrlValid } from "./utils";
 export const RecipeSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(5, { message: "Title must contain at least 5 characters" })
     .max(130),
   description: z
