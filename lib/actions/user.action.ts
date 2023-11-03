@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  SaveRecipeParams,
   UpdateUserBioAndLinksParams,
   UpdateUserParams,
 } from "@/types";
@@ -111,5 +112,57 @@ export async function getMongoUserFromClerkId(clerkId: string) {
     return user;
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getSavedPosts(id: string) {
+  try {
+    connectToDatabase();
+
+    const user = await User.findOne({ clerkId: id }).populate({
+      path: "saved",
+      model: "Recipe",
+      select: "_id title image",
+    });
+
+    if (!user) {
+      return { message: "User not found" };
+    }
+
+    return { savedPosts: user.saved };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function toggleSaveRecipe(params: SaveRecipeParams) {
+  try {
+    connectToDatabase();
+    const { userId, recipeId, path } = params;
+
+    const user = await User.findOne({ clerkId: userId });
+    if (!user) {
+      return { message: "User not found" };
+    }
+    if (user.saved.includes(recipeId)) {
+      await User.findOneAndUpdate(
+        { clerkId: userId },
+        {
+          $pull: { saved: recipeId },
+        },
+        { new: true }
+      );
+    } else {
+      await User.findOneAndUpdate(
+        { clerkId: userId },
+        { $addToSet: { saved: recipeId } },
+        { new: true }
+      );
+    }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

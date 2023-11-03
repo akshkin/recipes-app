@@ -94,3 +94,9 @@ export interface DeleteRecipeParams {
   id: string;
   path: string;
 }
+
+export interface SaveRecipeParams {
+  userId: string;
+  recipeId: string;
+  path: string;
+}

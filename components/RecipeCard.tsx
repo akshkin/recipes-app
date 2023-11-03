@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import DeleteAction from "./DeleteAction";
 
 interface RecipeProps {
   _id: string;
@@ -8,7 +9,7 @@ interface RecipeProps {
   title: string;
 }
 
-function RecipeCard({ title, image }: RecipeProps) {
+function RecipeCard({ title, image, _id }: RecipeProps) {
   return (
     <Link
       href={`/recipe/${title}`}
