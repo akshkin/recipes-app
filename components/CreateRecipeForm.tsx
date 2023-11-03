@@ -93,7 +93,6 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
   async function onSubmit(values: z.infer<typeof RecipeSchema>) {
     /* TODO: handle image upload **/
 
-    console.log(values);
     setIsLoading(true);
     try {
       if (type === "create") {
@@ -121,8 +120,7 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
       });
 
       form.reset();
-      // console.log(recipeTitle);
-      // recipeTitle ? router.push(`/recipe/${recipeTitle}`) : router.push("/");
+
       router.push("/");
     } catch (error: any) {
       toast.error(error.message, {
