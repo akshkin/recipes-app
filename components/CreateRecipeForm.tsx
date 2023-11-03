@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// import { deleteImage, uploadImage } from "@/lib/firebase";
+import { deleteImage, uploadImage } from "@/lib/firebase";
 import Image from "next/image";
 import { CATEGORIES, CUISINES } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
@@ -38,26 +38,21 @@ interface RecipeFormProps {
 }
 
 function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
-  const [imageUrl, setImageUrl] = useState<File>();
+  const parsedRecipe = recipe ? JSON.parse(recipe) : "";
+  const [imageUrl, setImageUrl] = useState(parsedRecipe.image || "");
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  const parsedRecipe = recipe ? JSON.parse(recipe) : "";
 
   const form = useForm<z.infer<typeof RecipeSchema>>({
     resolver: zodResolver(RecipeSchema),
     defaultValues: parsedRecipe
       ? {
           ...parsedRecipe,
-          image:
-            "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&q=60&w=400&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D",
         }
       : {
           title: parsedRecipe ? parsedRecipe.title : "",
           description: "",
-          image:
-            "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjd8fGZvb2R8ZW58MHx8MHx8fDA%3D",
           category: "",
           cuisine: "",
           ingredients: [{ ingredient: "" }],
@@ -86,19 +81,48 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
   async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       const file = event?.target?.files[0];
-      setImageUrl(file);
+
+      if (!file || !event.target.files) {
+        return;
+      }
+
+      //@ts-ignore next-line
+      const fileExtension = file?.name?.split(".").pop().toLowerCase();
+
+      if (!fileExtension.match(/(jpg|png|jpeg)$/i)) {
+        toast.error(
+          "Invalid file extension. Supported extensions: jpg, jpeg, png"
+        );
+        return;
+      }
+
+      // Check the file size (max 2MB)
+      const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+      if (file.size > maxSize) {
+        toast.error("File size exceeds the maximum limit (2MB).");
+        return;
+      }
+      try {
+        const response = await uploadImage(file, mongoUserId);
+        // delete the image if user has already uploaed the image and tries to upload another image
+        if (imageUrl) {
+          await deleteImage(imageUrl);
+        }
+        setImageUrl(response);
+      } catch (error: any) {
+        toast.error(error.message);
+      }
     }
   }
 
   async function onSubmit(values: z.infer<typeof RecipeSchema>) {
-    /* TODO: handle image upload **/
-
     setIsLoading(true);
     try {
       if (type === "create") {
         await createRecipe({
           ...values,
           createdBy: mongoUserId,
+          image: imageUrl,
           path: pathname,
         });
       } else if (type === "edit") {
@@ -106,6 +130,7 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
           _id: parsedRecipe._id,
           updateData: {
             ...values,
+            image: imageUrl,
             createdBy: mongoUserId,
           },
           path: pathname,
@@ -228,16 +253,23 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
           </div>
         )}
 
-        {/* <FormLabel className="h3 mt-4">
+        <FormLabel className="h3 mt-4">
           Upload an Image <span className="text-red-500">*</span>
         </FormLabel>
+
         <Input
           name="image"
           type="file"
           accept="image/*"
           placeholder=""
           onChange={handleImageUpload}
-        /> */}
+        />
+
+        {imageUrl ? (
+          <Image src={imageUrl} alt="upload" width={200} height={200} />
+        ) : (
+          <FormMessage className="text-red-500">Image is required</FormMessage>
+        )}
 
         <FormLabel className="h3 mt-4">
           Ingredients <span className="text-red-500">*</span>
