@@ -10,13 +10,9 @@ interface RecipeProps {
 
 function RecipeCard({ title, image }: RecipeProps) {
   return (
-    // <Link
-    //   href={`/recipe/${title}`}
-    //   className="flex flex-col p-2 border-[1px] rounded-lg max-md:w-[220px] min-w-[200px] w-[360px] max-lg:h-[250px] h-[300px] hover:scale-105 focus:scale-105 transition-transform shadow-lg"
-    // >
     <Link
       href={`/recipe/${title}`}
-      className="relative border-[1px] rounded-lg max-md:w-[220px] min-w-[200px] w-[360px] max-lg:h-[250px] h-[300px] hover:scale-105 focus:scale-105 transition-transform shadow-lg"
+      className="relative border-[1px] rounded-lg max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px] h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-lg"
     >
       <Image
         src={image}

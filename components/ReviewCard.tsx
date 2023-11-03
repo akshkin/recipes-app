@@ -1,12 +1,6 @@
-"use client";
-
-import Image from "next/image";
 import React from "react";
-import { Button } from "./ui/button";
-import { deleteReview } from "@/lib/actions/review.action";
-import { usePathname } from "next/navigation";
-import { toast } from "react-toastify";
-import { useAuth } from "@clerk/nextjs";
+import Image from "next/image";
+import DeleteAction from "./DeleteAction";
 
 export interface ReviewProps {
   _id: string;
@@ -27,20 +21,6 @@ function ReviewCard({
   userImage,
   date,
 }: ReviewProps) {
-  const pathname = usePathname();
-  const { userId } = useAuth();
-
-  async function handleClick() {
-    try {
-      if (window.confirm("Are you sure you want to delete this review?")) {
-        await deleteReview({ reviewId: _id, path: pathname });
-        toast.success("Review was successfully deleted");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  }
-
   return (
     <div className="mb-4 max-w-[500px] bg-light-800 p-3 rounded-lg">
       <h4 className="font-semibold flex gap-2 items-center">
@@ -71,18 +51,12 @@ function ReviewCard({
         <small className="italic text-gray-500">
           posted {date.toDateString()}
         </small>
-        {userId === userClerkId && (
-          <Button className="danger-btn" onClick={handleClick}>
-            Delete
-            <Image
-              src="/assets/icons/delete.svg"
-              alt="delete"
-              width={20}
-              height={20}
-              className="ml-1"
-            />
-          </Button>
-        )}
+
+        <DeleteAction
+          userClerkId={userClerkId}
+          type="review"
+          id={_id.toString()}
+        />
       </div>
     </div>
   );
