@@ -23,7 +23,7 @@ export async function getRecipesByCategory(
 
     const isNextPage = category.recipes.length > pageSize;
 
-    return { recipes: category, isNextPage };
+    return { recipes: category.recipes, isNextPage };
   } catch (error) {
     console.log(error);
   }

@@ -21,10 +21,10 @@ async function Page({ params, searchParams }: Props) {
   return (
     <main className="flex min-h-screen flex-col items-center p-8">
       <h1 className="h1 text-center mt-4">{params.title.toUpperCase()}</h1>
-      {result?.recipes?.recipes.length ? (
+      {result?.recipes?.length ? (
         <>
           <div className="custom-grid my-8">
-            {result?.recipes?.recipes.map((recipe: IRecipe) => (
+            {result?.recipes?.map((recipe: IRecipe) => (
               <RecipeCard
                 key={recipe._id}
                 _id={recipe._id}
