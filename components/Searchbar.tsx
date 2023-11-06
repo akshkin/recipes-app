@@ -117,9 +117,22 @@ function Searchbar() {
                           : `/recipe/${item.id}`
                       }
                       key={item.id}
+                      className="flex gap-2 items-center"
                     >
-                      <p className="font-semibold capitalize">{item.title}</p>
-                      <p className="mb-2">{item.type}</p>
+                      <Image
+                        src={
+                          item.type === "user"
+                            ? "/assets/icons/chef.svg"
+                            : "/assets/icons/food.svg"
+                        }
+                        alt={`${item.type} icon`}
+                        width={30}
+                        height={30}
+                      />
+                      <div className="flex flex-col">
+                        <p className="font-semibold capitalize">{item.title}</p>
+                        <p className="mb-2">{item.type}</p>
+                      </div>
                     </Link>
                   </div>
                 ))
