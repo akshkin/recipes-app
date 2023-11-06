@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetSavedRecipesParams,
   SaveRecipeParams,
   UpdateUserBioAndLinksParams,
   UpdateUserParams,
@@ -115,12 +116,20 @@ export async function getMongoUserFromClerkId(clerkId: string) {
   }
 }
 
-export async function getSavedPosts(id: string) {
+export async function getSavedPosts(params: GetSavedRecipesParams) {
   try {
     connectToDatabase();
 
+    const { id, page = 1, pageSize = 2 } = params;
+
+    const skipAmount = (page - 1) * pageSize;
+
     const user = await User.findOne({ clerkId: id }).populate({
       path: "saved",
+      options: {
+        skip: skipAmount,
+        limit: pageSize + 1,
+      },
       model: "Recipe",
       select: "_id title image",
     });
@@ -129,7 +138,9 @@ export async function getSavedPosts(id: string) {
       return { message: "User not found" };
     }
 
-    return { savedPosts: user.saved };
+    const isNextPage = user.saved.length > pageSize;
+
+    return { savedPosts: user.saved, isNextPage };
   } catch (error) {
     console.log(error);
     throw error;

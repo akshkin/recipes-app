@@ -1,16 +1,21 @@
+import Pagination from "@/components/Pagination";
 import RecipeCard from "@/components/RecipeCard";
 import { getSavedPosts } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import React from "react";
 
-async function Page() {
+async function Page({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
 
   if (!userId) {
     return <p>Please login to continue!</p>;
   }
 
-  const result = await getSavedPosts(userId);
+  const result = await getSavedPosts({
+    id: userId,
+    page: searchParams.page ? +searchParams.page : 1,
+  });
 
   if (!result?.savedPosts) {
     return <p>User not found</p>;
@@ -31,6 +36,12 @@ async function Page() {
               />
             ))}
           </div>
+          {result?.isNextPage ? (
+            <Pagination
+              page={searchParams.page ? +searchParams.page : 1}
+              isNextPage={result?.isNextPage}
+            />
+          ) : null}
         </>
       ) : (
         <h3 className="my-6">No recipes to show yet</h3>

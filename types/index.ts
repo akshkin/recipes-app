@@ -106,3 +106,9 @@ export interface SaveRecipeParams {
   recipeId: string;
   path: string;
 }
+
+export interface GetSavedRecipesParams {
+  id: string;
+  page: number;
+  pageSize?: number;
+}
