@@ -28,12 +28,11 @@ export default async function Home({ searchParams, params }: PageProps) {
           />
         ))}
       </div>
-      {result?.isNextPage ? (
-        <Pagination
-          page={searchParams.page ? +searchParams.page : 1}
-          isNextPage={result?.isNextPage}
-        />
-      ) : null}
+
+      <Pagination
+        page={searchParams.page ? +searchParams.page : 1}
+        isNextPage={result?.isNextPage}
+      />
     </main>
   );
 }

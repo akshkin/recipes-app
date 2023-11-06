@@ -33,12 +33,10 @@ async function Page({ params, searchParams }: Props) {
               />
             ))}
           </div>
-          {result.isNextPage ? (
-            <Pagination
-              page={searchParams.page ? +searchParams.page : 1}
-              isNextPage={result?.isNextPage}
-            />
-          ) : null}
+          <Pagination
+            page={searchParams.page ? +searchParams.page : 1}
+            isNextPage={result?.isNextPage}
+          />
         </>
       ) : (
         <div>

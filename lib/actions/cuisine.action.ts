@@ -10,7 +10,7 @@ export async function getRecipesByCuisine(
 ) {
   try {
     connectToDatabase();
-    const { title, page = 1, pageSize = 1 } = params;
+    const { title, page = 1, pageSize = 10 } = params;
 
     const skipAmount = (page - 1) * pageSize;
 

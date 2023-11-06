@@ -36,12 +36,11 @@ async function Page({ searchParams }: SearchParamsProps) {
               />
             ))}
           </div>
-          {result?.isNextPage ? (
-            <Pagination
-              page={searchParams.page ? +searchParams.page : 1}
-              isNextPage={result?.isNextPage}
-            />
-          ) : null}
+
+          <Pagination
+            page={searchParams.page ? +searchParams.page : 1}
+            isNextPage={result?.isNextPage || false}
+          />
         </>
       ) : (
         <h3 className="my-6">No recipes to show yet</h3>

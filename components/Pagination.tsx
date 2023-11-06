@@ -25,6 +25,8 @@ function Pagination({ page, isNextPage }: PaginationProps) {
     router.push(newUrl, { scroll: false });
   }
 
+  if (!isNextPage && page === 1) return null;
+
   return (
     <div className="flex items-center">
       <Button disabled={page === 1} onClick={() => setPageNumber("prev")}>

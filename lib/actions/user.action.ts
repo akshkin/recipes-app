@@ -120,7 +120,7 @@ export async function getSavedPosts(params: GetSavedRecipesParams) {
   try {
     connectToDatabase();
 
-    const { id, page = 1, pageSize = 2 } = params;
+    const { id, page = 1, pageSize = 10 } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
