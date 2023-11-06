@@ -21,11 +21,13 @@ function MobileNavbar() {
         />
       </SheetTrigger>
       <SheetContent className="border-none mx-auto">
-        <Link href="/" className="link">
-          <Image src="/assets/logo.svg" alt="logo" width={150} height={100} />
-        </Link>
         <SheetClose asChild>
-          <div className="flex flex-col gap-3 mt-16">
+          <Link href="/" className="link">
+            <Image src="/assets/logo.svg" alt="logo" width={150} height={100} />
+          </Link>
+        </SheetClose>
+        <div className="flex flex-col gap-3 mt-16">
+          <SheetClose asChild>
             <Link href="/saved" className="flex link">
               <Image
                 src="/assets/icons/bookmark.svg"
@@ -36,6 +38,8 @@ function MobileNavbar() {
               />{" "}
               <p className="text-xl uppercase">Saved</p>
             </Link>
+          </SheetClose>
+          <SheetClose asChild>
             <Link href={`/profile/${userId}`} className="flex gap-1 link mb-4">
               <Image
                 src="/assets/icons/profile-circle.svg"
@@ -46,12 +50,10 @@ function MobileNavbar() {
               />{" "}
               <p className="text-xl uppercase">Profile</p>
             </Link>
-            {CATEGORIES.map((category) => (
-              <Link
-                key={category.title}
-                href={`/category/${category.title}`}
-                className="flex gap-1"
-              >
+          </SheetClose>
+          {CATEGORIES.map((category) => (
+            <SheetClose asChild key={category.title}>
+              <Link href={`/category/${category.title}`} className="flex gap-1">
                 <Image
                   src={category.image}
                   alt={category.title}
@@ -62,9 +64,9 @@ function MobileNavbar() {
                   {category.title}
                 </p>
               </Link>
-            ))}
-          </div>
-        </SheetClose>
+            </SheetClose>
+          ))}
+        </div>
       </SheetContent>
     </Sheet>
   );

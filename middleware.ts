@@ -10,6 +10,7 @@ export default authMiddleware({
     "/category/:title",
     "/cuisine/:title",
     "/api/webhook",
+    "/profile/:id",
   ],
   ignoredRoutes: ["/api/webhook"],
 });

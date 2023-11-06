@@ -56,3 +56,26 @@ export function removeUrlKeys({ params, keysToRemove }: RemoveUrlProps) {
     }
   );
 }
+
+export function returnSortOptions(sort: string) {
+  let sortOptions = {};
+
+  switch (sort) {
+    case "newest":
+      sortOptions = { createdAt: -1 };
+      break;
+    case "oldest":
+      sortOptions = { createdAt: 1 };
+      break;
+    case "name_asc":
+      sortOptions = { title: 1 };
+      break;
+    case "name_desc":
+      sortOptions = { title: -1 };
+      break;
+    default:
+      break;
+  }
+
+  return sortOptions;
+}

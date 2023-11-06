@@ -28,6 +28,7 @@ export interface GetRecipeByCategoryTitleParams {
   title: string;
   page?: number;
   pageSize?: number;
+  sort?: string;
 }
 
 export interface EditRecipeParams {
@@ -111,4 +112,11 @@ export interface GetSavedRecipesParams {
   id: string;
   page: number;
   pageSize?: number;
+  filter?: string;
+  sort?: string;
+}
+
+export interface GetUserRecipesParams {
+  id: string;
+  sort?: string;
 }

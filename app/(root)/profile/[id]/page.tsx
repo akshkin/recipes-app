@@ -8,14 +8,16 @@ import Image from "next/image";
 import Link from "next/link";
 import RecipeCard from "@/components/RecipeCard";
 import { auth } from "@clerk/nextjs/server";
+import FilterAndSort from "@/components/FilterAndSort";
+import { SearchParamsProps } from "@/types";
 
-interface ParamsProps {
+interface ParamsProps extends SearchParamsProps {
   params: {
     id: string;
   };
 }
 
-async function Page({ params }: ParamsProps) {
+async function Page({ params, searchParams }: ParamsProps) {
   const { id: clerkId } = params;
   const { userId } = auth();
 
@@ -26,7 +28,10 @@ async function Page({ params }: ParamsProps) {
   const mongoUser = await getMongoUserFromClerkId(clerkId);
 
   const result = await getUserById(clerkId);
-  const userRecipes = await getRecipesByUserId(mongoUser?._id);
+  const userRecipes = await getRecipesByUserId({
+    id: mongoUser?._id,
+    sort: searchParams.sort ? searchParams.sort : "",
+  });
 
   if (!result.user) {
     <p className="text-center">User not found</p>;
@@ -98,6 +103,7 @@ async function Page({ params }: ParamsProps) {
         {userRecipes && userRecipes.length > 0 && (
           <>
             <h2 className="h2 text-center">My recipes</h2>
+            <FilterAndSort filter={false} />
             <div className="custom-grid mt-6">
               {userRecipes?.map((recipe: any) => (
                 <RecipeCard

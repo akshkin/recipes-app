@@ -10,6 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 
 function Navbar() {
   const { userId } = auth();
+  console.log(userId);
   return (
     <header className="pt-4 flex flex-col">
       <div className="flex justify-between gap-3 items-center ml-3 ">

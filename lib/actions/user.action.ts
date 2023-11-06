@@ -12,6 +12,8 @@ import {
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import Recipe from "@/database-models/recipe.model";
+import { returnSortOptions } from "../utils";
+import Category from "@/database-models/category.model";
 
 export async function createUser(params: CreateUserParams) {
   try {
@@ -120,15 +122,28 @@ export async function getSavedPosts(params: GetSavedRecipesParams) {
   try {
     connectToDatabase();
 
-    const { id, page = 1, pageSize = 10 } = params;
+    const { id, page = 1, pageSize = 10, filter, sort } = params;
+    let category;
+
+    if (filter) {
+      category = await Category.findOne({ title: filter });
+    }
+
+    let sortOptions;
+
+    if (sort) {
+      sortOptions = returnSortOptions(sort);
+    }
 
     const skipAmount = (page - 1) * pageSize;
 
     const user = await User.findOne({ clerkId: id }).populate({
       path: "saved",
+      match: category ? { category } : {},
       options: {
         skip: skipAmount,
         limit: pageSize + 1,
+        sort: sortOptions,
       },
       model: "Recipe",
       select: "_id title image",

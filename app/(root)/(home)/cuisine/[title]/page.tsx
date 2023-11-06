@@ -1,3 +1,4 @@
+import FilterAndSort from "@/components/FilterAndSort";
 import Pagination from "@/components/Pagination";
 import RecipeCard from "@/components/RecipeCard";
 import { IRecipe } from "@/database-models/recipe.model";
@@ -16,6 +17,7 @@ async function Page({ params, searchParams }: Props) {
   const result = await getRecipesByCuisine({
     title: params.title,
     page: searchParams.page ? +searchParams.page : 1,
+    sort: searchParams.sort ? searchParams.sort : "",
   });
 
   return (
@@ -23,6 +25,7 @@ async function Page({ params, searchParams }: Props) {
       <h1 className="h1 text-center mt-4">{params.title.toUpperCase()}</h1>
       {result?.recipes?.length ? (
         <>
+          <FilterAndSort filter={false} />
           <div className="custom-grid my-8">
             {result?.recipes.map((recipe: IRecipe) => (
               <RecipeCard

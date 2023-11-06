@@ -11,8 +11,10 @@ import {
   EditRecipeParams,
   GetAllRecipesParams,
   GetRecipeByTitleParams,
+  GetUserRecipesParams,
 } from "@/types";
 import User from "@/database-models/user.model";
+import { returnSortOptions } from "../utils";
 
 export async function createRecipe(params: CreateRecipeParams) {
   try {
@@ -103,26 +105,13 @@ export async function getRecipes(params: GetAllRecipesParams) {
 
     let sortOptions = {};
 
-    switch (sort) {
-      case "newest":
-        sortOptions = { createdAt: -1 };
-        break;
-      case "oldest":
-        sortOptions = { createdAt: 1 };
-        break;
-      case "name_asc":
-        sortOptions = { title: 1 };
-        break;
-      case "name_desc":
-        sortOptions = { title: -1 };
-        break;
-      default:
-        break;
+    if (sort) {
+      sortOptions = returnSortOptions(sort);
     }
 
     const skipAmount = (page - 1) * pageSize;
 
-    const recipes = await Recipe.find({ category })
+    const recipes = await Recipe.find(category ? { category } : {})
       .limit(pageSize)
       .skip(skipAmount)
       .sort(sortOptions);
@@ -162,10 +151,17 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
   }
 }
 
-export async function getRecipesByUserId(id: string) {
+export async function getRecipesByUserId(params: GetUserRecipesParams) {
   try {
     connectToDatabase();
-    const recipes = await Recipe.find({ createdBy: id });
+    const { id, sort } = params;
+
+    let sortOptions;
+
+    if (sort) {
+      sortOptions = returnSortOptions(sort);
+    }
+    const recipes = await Recipe.find({ createdBy: id }).sort(sortOptions);
     return recipes;
   } catch (error) {
     console.log(error);
