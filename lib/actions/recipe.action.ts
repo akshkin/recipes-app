@@ -93,16 +93,41 @@ export async function createRecipe(params: CreateRecipeParams) {
 export async function getRecipes(params: GetAllRecipesParams) {
   try {
     connectToDatabase();
-    const { page = 1, pageSize = 20 } = params;
+    const { page = 1, pageSize = 20, filter, sort } = params;
+
+    let category;
+
+    if (filter) {
+      category = await Category.findOne({ title: filter });
+    }
+
+    let sortOptions = {};
+
+    switch (sort) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "oldest":
+        sortOptions = { createdAt: 1 };
+        break;
+      case "name_asc":
+        sortOptions = { title: 1 };
+        break;
+      case "name_desc":
+        sortOptions = { title: -1 };
+        break;
+      default:
+        break;
+    }
 
     const skipAmount = (page - 1) * pageSize;
 
-    const recipes = await Recipe.find({})
+    const recipes = await Recipe.find({ category })
       .limit(pageSize)
       .skip(skipAmount)
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
-    const totalRecipes = await Recipe.countDocuments();
+    const totalRecipes = await Recipe.countDocuments({ category });
 
     const isNextPage = totalRecipes > skipAmount + recipes.length;
 
