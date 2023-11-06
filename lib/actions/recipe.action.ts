@@ -93,7 +93,7 @@ export async function createRecipe(params: CreateRecipeParams) {
 export async function getRecipes(params: GetAllRecipesParams) {
   try {
     connectToDatabase();
-    const { page = 1, pageSize = 10 } = params;
+    const { page = 1, pageSize = 20 } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
@@ -102,7 +102,11 @@ export async function getRecipes(params: GetAllRecipesParams) {
       .skip(skipAmount)
       .sort({ createdAt: -1 });
 
-    return { recipes };
+    const totalRecipes = await Recipe.countDocuments();
+
+    const isNextPage = totalRecipes > skipAmount + recipes.length;
+
+    return { recipes, isNextPage };
   } catch (error) {
     console.log(error);
     throw error;
