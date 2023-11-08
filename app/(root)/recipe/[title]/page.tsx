@@ -1,11 +1,16 @@
 import CreateReview from "@/components/CreateReview";
 import DeleteAction from "@/components/DeleteAction";
+import RatingNumber from "@/components/RatingNumber";
 import RecipePdfLink from "@/components/RecipePdfLink";
 import ReviewCard from "@/components/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
-import { getReviews } from "@/lib/actions/review.action";
+import {
+  calculateAverageRatingAndCountForRecipe,
+  getReviews,
+} from "@/lib/actions/review.action";
 import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
+import { formatNumber } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +41,9 @@ async function Page({ params }: Props) {
   }
 
   const reviewsResult = await getReviews({ recipe: result?.recipe?._id });
+  const ratingResult = await calculateAverageRatingAndCountForRecipe(
+    result.recipe._id
+  );
 
   const {
     _id,
@@ -57,12 +65,23 @@ async function Page({ params }: Props) {
 
   return (
     <main className="">
-      <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:h-[75vh]">
+      <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:min-h-[75vh]">
         <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
-          <div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse">
-            <h1 className="text-4xl font-bold mb-4 lg:text-5xl line-clamp-2">
+          <div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse ">
+            {ratingResult.averageRating ? (
+              <div className="flex gap-1 items-center mb-2">
+                <RatingNumber value={ratingResult.averageRating} />
+                {ratingResult.averageRating} (
+                {formatNumber(ratingResult.countRatings)})
+              </div>
+            ) : (
+              <p className="mb-2">No ratings yet</p>
+            )}
+
+            <h1 className="text-4xl font-bold lg:text-5xl line-clamp-2 mb-2">
               {decodedTitle}
             </h1>
+
             <div className="flex justify-start  gap-2 max-sm:w-full lg:w-full mb-6 items-center">
               {clerkId === createdBy?.clerkId && (
                 <>
@@ -85,6 +104,7 @@ async function Page({ params }: Props) {
               />
             </div>
           </div>
+
           <p className="italic mb-4">
             Author:{" "}
             <Link
@@ -94,12 +114,15 @@ async function Page({ params }: Props) {
               {createdBy?.name}
             </Link>
           </p>
+
           <RecipePdfLink recipe={JSON.stringify(result.recipe)} title={title} />
 
           <p className="text-gray-700">
             Created: <time>{formattedTime}</time>
           </p>
+
           <p className="text-2xl mt-4">{description}</p>
+
           <div className="mb-0 mt-4 flex flex-col sm:flex-row gap-8">
             <p>
               <span className="h3">Category</span> :{" "}
@@ -107,6 +130,7 @@ async function Page({ params }: Props) {
                 {category.title.toUpperCase()}
               </span>
             </p>
+
             <p>
               <span className="h3">Cuisine </span> :{" "}
               <span className="text-primary-500">
@@ -115,15 +139,14 @@ async function Page({ params }: Props) {
             </p>
           </div>
         </div>
-        {/* <div className="sm:w-full bg-slate-400 h-full lg:w-[50%] "> */}
+
         <Image
-          className="max-lg:h-[50vh] lg:w-[50%] w-full object-cover h-full"
+          className="max-lg:h-[50vh] w-full lg:w-1/2 object-cover bg-red-300 lg:min-h-[75vh]"
           src={image}
           alt={title}
           width={300}
           height={400}
         />
-        {/* </div> */}
       </section>
 
       <section className="flex flex-col lg:flex-row justify-center lg:items-start max-w-6xl gap-12 p-8 mx-auto">

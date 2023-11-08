@@ -79,3 +79,15 @@ export function returnSortOptions(sort: string) {
 
   return sortOptions;
 }
+
+export const formatNumber = (num: number): string => {
+  if (num >= 1000000) {
+    const formattedNumber = (num / 1000000).toFixed(0);
+    return `${formattedNumber}m+`;
+  } else if (num >= 1000) {
+    const formattedNumber = (num / 1000).toFixed(0);
+    return `${formattedNumber}k+`;
+  } else {
+    return num.toString();
+  }
+};

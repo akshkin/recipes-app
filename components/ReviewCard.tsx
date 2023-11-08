@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import DeleteAction from "./DeleteAction";
+import RatingNumber from "./RatingNumber";
 
 export interface ReviewProps {
   _id: string;
@@ -32,7 +33,7 @@ function ReviewCard({
           className="rounded-full object-cover"
         />
         {userName}{" "}
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           {Array.from({ length: rating }, (_, i) => (
             <span key={i}>
               <Image
@@ -44,7 +45,8 @@ function ReviewCard({
               />
             </span>
           ))}
-        </div>
+        </div> */}
+        <RatingNumber value={rating} />
       </h4>
       <p className="my-3">{comment}</p>
       <div className="flex justify-between items-end">

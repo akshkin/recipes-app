@@ -58,4 +58,31 @@ export async function deleteReview(params: DeleteReviewParams) {
   }
 }
 
+export async function calculateAverageRatingAndCountForRecipe(
+  recipeId: string
+) {
+  try {
+    connectToDatabase();
+    const result = await Review.aggregate([
+      {
+        $match: { recipe: recipeId },
+      },
+      {
+        $group: {
+          _id: "$recipe",
+          averageRating: { $avg: "$rating" },
+          countRatings: { $sum: 1 },
+        },
+      },
+    ]);
 
+    const { averageRating, countRatings } = result[0] || {
+      averageRating: 0,
+      countRatings: 0,
+    };
+    return { averageRating, countRatings };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
