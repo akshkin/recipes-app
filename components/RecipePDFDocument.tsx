@@ -31,7 +31,7 @@ function RecipePDFDocument({ recipe }: Props) {
             <Text style={styles.text}>Cuisine: {cuisine.title}</Text>
           </View>
 
-          <Image style={styles.image} source={image} alt={title} />
+          <Image style={styles.image} source={image} />
         </View>
 
         <Text style={styles.subtitle}>Ingredients</Text>
