@@ -32,21 +32,7 @@ function ReviewCard({
           height={30}
           className="rounded-full object-cover"
         />
-        {userName}{" "}
-        {/* <div className="flex items-center">
-          {Array.from({ length: rating }, (_, i) => (
-            <span key={i}>
-              <Image
-                src="/assets/icons/star.svg"
-                alt="star"
-                width={20}
-                height={20}
-                className="mr-1"
-              />
-            </span>
-          ))}
-        </div> */}
-        <RatingNumber value={rating} />
+        {userName} <RatingNumber value={rating} />
       </h4>
       <p className="my-3">{comment}</p>
       <div className="flex justify-between items-end">
