@@ -43,3 +43,10 @@ export const CUISINES = [
   { title: "russian", value: "russian" },
   { title: "hungarian", value: "hungarian" },
 ];
+
+export const FILTERS = [
+  { title: "Newest", value: "newest" },
+  { title: "Oldest", value: "oldest" },
+  { title: "Name A-Z", value: "name_asc" },
+  { title: "Name Z-A", value: "name_desc" },
+];

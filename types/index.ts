@@ -1,3 +1,7 @@
+export interface SearchParamsProps {
+  searchParams: { [key: string]: string | undefined };
+}
+
 export interface CreateRecipeParams {
   title: string;
   description: string;
@@ -22,6 +26,9 @@ export interface GetRecipeByTitleParams {
 }
 export interface GetRecipeByCategoryTitleParams {
   title: string;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
 }
 
 export interface EditRecipeParams {
@@ -93,4 +100,23 @@ export interface DeleteReviewParams {
 export interface DeleteRecipeParams {
   id: string;
   path: string;
+}
+
+export interface SaveRecipeParams {
+  userId: string;
+  recipeId: string;
+  path: string;
+}
+
+export interface GetSavedRecipesParams {
+  id: string;
+  page: number;
+  pageSize?: number;
+  filter?: string;
+  sort?: string;
+}
+
+export interface GetUserRecipesParams {
+  id: string;
+  sort?: string;
 }

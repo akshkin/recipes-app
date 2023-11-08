@@ -11,8 +11,10 @@ import {
   EditRecipeParams,
   GetAllRecipesParams,
   GetRecipeByTitleParams,
+  GetUserRecipesParams,
 } from "@/types";
 import User from "@/database-models/user.model";
+import { returnSortOptions } from "../utils";
 
 export async function createRecipe(params: CreateRecipeParams) {
   try {
@@ -93,16 +95,32 @@ export async function createRecipe(params: CreateRecipeParams) {
 export async function getRecipes(params: GetAllRecipesParams) {
   try {
     connectToDatabase();
-    const { page = 1, pageSize = 10 } = params;
+    const { page = 1, pageSize = 20, filter, sort } = params;
+
+    let category;
+
+    if (filter) {
+      category = await Category.findOne({ title: filter });
+    }
+
+    let sortOptions = {};
+
+    if (sort) {
+      sortOptions = returnSortOptions(sort);
+    }
 
     const skipAmount = (page - 1) * pageSize;
 
-    const recipes = await Recipe.find({})
+    const recipes = await Recipe.find(category ? { category } : {})
       .limit(pageSize)
       .skip(skipAmount)
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
-    return { recipes };
+    const totalRecipes = await Recipe.countDocuments({ category });
+
+    const isNextPage = totalRecipes > skipAmount + recipes.length;
+
+    return { recipes, isNextPage };
   } catch (error) {
     console.log(error);
     throw error;
@@ -133,10 +151,17 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
   }
 }
 
-export async function getRecipesByUserId(id: string) {
+export async function getRecipesByUserId(params: GetUserRecipesParams) {
   try {
     connectToDatabase();
-    const recipes = await Recipe.find({ createdBy: id });
+    const { id, sort } = params;
+
+    let sortOptions;
+
+    if (sort) {
+      sortOptions = returnSortOptions(sort);
+    }
+    const recipes = await Recipe.find({ createdBy: id }).sort(sortOptions);
     return recipes;
   } catch (error) {
     console.log(error);

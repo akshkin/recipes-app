@@ -5,11 +5,15 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetSavedRecipesParams,
+  SaveRecipeParams,
   UpdateUserBioAndLinksParams,
   UpdateUserParams,
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import Recipe from "@/database-models/recipe.model";
+import { returnSortOptions } from "../utils";
+import Category from "@/database-models/category.model";
 
 export async function createUser(params: CreateUserParams) {
   try {
@@ -111,5 +115,80 @@ export async function getMongoUserFromClerkId(clerkId: string) {
     return user;
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getSavedPosts(params: GetSavedRecipesParams) {
+  try {
+    connectToDatabase();
+
+    const { id, page = 1, pageSize = 10, filter, sort } = params;
+    let category;
+
+    if (filter) {
+      category = await Category.findOne({ title: filter });
+    }
+
+    let sortOptions;
+
+    if (sort) {
+      sortOptions = returnSortOptions(sort);
+    }
+
+    const skipAmount = (page - 1) * pageSize;
+
+    const user = await User.findOne({ clerkId: id }).populate({
+      path: "saved",
+      match: category ? { category } : {},
+      options: {
+        skip: skipAmount,
+        limit: pageSize + 1,
+        sort: sortOptions,
+      },
+      model: "Recipe",
+      select: "_id title image",
+    });
+
+    if (!user) {
+      return { message: "User not found" };
+    }
+
+    const isNextPage = user.saved.length > pageSize;
+
+    return { savedPosts: user.saved, isNextPage };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function toggleSaveRecipe(params: SaveRecipeParams) {
+  try {
+    connectToDatabase();
+    const { userId, recipeId, path } = params;
+
+    const user = await User.findOne({ clerkId: userId });
+    if (!user) {
+      return { message: "User not found" };
+    }
+    if (user.saved.includes(recipeId)) {
+      await User.findOneAndUpdate(
+        { clerkId: userId },
+        {
+          $pull: { saved: recipeId },
+        },
+        { new: true }
+      );
+    } else {
+      await User.findOneAndUpdate(
+        { clerkId: userId },
+        { $addToSet: { saved: recipeId } },
+        { new: true }
+      );
+    }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }

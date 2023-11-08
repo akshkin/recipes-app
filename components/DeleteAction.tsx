@@ -47,7 +47,7 @@ function DeleteAction({ userClerkId, type, id }: Props) {
             alt="delete"
             width={20}
             height={20}
-            className="ml-1"
+            className="ml-1 grayscale-0"
           />
         </Button>
       )}
