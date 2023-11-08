@@ -1,6 +1,7 @@
 import CreateReview from "@/components/CreateReview";
 import DeleteAction from "@/components/DeleteAction";
-import ReviewCard, { ReviewProps } from "@/components/ReviewCard";
+import RecipePdfLink from "@/components/RecipePdfLink";
+import ReviewCard from "@/components/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import { getReviews } from "@/lib/actions/review.action";
@@ -59,7 +60,7 @@ async function Page({ params }: Props) {
       <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:h-[75vh]">
         <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
           <div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse">
-            <h1 className="text-4xl font-bold mb-4 lg:text-6xl">
+            <h1 className="text-4xl font-bold mb-4 lg:text-5xl line-clamp-2">
               {decodedTitle}
             </h1>
             <div className="flex justify-start  gap-2 max-sm:w-full lg:w-full mb-6 items-center">
@@ -93,6 +94,7 @@ async function Page({ params }: Props) {
               {createdBy?.name}
             </Link>
           </p>
+          <RecipePdfLink recipe={JSON.stringify(result.recipe)} title={title} />
 
           <p className="text-gray-700">
             Created: <time>{formattedTime}</time>
