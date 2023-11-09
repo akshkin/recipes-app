@@ -1,15 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import DeleteAction from "./DeleteAction";
+import RatingNumber from "./RatingNumber";
 
 interface RecipeProps {
   _id: string;
   image: string;
   title: string;
+  averageRating: number;
 }
 
-function RecipeCard({ title, image, _id }: RecipeProps) {
+function RecipeCard({ title, image, _id, averageRating }: RecipeProps) {
   return (
     <Link
       href={`/recipe/${title}`}
@@ -27,6 +28,7 @@ function RecipeCard({ title, image, _id }: RecipeProps) {
           {title}
         </h2>
       </div>
+      <RatingNumber value={averageRating} />
     </Link>
   );
 }

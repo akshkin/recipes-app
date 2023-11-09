@@ -111,6 +111,7 @@ async function Page({ params, searchParams }: ParamsProps) {
                   _id={recipe._id}
                   title={recipe.title}
                   image={recipe.image}
+                  averageRating={recipe.averageRating}
                 />
               ))}
             </div>

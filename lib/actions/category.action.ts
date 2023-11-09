@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import { GetRecipeByCategoryTitleParams } from "@/types";
 import Recipe from "@/database-models/recipe.model";
 import { returnSortOptions } from "../utils";
+import { getRecipesWithAverageRating } from "./recipe.action";
 
 export async function getRecipesByCategory(
   params: GetRecipeByCategoryTitleParams
@@ -27,9 +28,13 @@ export async function getRecipesByCategory(
       options: { skip: skipAmount, limit: pageSize + 1, sort: sortOptions },
     });
 
-    const isNextPage = category.recipes.length > pageSize;
+    const recipes = category.recipes;
 
-    return { recipes: category.recipes, isNextPage };
+    const recipesWithRating = await getRecipesWithAverageRating(recipes);
+
+    const isNextPage = recipesWithRating.length > pageSize;
+
+    return { recipes: recipesWithRating, isNextPage };
   } catch (error) {
     console.log(error);
   }

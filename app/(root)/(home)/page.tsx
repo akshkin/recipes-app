@@ -28,6 +28,7 @@ export default async function Home({ searchParams, params }: PageProps) {
             _id={recipe._id}
             title={recipe.title}
             image={recipe.image}
+            averageRating={recipe.averageRating}
           />
         ))}
       </div>
