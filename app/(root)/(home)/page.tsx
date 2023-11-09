@@ -17,7 +17,7 @@ export default async function Home({ searchParams, params }: PageProps) {
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center pt-0 pl-0 my-6">
+    <main className="flex min-h-screen flex-col items-center pt-0 pl-0 mb-6">
       <Hero />
       <h1 className="h1">All recipes</h1>
       <FilterAndSort filter={true} />
