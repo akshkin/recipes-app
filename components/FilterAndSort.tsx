@@ -10,7 +10,8 @@ import {
 } from "./ui/select";
 import { CATEGORIES, FILTERS } from "@/constants";
 import { useRouter, useSearchParams } from "next/navigation";
-import { formUrlQuery } from "@/lib/utils";
+import { formUrlQuery, removeUrlKeys } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 interface Props {
   filter?: boolean;
@@ -29,14 +30,22 @@ function FilterAndSort({ filter }: Props) {
     router.push(newUrl, { scroll: false });
   }
 
+  function clearFilters() {
+    const newUrl = removeUrlKeys({
+      params: searchParams.toString(),
+      keysToRemove: ["filter", "sort"],
+    });
+    router.push(newUrl, { scroll: false });
+  }
+
   return (
-    <div className="mt-8 mb-4 flex flex-col sm:flex-row gap-2 w-full mx-8 justify-center max-w-md">
+    <div className="mt-8 mb-4 flex flex-col sm:flex-row gap-2 w-full px-8 justify-center items-center max-w-md">
       {filter && (
         <Select
           defaultValue={searchParams.get("filter") || ""}
           onValueChange={(content) => handleFilterChange("filter", content)}
         >
-          <SelectTrigger className="">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-white">
@@ -53,7 +62,7 @@ function FilterAndSort({ filter }: Props) {
         defaultValue={searchParams.get("sort") || ""}
         onValueChange={(content) => handleFilterChange("sort", content)}
       >
-        <SelectTrigger className="">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent className="bg-white">
@@ -64,6 +73,11 @@ function FilterAndSort({ filter }: Props) {
           ))}
         </SelectContent>
       </Select>
+      {searchParams.toString() && (
+        <Button className="danger-btn w-full" onClick={clearFilters}>
+          Clear filters
+        </Button>
+      )}
     </div>
   );
 }
