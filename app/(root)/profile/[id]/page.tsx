@@ -21,10 +21,6 @@ async function Page({ params, searchParams }: ParamsProps) {
   const { id: clerkId } = params;
   const { userId } = auth();
 
-  if (!userId) {
-    return <p className="text-center">User not found</p>;
-  }
-
   const mongoUser = await getMongoUserFromClerkId(clerkId);
 
   const result = await getUserById(clerkId);
@@ -60,7 +56,7 @@ async function Page({ params, searchParams }: ParamsProps) {
           </div>
           <p className="text-accent-500 my-1">@{result?.user?.username}</p>
           {result.user.bio && <p>{result.user.bio}</p>}
-          {result?.user?.socialLinks ? (
+          {instagram || facebook || youtube ? (
             <div className="flex gap-3 mt-6">
               <p>Find me here: </p>
               <div className="flex gap-4">
