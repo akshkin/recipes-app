@@ -30,7 +30,10 @@ export async function getRecipesByCategory(
 
     const recipes = category.recipes;
 
-    const recipesWithRating = await getRecipesWithAverageRating(recipes);
+    const recipesWithRating = await getRecipesWithAverageRating({
+      recipes,
+      sort,
+    });
 
     const isNextPage = recipesWithRating.length > pageSize;
 

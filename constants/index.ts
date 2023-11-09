@@ -49,4 +49,6 @@ export const FILTERS = [
   { title: "Oldest", value: "oldest" },
   { title: "Name A-Z", value: "name_asc" },
   { title: "Name Z-A", value: "name_desc" },
+  { title: "Highest rated", value: "rating_desc" },
+  { title: "Lowest rated", value: "rating_asc" },
 ];

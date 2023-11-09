@@ -1,3 +1,5 @@
+import { IRecipe } from "@/database-models/recipe.model";
+
 export interface SearchParamsProps {
   searchParams: { [key: string]: string | undefined };
 }
@@ -118,5 +120,10 @@ export interface GetSavedRecipesParams {
 
 export interface GetUserRecipesParams {
   id: string;
+  sort?: string;
+}
+
+export interface GetRecipesWithAverageRating {
+  recipes: IRecipe[];
   sort?: string;
 }

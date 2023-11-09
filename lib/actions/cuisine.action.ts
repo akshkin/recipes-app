@@ -28,9 +28,10 @@ export async function getRecipesByCuisine(
       options: { skip: skipAmount, limit: pageSize + 1, sort: sortOptions },
     });
 
-    const recipesWithRating = await getRecipesWithAverageRating(
-      cuisine.recipes
-    );
+    const recipesWithRating = await getRecipesWithAverageRating({
+      recipes: cuisine.recipes,
+      sort,
+    });
 
     const isNextPage = recipesWithRating.length > pageSize;
 

@@ -12,6 +12,7 @@ import { CATEGORIES, FILTERS } from "@/constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery, removeUrlKeys } from "@/lib/utils";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 interface Props {
   filter?: boolean;
@@ -39,7 +40,7 @@ function FilterAndSort({ filter }: Props) {
   }
 
   return (
-    <div className="mt-8 mb-4 flex flex-col sm:flex-row gap-2 w-full px-8 justify-center items-center max-w-md">
+    <div className="mt-8 mb-4 flex flex-col sm:flex-row gap-3 w-full px-8 justify-center items-center max-w-lg z-30">
       {filter && (
         <Select
           defaultValue={searchParams.get("filter") || ""}
@@ -76,6 +77,12 @@ function FilterAndSort({ filter }: Props) {
       {searchParams.toString() && (
         <Button className="danger-btn w-full" onClick={clearFilters}>
           Clear filters
+          <Image
+            src="/assets/icons/cross.svg"
+            alt="cross"
+            width={20}
+            height={20}
+          />
         </Button>
       )}
     </div>

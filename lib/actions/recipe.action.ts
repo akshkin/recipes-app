@@ -11,6 +11,7 @@ import {
   EditRecipeParams,
   GetAllRecipesParams,
   GetRecipeByTitleParams,
+  GetRecipesWithAverageRating,
   GetUserRecipesParams,
 } from "@/types";
 import User from "@/database-models/user.model";
@@ -117,7 +118,10 @@ export async function getRecipes(params: GetAllRecipesParams) {
       .skip(skipAmount)
       .sort(sortOptions);
 
-    const recipesWithRating = await getRecipesWithAverageRating(recipes);
+    const recipesWithRating = await getRecipesWithAverageRating({
+      recipes,
+      sort,
+    });
 
     const totalRecipes = await Recipe.countDocuments({ category });
 
@@ -166,7 +170,10 @@ export async function getRecipesByUserId(params: GetUserRecipesParams) {
     }
     const recipes = await Recipe.find({ createdBy: id }).sort(sortOptions);
 
-    const recipesWithRating = await getRecipesWithAverageRating(recipes);
+    const recipesWithRating = await getRecipesWithAverageRating({
+      recipes,
+      sort,
+    });
     return recipesWithRating;
   } catch (error) {
     console.log(error);
@@ -241,8 +248,11 @@ export async function deleteRecipe(params: DeleteRecipeParams) {
   }
 }
 
-export async function getRecipesWithAverageRating(recipes: IRecipe[]) {
+export async function getRecipesWithAverageRating(
+  params: GetRecipesWithAverageRating
+) {
   try {
+    const { recipes, sort } = params;
     const recipeIds = recipes.map((recipe) => recipe._id);
 
     const aggregateResult = await Review.aggregate([
@@ -275,7 +285,19 @@ export async function getRecipesWithAverageRating(recipes: IRecipe[]) {
       ratingCount: ratingMap.get(recipe._id.toString())?.ratingCount || 0,
     }));
 
-    return recipesWithRating;
+    let sortedRecipes = [...recipesWithRating];
+
+    // sort recipes by rating
+
+    if (sort) {
+      if (sort === "rating_asc") {
+        sortedRecipes.sort((a, b) => a.averageRating - b.averageRating);
+      } else if (sort === "rating_desc") {
+        sortedRecipes.sort((a, b) => b.averageRating - a.averageRating);
+      }
+    }
+
+    return sortedRecipes;
   } catch (error) {
     console.error(error);
     throw error;
