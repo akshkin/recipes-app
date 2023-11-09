@@ -27,12 +27,14 @@ async function Page({ params, searchParams }: Props) {
         <>
           <FilterAndSort filter={false} />
           <div className="custom-grid my-8">
-            {result?.recipes.map((recipe: IRecipe) => (
+            {result?.recipes.map((recipe) => (
               <RecipeCard
                 key={recipe._id}
                 _id={recipe._id}
                 image={recipe.image}
                 title={recipe.title}
+                averageRating={recipe.averageRating}
+                ratingCount={recipe.ratingCount}
               />
             ))}
           </div>

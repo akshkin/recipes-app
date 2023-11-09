@@ -41,6 +41,8 @@ async function Page({ searchParams }: SearchParamsProps) {
                   _id={recipe._id.toString()}
                   title={recipe.title}
                   image={recipe.image}
+                  averageRating={recipe.averageRating}
+                  ratingCount={recipe.ratingCount}
                 />
               ))
             ) : (

@@ -1,6 +1,6 @@
 "use server";
 
-import Recipe from "@/database-models/recipe.model";
+import Recipe, { IRecipe } from "@/database-models/recipe.model";
 import { connectToDatabase } from "../mongoose";
 import Category from "@/database-models/category.model";
 import { revalidatePath } from "next/cache";
@@ -15,6 +15,7 @@ import {
 } from "@/types";
 import User from "@/database-models/user.model";
 import { returnSortOptions } from "../utils";
+import Review from "@/database-models/review.model";
 
 export async function createRecipe(params: CreateRecipeParams) {
   try {
@@ -116,11 +117,13 @@ export async function getRecipes(params: GetAllRecipesParams) {
       .skip(skipAmount)
       .sort(sortOptions);
 
+    const recipesWithRating = await getRecipesWithAverageRating(recipes);
+
     const totalRecipes = await Recipe.countDocuments({ category });
 
     const isNextPage = totalRecipes > skipAmount + recipes.length;
 
-    return { recipes, isNextPage };
+    return { recipes: recipesWithRating, isNextPage };
   } catch (error) {
     console.log(error);
     throw error;
@@ -162,7 +165,9 @@ export async function getRecipesByUserId(params: GetUserRecipesParams) {
       sortOptions = returnSortOptions(sort);
     }
     const recipes = await Recipe.find({ createdBy: id }).sort(sortOptions);
-    return recipes;
+
+    const recipesWithRating = await getRecipesWithAverageRating(recipes);
+    return recipesWithRating;
   } catch (error) {
     console.log(error);
   }
@@ -232,6 +237,47 @@ export async function deleteRecipe(params: DeleteRecipeParams) {
     revalidatePath(path);
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+}
+
+export async function getRecipesWithAverageRating(recipes: IRecipe[]) {
+  try {
+    const recipeIds = recipes.map((recipe) => recipe._id);
+
+    const aggregateResult = await Review.aggregate([
+      {
+        $match: { recipe: { $in: recipeIds } },
+      },
+      {
+        $group: {
+          _id: "$recipe",
+          averageRating: { $avg: "$rating" },
+          ratingCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // create a Map where the keys are the _id of recipes (converted to strings) and the values are the corresponding average ratings calculated from the aggregation result.
+    const ratingMap = new Map(
+      aggregateResult.map((result) => [
+        result._id.toString(),
+        {
+          averageRating: result.averageRating,
+          ratingCount: result.ratingCount,
+        },
+      ])
+    );
+
+    const recipesWithRating = recipes.map((recipe) => ({
+      ...recipe.toObject(),
+      averageRating: ratingMap.get(recipe._id.toString())?.averageRating || 0,
+      ratingCount: ratingMap.get(recipe._id.toString())?.ratingCount || 0,
+    }));
+
+    return recipesWithRating;
+  } catch (error) {
+    console.error(error);
     throw error;
   }
 }

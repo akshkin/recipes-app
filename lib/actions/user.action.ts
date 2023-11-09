@@ -14,13 +14,13 @@ import { revalidatePath } from "next/cache";
 import Recipe from "@/database-models/recipe.model";
 import { returnSortOptions } from "../utils";
 import Category from "@/database-models/category.model";
+import { getRecipesWithAverageRating } from "./recipe.action";
 
 export async function createUser(params: CreateUserParams) {
   try {
     connectToDatabase();
 
     const { clerkId, email, name, image, username } = params;
-    console.log(clerkId);
     const user = await User.create({ ...params });
     return user;
   } catch (error: any) {
@@ -153,9 +153,11 @@ export async function getSavedPosts(params: GetSavedRecipesParams) {
       return { message: "User not found" };
     }
 
-    const isNextPage = user.saved.length > pageSize;
+    const recipesWithRating = await getRecipesWithAverageRating(user.saved);
 
-    return { savedPosts: user.saved, isNextPage };
+    const isNextPage = recipesWithRating.length > pageSize;
+
+    return { savedPosts: recipesWithRating, isNextPage };
   } catch (error) {
     console.log(error);
     throw error;
