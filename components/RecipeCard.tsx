@@ -8,27 +8,40 @@ interface RecipeProps {
   image: string;
   title: string;
   averageRating: number;
+  ratingCount: number;
 }
 
-function RecipeCard({ title, image, _id, averageRating }: RecipeProps) {
+function RecipeCard({
+  title,
+  image,
+  _id,
+  averageRating,
+  ratingCount,
+}: RecipeProps) {
   return (
     <Link
       href={`/recipe/${title}`}
-      className="relative border-[1px] rounded-lg max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px] h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-lg"
+      className="relative border-[1px] rounded-lg max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px] h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md"
     >
       <Image
         src={image}
         alt="recipe"
         width={200}
         height={120}
-        className="z-0 w-full h-full object-cover rounded-lg"
+        className="z-0 w-full h-2/3 object-cover rounded-t-lg"
       />
-      <div className="flex justify-start items-end z-10 mask-image absolute inset-0 h-full rounded-lg bg-opacity-20">
-        <h2 className=" text-left z-20 h3 p-4 text-white capitalize mt-2 line-clamp-3">
+
+      <div className="p-2 flex flex-col">
+        <h2 className=" text-left text-primary-700 h3 capitalize line-clamp-1">
           {title}
         </h2>
+        <div className="flex gap-2">
+          <RatingNumber value={averageRating} />
+          <span className={`text-sm text-gray-${ratingCount ? 700 : 400}`}>
+            ({ratingCount} {ratingCount === 1 ? "rating" : "ratings"})
+          </span>
+        </div>
       </div>
-      <RatingNumber value={averageRating} />
     </Link>
   );
 }
