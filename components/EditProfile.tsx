@@ -26,7 +26,7 @@ interface EditProfileProps {
   socialLinks: {
     instagram: string;
     facebook: string;
-    youtube: string;
+    youTube: string;
   };
 }
 
@@ -43,7 +43,7 @@ function EditProfile({ bio, socialLinks }: EditProfileProps) {
       socialLinks: {
         instagram: socialLinks?.instagram || "",
         facebook: socialLinks?.facebook || "",
-        youtube: socialLinks?.youtube || "",
+        youTube: socialLinks?.youTube || "",
       },
     },
   });
@@ -119,7 +119,7 @@ function EditProfile({ bio, socialLinks }: EditProfileProps) {
         />
         <FormField
           control={form.control}
-          name={`socialLinks.youtube`}
+          name={`socialLinks.youTube`}
           render={({ field }) => (
             <FormItem className="flex gap-4 items-baseline">
               <FormLabel>YouTube</FormLabel>
@@ -128,22 +128,6 @@ function EditProfile({ bio, socialLinks }: EditProfileProps) {
             </FormItem>
           )}
         />
-        {/* {index > 0 && (
-              <Button
-                type="button"
-                onClick={() => {
-                  form.setValue("socialLinks", [
-                    ...form.getValues("socialLinks").slice(0, index),
-                    ...form.getValues("socialLinks").slice(index + 1),
-                  ]);
-                }}
-              >
-                Remove
-              </Button>
-            )} */}
-        {/* </div>
-        ))} */}
-
         <Button disabled={isLoading} className="btn mt-8" type="submit">
           {isLoading ? (
             <span className="flex gap-2">

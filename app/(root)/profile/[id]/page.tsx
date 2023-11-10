@@ -33,7 +33,7 @@ async function Page({ params, searchParams }: ParamsProps) {
     <p className="text-center">User not found</p>;
   }
 
-  const { instagram, facebook, youtube } = result?.user?.socialLinks;
+  const { instagram, facebook, youTube } = result?.user?.socialLinks;
 
   return (
     <div className="m-8 flex flex-col justify-center items-center gap-6">
@@ -56,10 +56,10 @@ async function Page({ params, searchParams }: ParamsProps) {
           </div>
           <p className="text-accent-500 my-1">@{result?.user?.username}</p>
           {result.user.bio && <p>{result.user.bio}</p>}
-          {instagram || facebook || youtube ? (
+          {instagram || facebook || youTube ? (
             <div className="flex gap-3 mt-6">
               <p>Find me here: </p>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center">
                 {instagram && (
                   <a href={instagram} target="_blank" className="link">
                     <Image
@@ -80,13 +80,13 @@ async function Page({ params, searchParams }: ParamsProps) {
                     />
                   </a>
                 )}
-                {youtube && (
-                  <a href={youtube} target="_blank" className="link">
+                {youTube && (
+                  <a href={youTube} target="_blank" className="link">
                     <Image
                       src="/assets/icons/youtube.svg"
                       alt="youtube"
-                      width={30}
-                      height={30}
+                      width={60}
+                      height={60}
                     />
                   </a>
                 )}

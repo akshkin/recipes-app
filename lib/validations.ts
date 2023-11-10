@@ -33,7 +33,7 @@ export const ProfileSchema = z.object({
       .refine((value) => !value || isUrlValid(value), {
         message: "Please enter a valid URL for Facebook",
       }),
-    youtube: z
+    youTube: z
       .string()
       .optional()
       .refine((value) => !value || isUrlValid(value), {
