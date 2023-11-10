@@ -45,6 +45,10 @@ async function Page({ params }: Props) {
     result.recipe._id
   );
 
+  const userAlreadyRated = reviewsResult?.reviews?.find(
+    (review) => review.user.clerkId === clerkId
+  );
+
   const {
     _id,
     image,
@@ -191,7 +195,12 @@ async function Page({ params }: Props) {
         </div>
       </section>
 
-      <CreateReview recipe={_id.toString()} user={mongoUser?._id.toString()} />
+      {!userAlreadyRated && (
+        <CreateReview
+          recipe={_id.toString()}
+          user={mongoUser?._id.toString()}
+        />
+      )}
 
       {reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
         <div className="mb-4  px-8 max-w-6xl mx-auto">
