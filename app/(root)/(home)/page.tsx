@@ -1,7 +1,7 @@
 import FilterAndSort from "@/components/FilterAndSort";
 import Hero from "@/components/Hero";
 import Pagination from "@/components/Pagination";
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "@/components/cards/RecipeCard";
 import { getRecipes } from "@/lib/actions/recipe.action";
 
 interface PageProps {

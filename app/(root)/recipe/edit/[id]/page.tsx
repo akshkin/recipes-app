@@ -1,4 +1,4 @@
-import CreateRecipeForm from "@/components/CreateRecipeForm";
+import CreateRecipeForm from "@/components/forms/CreateRecipeForm";
 import { getRecipeById } from "@/lib/actions/recipe.action";
 import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";

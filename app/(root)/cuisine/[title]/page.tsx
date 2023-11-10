@@ -1,6 +1,6 @@
 import FilterAndSort from "@/components/FilterAndSort";
 import Pagination from "@/components/Pagination";
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "@/components/cards/RecipeCard";
 import { IRecipe } from "@/database-models/recipe.model";
 import { getRecipesByCuisine } from "@/lib/actions/cuisine.action";
 import { SearchParamsProps } from "@/types";

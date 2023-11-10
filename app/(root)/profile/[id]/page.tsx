@@ -6,7 +6,7 @@ import {
 import { getRecipesByUserId } from "@/lib/actions/recipe.action";
 import Image from "next/image";
 import Link from "next/link";
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "@/components/cards/RecipeCard";
 import { auth } from "@clerk/nextjs/server";
 import FilterAndSort from "@/components/FilterAndSort";
 import { SearchParamsProps } from "@/types";

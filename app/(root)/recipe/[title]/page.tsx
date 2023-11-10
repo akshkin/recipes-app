@@ -1,8 +1,8 @@
-import CreateReview from "@/components/CreateReview";
+import CreateReview from "@/components/forms/CreateReview";
 import DeleteAction from "@/components/DeleteAction";
 import RatingNumber from "@/components/RatingNumber";
 import RecipePdfLink from "@/components/RecipePdfLink";
-import ReviewCard from "@/components/ReviewCard";
+import ReviewCard from "@/components/cards/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import {

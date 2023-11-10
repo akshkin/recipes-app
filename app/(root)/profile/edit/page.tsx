@@ -1,4 +1,4 @@
-import EditProfile from "@/components/EditProfile";
+import EditProfile from "@/components/forms/EditProfile";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 import React from "react";

@@ -12,9 +12,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import Image from "next/image";
 import { updateUserBioAndLinks } from "@/lib/actions/user.action";
 import { useAuth } from "@clerk/nextjs";

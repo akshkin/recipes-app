@@ -12,14 +12,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Button } from "./ui/button";
+} from "../ui/form";
+import { Button } from "../ui/button";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { createReview } from "@/lib/actions/review.action";
-import { Textarea } from "./ui/textarea";
-import Rating from "./Rating";
+import { Textarea } from "../ui/textarea";
+import Rating from "../Rating";
 
 interface CreateReviewProps {
   recipe: string;

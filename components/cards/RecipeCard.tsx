@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import RatingNumber from "./RatingNumber";
+import RatingNumber from "../RatingNumber";
 import { formatNumber } from "@/lib/utils";
 
 interface RecipeProps {
