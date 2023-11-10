@@ -36,6 +36,7 @@ function RatingNumber({ value }: { value: number }) {
               alt={`outline star ${index + 1}`}
               width={20}
               height={20}
+              className="mr-0.5"
             />
           ))}
         </>

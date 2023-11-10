@@ -68,15 +68,12 @@ async function Page({ params }: Props) {
       <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:min-h-[75vh]">
         <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
           <div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse ">
-            {ratingResult.averageRating ? (
-              <div className="flex gap-1 items-center mb-2">
-                <RatingNumber value={ratingResult.averageRating} />
-                {ratingResult.averageRating} (
-                {formatNumber(ratingResult.countRatings)})
-              </div>
-            ) : (
-              <p className="mb-2">No ratings yet</p>
-            )}
+            <div className="flex gap-1 items-center mb-2">
+              <RatingNumber value={ratingResult.averageRating} />
+              {ratingResult.averageRating} (
+              {formatNumber(ratingResult.countRatings)}{" "}
+              {ratingResult.countRatings === 1 ? "rating" : "ratings"})
+            </div>
 
             <h1 className="text-4xl font-bold lg:text-5xl line-clamp-2 mb-2">
               {decodedTitle}
