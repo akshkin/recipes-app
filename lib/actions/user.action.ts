@@ -34,7 +34,6 @@ export async function updateUser(params: UpdateUserParams) {
     connectToDatabase();
 
     const { clerkId, updateData, path } = params;
-    console.log(clerkId);
     await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
 
     revalidatePath(path);
@@ -153,7 +152,10 @@ export async function getSavedPosts(params: GetSavedRecipesParams) {
       return { message: "User not found" };
     }
 
-    const recipesWithRating = await getRecipesWithAverageRating(user.saved);
+    const recipesWithRating = await getRecipesWithAverageRating({
+      recipes: user.saved,
+      sort,
+    });
 
     const isNextPage = recipesWithRating.length > pageSize;
 
