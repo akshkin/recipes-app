@@ -1,6 +1,6 @@
 import FilterAndSort from "@/components/FilterAndSort";
 import Pagination from "@/components/Pagination";
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "@/components/cards/RecipeCard";
 import { getSavedPosts } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";

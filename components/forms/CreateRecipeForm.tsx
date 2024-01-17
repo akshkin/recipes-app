@@ -117,11 +117,16 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
 
   async function onSubmit(values: z.infer<typeof RecipeSchema>) {
     setIsLoading(true);
+
+    const capitalizedTitle =
+      values.title.charAt(0).toLocaleUpperCase() + values.title.slice(1);
+
     try {
       if (type === "create") {
         await createRecipe({
           ...values,
           createdBy: mongoUserId,
+          title: capitalizedTitle,
           image: imageUrl,
           path: pathname,
         });
@@ -130,6 +135,7 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
           _id: parsedRecipe._id,
           updateData: {
             ...values,
+            title: capitalizedTitle,
             image: imageUrl,
             createdBy: mongoUserId,
           },

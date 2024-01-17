@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import RatingNumber from "./RatingNumber";
+import RatingNumber from "../RatingNumber";
+import { formatNumber } from "@/lib/utils";
 
 interface RecipeProps {
   _id: string;
@@ -38,7 +39,8 @@ function RecipeCard({
         <div className="flex gap-2">
           <RatingNumber value={averageRating} />
           <span className={`text-sm text-gray-${ratingCount ? 700 : 400}`}>
-            ({ratingCount} {ratingCount === 1 ? "rating" : "ratings"})
+            ({formatNumber(ratingCount)}{" "}
+            {ratingCount === 1 ? "rating" : "ratings"})
           </span>
         </div>
       </div>

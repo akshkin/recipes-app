@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import DeleteAction from "./DeleteAction";
-import RatingNumber from "./RatingNumber";
+import DeleteAction from "../DeleteAction";
+import RatingNumber from "../RatingNumber";
 
 export interface ReviewProps {
   _id: string;

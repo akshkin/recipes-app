@@ -1,8 +1,8 @@
-import CreateReview from "@/components/CreateReview";
+import CreateReview from "@/components/forms/CreateReview";
 import DeleteAction from "@/components/DeleteAction";
 import RatingNumber from "@/components/RatingNumber";
 import RecipePdfLink from "@/components/RecipePdfLink";
-import ReviewCard from "@/components/ReviewCard";
+import ReviewCard from "@/components/cards/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import {
@@ -45,6 +45,10 @@ async function Page({ params }: Props) {
     result.recipe._id
   );
 
+  const userAlreadyRated = reviewsResult?.reviews?.find(
+    (review) => review.user.clerkId === clerkId
+  );
+
   const {
     _id,
     image,
@@ -68,15 +72,12 @@ async function Page({ params }: Props) {
       <section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:min-h-[75vh]">
         <div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
           <div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse ">
-            {ratingResult.averageRating ? (
-              <div className="flex gap-1 items-center mb-2">
-                <RatingNumber value={ratingResult.averageRating} />
-                {ratingResult.averageRating} (
-                {formatNumber(ratingResult.countRatings)})
-              </div>
-            ) : (
-              <p className="mb-2">No ratings yet</p>
-            )}
+            <div className="flex gap-1 items-center mb-2">
+              <RatingNumber value={ratingResult.averageRating} />
+              {ratingResult.averageRating} (
+              {formatNumber(ratingResult.countRatings)}{" "}
+              {ratingResult.countRatings === 1 ? "rating" : "ratings"})
+            </div>
 
             <h1 className="text-4xl font-bold lg:text-5xl line-clamp-2 mb-2">
               {decodedTitle}
@@ -194,7 +195,12 @@ async function Page({ params }: Props) {
         </div>
       </section>
 
-      <CreateReview recipe={_id.toString()} user={mongoUser?._id.toString()} />
+      {!userAlreadyRated && (
+        <CreateReview
+          recipe={_id.toString()}
+          user={mongoUser?._id.toString()}
+        />
+      )}
 
       {reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
         <div className="mb-4  px-8 max-w-6xl mx-auto">

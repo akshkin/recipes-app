@@ -6,7 +6,7 @@ import {
 import { getRecipesByUserId } from "@/lib/actions/recipe.action";
 import Image from "next/image";
 import Link from "next/link";
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "@/components/cards/RecipeCard";
 import { auth } from "@clerk/nextjs/server";
 import FilterAndSort from "@/components/FilterAndSort";
 import { SearchParamsProps } from "@/types";
@@ -21,10 +21,6 @@ async function Page({ params, searchParams }: ParamsProps) {
   const { id: clerkId } = params;
   const { userId } = auth();
 
-  if (!userId) {
-    return <p className="text-center">User not found</p>;
-  }
-
   const mongoUser = await getMongoUserFromClerkId(clerkId);
 
   const result = await getUserById(clerkId);
@@ -37,7 +33,7 @@ async function Page({ params, searchParams }: ParamsProps) {
     <p className="text-center">User not found</p>;
   }
 
-  const { instagram, facebook, youtube } = result?.user?.socialLinks;
+  const { instagram, facebook, youTube } = result?.user?.socialLinks;
 
   return (
     <div className="m-8 flex flex-col justify-center items-center gap-6">
@@ -60,10 +56,10 @@ async function Page({ params, searchParams }: ParamsProps) {
           </div>
           <p className="text-accent-500 my-1">@{result?.user?.username}</p>
           {result.user.bio && <p>{result.user.bio}</p>}
-          {result?.user?.socialLinks ? (
+          {instagram || facebook || youTube ? (
             <div className="flex gap-3 mt-6">
               <p>Find me here: </p>
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center">
                 {instagram && (
                   <a href={instagram} target="_blank" className="link">
                     <Image
@@ -84,13 +80,13 @@ async function Page({ params, searchParams }: ParamsProps) {
                     />
                   </a>
                 )}
-                {youtube && (
-                  <a href={youtube} target="_blank" className="link">
+                {youTube && (
+                  <a href={youTube} target="_blank" className="link">
                     <Image
                       src="/assets/icons/youtube.svg"
                       alt="youtube"
-                      width={30}
-                      height={30}
+                      width={60}
+                      height={60}
                     />
                   </a>
                 )}

@@ -12,7 +12,7 @@ function Navbar() {
   const { userId } = auth();
 
   return (
-    <header className="pt-4 flex flex-col">
+    <header className="pt-4 flex flex-col bg-white">
       <div className="flex justify-between gap-3 items-center ml-3 ">
         <Link href="/" className="link max-sm:pb-3">
           <Image src="/assets/logo.svg" alt="logo" width={100} height={70} />
