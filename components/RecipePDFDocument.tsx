@@ -24,28 +24,29 @@ function RecipePDFDocument({ recipe }: Props) {
     <Document>
       <Page style={styles.body}>
         <View style={styles.div}>
+          <Image style={styles.image} source={image} />
           <View style={styles.content}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.author}>Author: {createdBy.name}</Text>
             <Text style={styles.text}>Category: {category.title}</Text>
             <Text style={styles.text}>Cuisine: {cuisine.title}</Text>
           </View>
-
-          <Image style={styles.image} source={image} />
         </View>
 
-        <Text style={styles.subtitle}>Ingredients</Text>
-        {ingredients.map((ingredient: { ingredient: string; _id: string }) => (
-          <Text style={styles.text} key={ingredient._id}>
-            {ingredient.ingredient}
-          </Text>
-        ))}
-        <Text style={styles.subtitle}>Method</Text>
-        {method.map((item: { step: string; _id: string }) => (
-          <Text style={styles.text} key={item._id}>
-            {item.step}
-          </Text>
-        ))}
+        <View style={styles.mainContent}>
+          <Text style={styles.subtitle}>Ingredients</Text>
+          {ingredients.map((ingredient: { ingredient: string; _id: string }, index : number) => (
+            <Text style={styles.text} key={ingredient._id}>
+              {index + 1}. {ingredient.ingredient}
+            </Text>
+          ))}
+          <Text style={styles.subtitle}>Method</Text>
+          {method.map((item: { step: string; _id: string }, index: number) => (
+            <Text style={styles.text} key={item._id}>
+              {index + 1}. {item.step}
+            </Text>
+          ))}
+        </View>
       </Page>
     </Document>
   );
@@ -68,16 +69,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    marginHorizontal: 8,
+    gap: 8
   },
   content: {
-    width: "100%",
+    width: "45%",
   },
   title: {
     fontSize: 24,
     textAlign: "left",
     fontFamily: "Cormorant",
-    fontWeight: "bold",
+    fontWeight: 700,
     marginLeft: 16,
   },
   author: {
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
   },
   text: {
     margin: 6,
-    marginLeft: 16,
+    marginLeft: 20,
     fontSize: 14,
     textAlign: "justify",
     fontFamily: "Cormorant",
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
   image: {
     marginVertical: 15,
     marginTop: 0,
-    width: "100%",
+    width: "45%",
     height: "200px",
     objectFit: "cover",
   },
@@ -116,4 +117,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: "5px",
   },
+  mainContent : {
+    marginHorizontal: 30,
+  }
 });
