@@ -2,22 +2,23 @@ export const CATEGORIES = [
   {
     title: "breakfast",
     value: "breakfast",
+    image: "/assets/icons/breakfast.svg",
   },
-  {
-    title: "lunch",
-    value: "lunch",
-  },
+
   {
     title: "meals",
     value: "meals",
+    image: "/assets/icons/spaghetti.svg",
   },
   {
     title: "dessert",
     value: "dessert",
+    image: "/assets/icons/cupcake.svg",
   },
   {
     title: "snacks",
     value: "snacks",
+    image: "/assets/icons/popcorn.svg",
   },
 ];
 
@@ -41,4 +42,13 @@ export const CUISINES = [
   { title: "german", value: "german" },
   { title: "russian", value: "russian" },
   { title: "hungarian", value: "hungarian" },
+];
+
+export const FILTERS = [
+  { title: "Newest", value: "newest" },
+  { title: "Oldest", value: "oldest" },
+  { title: "Name A-Z", value: "name_asc" },
+  { title: "Name Z-A", value: "name_desc" },
+  { title: "Highest rated", value: "rating_desc" },
+  { title: "Lowest rated", value: "rating_asc" },
 ];

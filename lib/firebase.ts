@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-import firebase, { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import {
   getStorage,
   deleteObject,
@@ -23,10 +23,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const storage = getStorage(app);
+export const storage = getStorage(app);
 
 export async function uploadImage(file: any, user: string) {
-  console.log(file);
   const storageRef = ref(storage, `${user}/${file.name}`);
   await uploadBytes(storageRef, file);
   const downloadURL = await getDownloadURL(storageRef);

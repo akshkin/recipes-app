@@ -10,16 +10,20 @@ const config: Config = {
     container: {
       center: true,
       padding: "2em",
-      screens: {
-        xs: "320px",
-      },
     },
     extend: {
+      screens: {
+        xs: "450px",
+      },
+      fontFamily: {
+        inter: ["var(--font-inter)"],
+        cormorant: ["var(--font-cormorant)"],
+      },
       colors: {
         primary: {
           700: "#283618",
           500: "#606c38",
-          100: "#FFf1e6",
+          100: "#eef3e1",
         },
         dark: {
           100: "#000000",
@@ -31,10 +35,6 @@ const config: Config = {
         light: {
           900: "#FFFFFF",
           800: "#fefae0",
-          // 850: "#FDFDFD",
-          // 700: "#DCE3F1",
-          // 500: "#7B8EC8",
-          // 400: "#858EAD",
         },
 
         accent: {
