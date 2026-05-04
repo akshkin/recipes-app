@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -35,16 +35,24 @@ interface RecipeFormProps {
 	mongoUserId: string;
 	type: string;
 	recipe?: string;
+	prefilledForm?: string;
 }
 
-function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
+function CreateRecipeForm({
+	mongoUserId,
+	type,
+	recipe,
+	prefilledForm,
+}: RecipeFormProps) {
 	const parsedRecipe = recipe ? JSON.parse(recipe) : "";
-	const [imageUrl, setImageUrl] = useState(parsedRecipe.image || "");
+	const [imageUrl, setImageUrl] = useState(parsedRecipe?.image || "");
 	const pathname = usePathname();
 	const [isLoading, setIsLoading] = useState(false);
 	const [file, setFile] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
 	const router = useRouter();
+
+	console.log("Parsed recipe in form:", parsedRecipe?.title);
 
 	const form = useForm<z.infer<typeof RecipeSchema>>({
 		resolver: zodResolver(RecipeSchema),
@@ -61,6 +69,16 @@ function CreateRecipeForm({ mongoUserId, type, recipe }: RecipeFormProps) {
 					method: [{ step: "" }],
 				},
 	});
+
+	useEffect(() => {
+		if (prefilledForm) {
+			const parsed = JSON.parse(prefilledForm);
+			form.reset({
+				...form.getValues(),
+				...parsed,
+			});
+		}
+	}, [prefilledForm, form]);
 
 	const {
 		fields: ingredientsField,
