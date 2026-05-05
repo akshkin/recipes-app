@@ -68,9 +68,9 @@ function UploadRecipe({
 			return;
 		}
 
-		// Add file size 5MB limit
-		if (file.size > 5 * 1024 * 1024) {
-			setError("File size exceeds 5MB limit");
+		// Add file size 2MB limit
+		if (file.size > 2 * 1024 * 1024) {
+			setError("File size exceeds 2MB limit. Please upload a smaller file.");
 			return;
 		}
 
@@ -114,7 +114,7 @@ function UploadRecipe({
 								to autofill the form
 							</p>
 							<p className="text-sm text-gray-500">
-								Click to select a PDF file
+								Click to select a PDF file (upto 2MB)
 							</p>
 						</>
 					)}
