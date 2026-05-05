@@ -7,7 +7,8 @@ This is crucial for performance, especially when dealing with large PDF files.
 export async function extractTextFromPDF(file: File): Promise<string> {
 	const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
 	const PDFJSWorker = await import("pdfjs-dist/legacy/build/pdf.worker");
-	// Use the local worker file instead of CDN
+	// using CDN was failing when used as ..../pdf.worker.mjs but using it like as below works reliably
+	// Using the local worker file instead of CDN was failing in some environments, so switched to the CDN version which is more reliable across different setups.
 	if (typeof window !== "undefined") {
 		pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/${PDFJSWorker.default}`;
 	}
@@ -37,7 +38,9 @@ export async function extractTextFromPDF(file: File): Promise<string> {
 	}
 
 	if (fullText.trim().length < 100) {
-		throw new Error("PDF appears to be scanned. Text extraction failed.");
+		throw new Error(
+			"PDF appears to be scanned or in a language other than English. Text extraction failed.",
+		);
 	}
 
 	return fullText;

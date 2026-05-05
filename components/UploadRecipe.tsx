@@ -87,9 +87,20 @@ function UploadRecipe({
 			const response = await parseRecipe(text);
 			if (response) {
 				setPrefilledForm(response);
+
+				if (
+					"error" in JSON.parse(response) &&
+					JSON.parse(response).error === "NOT_A_RECIPE"
+				) {
+					setError(
+						"The uploaded PDF does not appear to be a recipe. Please try uploading a cooking recipe.",
+					);
+				}
 			}
 		} catch (err) {
-			setError("Failed to extract recipe. Please try again after some time.");
+			setError(
+				"Failed to extract recipe. Please try again after some time. Possible reasons could be that the PDF is scanned orthe text is in a language other than English.",
+			);
 			console.error(err);
 		} finally {
 			setLoading(false);
@@ -134,6 +145,9 @@ function UploadRecipe({
 				uploading. You would still have to fill in the category and cuisine
 				fields as those are not usually populated automatically and the image
 				would have to be manually uploaded.
+			</p>
+			<p className="text-sm text-gray-500 mt-2">
+				Right now this feature only supports English recipes.
 			</p>
 			{error && (
 				<div>
