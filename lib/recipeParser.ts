@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({});
 
-export async function parseRecipeWithGroq(recipeText: string) {
+export async function parseRecipeWithLLM(recipeText: string) {
 	const response = await ai.models.generateContent({
 		model: "gemini-3-flash-preview",
 		contents: `Extract the recipe from this text:\n\n${recipeText} and return ONLY valid JSON in this exact format:

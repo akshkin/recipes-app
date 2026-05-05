@@ -17,7 +17,7 @@ import {
 import User from "@/database-models/user.model";
 import { returnSortOptions } from "../utils";
 import Review from "@/database-models/review.model";
-import { parseRecipeWithGroq } from "../recipeParser";
+import { parseRecipeWithLLM } from "../recipeParser";
 
 export async function createRecipe(params: CreateRecipeParams) {
 	try {
@@ -307,7 +307,7 @@ export async function getRecipesWithAverageRating(
 
 export async function parseRecipe(recipeText: string) {
 	try {
-		const response = await parseRecipeWithGroq(recipeText);
+		const response = await parseRecipeWithLLM(recipeText);
 		return response;
 	} catch (error) {
 		console.error(error);
