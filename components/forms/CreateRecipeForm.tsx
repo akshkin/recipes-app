@@ -177,7 +177,7 @@ function CreateRecipeForm({
 					...values,
 					createdBy: mongoUserId,
 					title: capitalizedTitle,
-					image: imageUrl,
+					image: newImagePath,
 					path: pathname,
 				});
 			} else if (type === "edit") {
