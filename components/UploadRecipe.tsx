@@ -103,7 +103,10 @@ function UploadRecipe({
 						<p>Extracting recipe...</p>
 					) : (
 						<>
-							<p className="text-lg font-medium">Upload PDF Recipe</p>
+							<p className="text-lg font-medium">
+								<span className="text-green-500">NEW!</span> Upload PDF Recipe
+								to autofill the form
+							</p>
 							<p className="text-sm text-gray-500">
 								Click to select a PDF file
 							</p>

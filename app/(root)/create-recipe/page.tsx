@@ -14,7 +14,6 @@ async function Page() {
 	return (
 		<>
 			<h1 className="text-center mb-10 h1">Create recipe</h1>
-			<p>You can even upload a PDF recipe to auto-fill the form!</p>
 			<CreateRecipeContainer mongoUserId={mongoUser?._id.toString()} />
 		</>
 	);
