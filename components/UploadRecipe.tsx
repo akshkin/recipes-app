@@ -99,7 +99,7 @@ function UploadRecipe({
 			}
 		} catch (err) {
 			setError(
-				"Failed to extract recipe. Please try again after some time. Possible reasons could be that the PDF is scanned orthe text is in a language other than English.",
+				"Failed to extract recipe. Please try again after some time. Possible reasons could be that the PDF is scanned or the text is in a language other than English.",
 			);
 			console.error(err);
 		} finally {
