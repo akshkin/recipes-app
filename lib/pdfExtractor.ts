@@ -1,5 +1,3 @@
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-
 /* 
 Set worker path to keep the main thread responsive so that the extraction process 
 occurs in the background (separate thread) without blocking the UI. 
@@ -7,16 +5,15 @@ This is crucial for performance, especially when dealing with large PDF files.
 */
 // pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
-// Use the local worker file instead of CDN
-if (typeof window !== "undefined") {
-	pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-		"pdfjs-dist/legacy/build/pdf.worker.min.mjs",
-		import.meta.url,
-	).toString();
-}
-
-console.log("PDF.js version:", pdfjsLib.version);
 export async function extractTextFromPDF(file: File): Promise<string> {
+	const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+	// Use the local worker file instead of CDN
+	if (typeof window !== "undefined") {
+		pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+			"pdfjs-dist/legacy/build/pdf.worker.min.mjs",
+			import.meta.url,
+		).toString();
+	}
 	const arrayBuffer = await file.arrayBuffer();
 	const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 

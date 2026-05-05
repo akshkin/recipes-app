@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { extractTextFromPDF } from "@/lib/pdfExtractor";
 import { parseRecipe } from "@/lib/actions/recipe.action";
 
@@ -60,8 +60,10 @@ function UploadRecipe({
 }) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		setError("");
 		const file = e.target.files?.[0];
 		if (!file || file.type !== "application/pdf") {
 			setError("Please upload a PDF file");
@@ -87,10 +89,14 @@ function UploadRecipe({
 				setPrefilledForm(response);
 			}
 		} catch (err) {
-			setError("Failed to extract recipe. Please try again.");
+			setError("Failed to extract recipe. Please try again after some time.");
 			console.error(err);
 		} finally {
 			setLoading(false);
+			// Clear the file input value to allow re-uploading the same file if needed
+			if (fileInputRef.current) {
+				fileInputRef.current.value = "";
+			}
 		}
 	};
 
@@ -98,6 +104,7 @@ function UploadRecipe({
 		<div className="border-2 border-dashed rounded-lg p-6 mx-8 my-4">
 			<label className="cursor-pointer">
 				<input
+					ref={fileInputRef}
 					type="file"
 					accept="application/pdf"
 					onChange={handleFileUpload}
@@ -128,7 +135,17 @@ function UploadRecipe({
 				fields as those are not usually populated automatically and the image
 				would have to be manually uploaded.
 			</p>
-			{error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+			{error && (
+				<div>
+					<p className="text-red-500 text-sm mt-2">{error}</p>
+					<button
+						onClick={() => fileInputRef.current?.click()}
+						className="mt-2 underline text-blue-600"
+					>
+						Try again
+					</button>
+				</div>
+			)}
 		</div>
 	);
 }
