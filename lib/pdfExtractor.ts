@@ -1,4 +1,4 @@
-import * as pdfjsLib from "pdfjs-dist";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 
 /* 
 Set worker path to keep the main thread responsive so that the extraction process 
@@ -7,10 +7,10 @@ This is crucial for performance, especially when dealing with large PDF files.
 */
 // pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
-// IMPORTANT: Use the local worker file instead of CDN
+// Use the local worker file instead of CDN
 if (typeof window !== "undefined") {
 	pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-		"pdfjs-dist/build/pdf.worker.min.mjs",
+		"pdfjs-dist/legacy/build/pdf.worker.min.mjs",
 		import.meta.url,
 	).toString();
 }
