@@ -30,6 +30,7 @@ import { toast } from "react-toastify";
 import { getPresignedUrl } from "@/lib/actions/storage";
 import { publicImageUrl } from "@/lib/contstants";
 import { supabase } from "@/lib/supabase";
+import imageCompression from "browser-image-compression";
 
 interface RecipeFormProps {
 	mongoUserId: string;
@@ -113,16 +114,23 @@ function CreateRecipeForm({
 				);
 				return;
 			}
-			console.log("jhbjherkhbrv");
 
-			// Check the file size (max 2MB)
-			const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+			// Check the file size (max 5MB)
+			const maxSize = 5 * 1024 * 1024; // 5MB in bytes
 			if (imageFile.size > maxSize) {
-				toast.error("File size exceeds the maximum limit (2MB).");
+				toast.error("File size exceeds the maximum limit (5MB).");
 				return;
 			}
-			setFile(imageFile);
-			setPreview(URL.createObjectURL(imageFile));
+
+			const options = {
+				maxSizeMB: 1,
+				maxWidthOrHeight: 1200,
+				useWebWorker: true,
+			};
+			const compressedFile = await imageCompression(imageFile, options);
+
+			setFile(compressedFile);
+			setPreview(URL.createObjectURL(compressedFile));
 		}
 	}
 
