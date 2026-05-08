@@ -21,7 +21,6 @@ function RecipePDFDocument({ recipe }: Props) {
 	const { title, image, ingredients, category, cuisine, createdBy, method } =
 		parsedRecipe;
 
-	console.log(image);
 	return (
 		<Document>
 			<Page style={styles.body}>

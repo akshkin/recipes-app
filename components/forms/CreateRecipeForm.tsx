@@ -52,8 +52,6 @@ function CreateRecipeForm({
 	const [preview, setPreview] = useState<string | null>(null);
 	const router = useRouter();
 
-	console.log("Parsed recipe in form:", parsedRecipe?.title);
-
 	const form = useForm<z.infer<typeof RecipeSchema>>({
 		resolver: zodResolver(RecipeSchema),
 		defaultValues: parsedRecipe
