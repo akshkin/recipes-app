@@ -35,7 +35,7 @@ async function Page({ params }: Props) {
 
 	let mongoUser;
 
-	const { userId: clerkId } = auth();
+	const { userId: clerkId } = await auth();
 
 	if (clerkId) {
 		mongoUser = await getMongoUserFromClerkId(clerkId);

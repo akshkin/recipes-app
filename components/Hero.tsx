@@ -6,7 +6,7 @@ import Link from "next/link";
 import React from "react";
 
 async function Hero() {
-	const { userId } = auth();
+	const { userId } = await auth();
 	let mongoUser;
 
 	if (userId) {

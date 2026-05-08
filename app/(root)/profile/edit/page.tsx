@@ -4,21 +4,21 @@ import { auth } from "@clerk/nextjs/server";
 import React from "react";
 
 async function Page() {
-  const { userId: clerkId } = auth();
+	const { userId: clerkId } = await auth();
 
-  if (!clerkId) {
-    return <p className="text-center">No user found!</p>;
-  }
+	if (!clerkId) {
+		return <p className="text-center">No user found!</p>;
+	}
 
-  const result = await getUserById(clerkId);
+	const result = await getUserById(clerkId);
 
-  const { bio, socialLinks } = result?.user;
+	const { bio, socialLinks } = result?.user;
 
-  return (
-    <div>
-      <EditProfile bio={bio} socialLinks={socialLinks} />
-    </div>
-  );
+	return (
+		<div>
+			<EditProfile bio={bio} socialLinks={socialLinks} />
+		</div>
+	);
 }
 
 export default Page;
