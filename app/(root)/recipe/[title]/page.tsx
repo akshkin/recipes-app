@@ -15,12 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { publicImageUrl } from "@/lib/contstants";
-import dynamic from "next/dynamic";
-
-const RecipePdfLink = dynamic(() => import("@/components/RecipePdfLink"), {
-	ssr: false,
-	loading: () => <p>Loading...</p>,
-});
+import RecipePdfLink from "@/components/RecipePdfLink";
 
 interface Props {
 	params: {
