@@ -1,7 +1,6 @@
 import CreateReview from "@/components/forms/CreateReview";
 import DeleteAction from "@/components/DeleteAction";
 import RatingNumber from "@/components/RatingNumber";
-import RecipePdfLink from "@/components/RecipePdfLink";
 import ReviewCard from "@/components/cards/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
@@ -16,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { publicImageUrl } from "@/lib/contstants";
+import RecipePdfLink from "@/components/RecipePdfLink";
 
 interface Props {
 	params: {
@@ -35,7 +35,7 @@ async function Page({ params }: Props) {
 
 	let mongoUser;
 
-	const { userId: clerkId } = auth();
+	const { userId: clerkId } = await auth();
 
 	if (clerkId) {
 		mongoUser = await getMongoUserFromClerkId(clerkId);

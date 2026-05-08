@@ -1,10 +1,10 @@
 import CreateRecipeContainer from "@/components/CreateRecipeContainer";
 import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import React from "react";
 
 async function Page() {
-	const { userId } = auth();
+	const { userId } = await auth();
 	if (!userId) {
 		return <h2>Please login to create recipe</h2>;
 	}

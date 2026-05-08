@@ -1,129 +1,143 @@
 import { IRecipe } from "@/database-models/recipe.model";
 
 export interface SearchParamsProps {
-  searchParams: { [key: string]: string | undefined };
+	searchParams: { [key: string]: string | undefined };
 }
 
 export interface CreateRecipeParams {
-  title: string;
-  description: string;
-  category: string;
-  image: string;
-  createdBy: string;
-  cuisine: string;
-  ingredients: { ingredient: string }[];
-  method: { step: string }[];
-  path: string;
+	title: string;
+	description: string;
+	category: string;
+	image: string;
+	createdBy: string;
+	cuisine: string;
+	ingredients: { ingredient: string }[];
+	method: { step: string }[];
+	path: string;
 }
 
 export interface GetAllRecipesParams {
-  filter?: string;
-  page?: number;
-  pageSize?: number;
-  sort?: string;
+	filter?: string;
+	page?: number;
+	pageSize?: number;
+	sort?: string;
 }
 
 export interface GetRecipeByTitleParams {
-  title: string;
+	title: string;
 }
 export interface GetRecipeByCategoryTitleParams {
-  title: string;
-  page?: number;
-  pageSize?: number;
-  sort?: string;
+	title: string;
+	page?: number;
+	pageSize?: number;
+	sort?: string;
 }
 
 export interface EditRecipeParams {
-  _id: string;
-  updateData: {
-    title: string;
-    description: string;
-    category: string;
-    cuisine: string;
-    image: string;
-    ingredients: { ingredient: string }[];
-    method: { step: string }[];
-    createdBy: string;
-  };
-  path: string;
+	_id: string;
+	updateData: {
+		title: string;
+		description: string;
+		category: string;
+		cuisine: string;
+		image: string;
+		ingredients: { ingredient: string }[];
+		method: { step: string }[];
+		createdBy: string;
+	};
+	path: string;
 }
 
 export interface CreateUserParams {
-  clerkId: string;
-  name: string;
-  username: string;
-  image: string;
-  email: string;
+	clerkId: string;
+	name: string;
+	username: string;
+	image: string;
+	email: string;
 }
 export interface UpdateUserParams {
-  clerkId: string;
-  updateData: {
-    name: string;
-    username: string;
-    image: string;
-    email: string;
-  };
-  path: string;
+	clerkId: string;
+	updateData: {
+		name: string;
+		username: string;
+		image: string;
+		email: string;
+	};
+	path: string;
 }
 
 export interface DeleteUserParams {
-  clerkId: string;
+	clerkId: string;
 }
 
 export interface UpdateUserBioAndLinksParams {
-  clerkId: string;
-  updateData: {
-    bio?: string;
-    socialLinks: {
-      instagram?: string;
-      facebook?: string;
-      youtube?: string;
-    };
-  };
-  path: string;
+	clerkId: string;
+	updateData: {
+		bio?: string;
+		socialLinks: {
+			instagram?: string;
+			facebook?: string;
+			youtube?: string;
+		};
+	};
+	path: string;
 }
 
 export interface CreateReviewParams {
-  user: string;
-  recipe: string;
-  rating: number;
-  comment: string;
-  path: string;
+	user: string;
+	recipe: string;
+	rating: number;
+	comment: string;
+	path: string;
 }
 
 export interface GetReviewParams {
-  recipe: string;
+	recipe: string;
 }
 export interface DeleteReviewParams {
-  reviewId: string;
-  path: string;
+	reviewId: string;
+	path: string;
 }
 
 export interface DeleteRecipeParams {
-  id: string;
-  path: string;
+	id: string;
+	path: string;
 }
 
 export interface SaveRecipeParams {
-  userId: string;
-  recipeId: string;
-  path: string;
+	userId: string;
+	recipeId: string;
+	path: string;
 }
 
 export interface GetSavedRecipesParams {
-  id: string;
-  page: number;
-  pageSize?: number;
-  filter?: string;
-  sort?: string;
+	id: string;
+	page: number;
+	pageSize?: number;
+	filter?: string;
+	sort?: string;
 }
 
 export interface GetUserRecipesParams {
-  id: string;
-  sort?: string;
+	id: string;
+	sort?: string;
 }
 
 export interface GetRecipesWithAverageRating {
-  recipes: IRecipe[];
-  sort?: string;
+	recipes: IRecipe[];
+	sort?: string;
+}
+
+export interface Profile {
+	_id: string;
+	name: string;
+	username: string;
+	email: string;
+	bio: string;
+	socialLinks: {
+		instagram: string;
+		facebook: string;
+		youTube: string;
+	};
+	image: string;
 }
