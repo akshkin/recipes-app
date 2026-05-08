@@ -1,5 +1,6 @@
 import EditProfile from "@/components/forms/EditProfile";
 import { getUserById } from "@/lib/actions/user.action";
+import { Profile } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import React from "react";
 
@@ -12,7 +13,7 @@ async function Page() {
 
 	const result = await getUserById(clerkId);
 
-	const { bio, socialLinks } = result?.user;
+	const { bio, socialLinks } = result?.user as Profile;
 
 	return (
 		<div>

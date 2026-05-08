@@ -6,6 +6,7 @@ import {
 	CreateUserParams,
 	DeleteUserParams,
 	GetSavedRecipesParams,
+	Profile,
 	SaveRecipeParams,
 	UpdateUserBioAndLinksParams,
 	UpdateUserParams,
@@ -77,8 +78,7 @@ export async function getUserById(clerkId: string) {
 	try {
 		connectToDatabase();
 
-		const user = await User.findOne({ clerkId });
-		console.log("user", user);
+		const user = await User.findOne({ clerkId }).lean<Profile>();
 
 		if (!user) {
 			return { message: "User not found" };
