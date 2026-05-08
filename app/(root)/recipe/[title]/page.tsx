@@ -1,7 +1,6 @@
 import CreateReview from "@/components/forms/CreateReview";
 import DeleteAction from "@/components/DeleteAction";
 import RatingNumber from "@/components/RatingNumber";
-import RecipePdfLink from "@/components/RecipePdfLink";
 import ReviewCard from "@/components/cards/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
@@ -16,6 +15,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { publicImageUrl } from "@/lib/contstants";
+import dynamic from "next/dynamic";
+
+const RecipePdfLink = dynamic(() => import("@/components/RecipePdfLink"), {
+	ssr: false,
+	loading: () => <p>Loading...</p>,
+});
 
 interface Props {
 	params: {
