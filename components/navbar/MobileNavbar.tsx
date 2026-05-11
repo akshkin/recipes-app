@@ -37,7 +37,7 @@ async function MobileNavbar() {
 								height={30}
 								title="saved recipes"
 							/>{" "}
-							<p className="text-xl uppercase">Saved</p>
+							<span className="text-xl uppercase">Saved</span>
 						</Link>
 					</SheetClose>
 					<SheetClose asChild>
@@ -49,7 +49,7 @@ async function MobileNavbar() {
 								height={30}
 								title="saved recipes"
 							/>{" "}
-							<p className="text-xl uppercase">Profile</p>
+							<span className="text-xl uppercase">Profile</span>
 						</Link>
 					</SheetClose>
 					{CATEGORIES.map((category) => (
@@ -61,9 +61,7 @@ async function MobileNavbar() {
 									width={30}
 									height={30}
 								/>
-								<p className="uppercase font-bold text-xl text-primary-500 link">
-									{category.title}
-								</p>
+								<span className="text-xl uppercase"> {category.title} </span>
 							</Link>
 						</SheetClose>
 					))}
