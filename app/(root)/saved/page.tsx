@@ -4,7 +4,6 @@ import RecipeCard from "@/components/cards/RecipeCard";
 import { getSavedPosts } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
-import React from "react";
 
 async function Page({ searchParams }: SearchParamsProps) {
 	const { userId } = await auth();
@@ -23,7 +22,7 @@ async function Page({ searchParams }: SearchParamsProps) {
 	});
 
 	if (!result?.savedPosts) {
-		return <p>User not found</p>;
+		return <p>You haven't saved any recipes yet!</p>;
 	}
 
 	return (
