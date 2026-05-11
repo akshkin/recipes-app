@@ -9,9 +9,8 @@ export async function extractTextFromPDF(file: File): Promise<string> {
 	const PDFJSWorker = await import("pdfjs-dist/legacy/build/pdf.worker");
 	// using CDN was failing when used as ..../pdf.worker.mjs but using it like as below works reliably
 	// Using the local worker file instead of CDN was failing in some environments, so switched to the CDN version which is more reliable across different setups.
-	if (typeof window !== "undefined") {
-		pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/${PDFJSWorker.default}`;
-	}
+	pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/${PDFJSWorker.default}`;
+
 	const arrayBuffer = await file.arrayBuffer();
 	const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 

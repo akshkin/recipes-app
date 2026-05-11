@@ -1,4 +1,3 @@
-import React from "react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 import Image from "next/image";
 
@@ -12,13 +11,15 @@ async function MobileNavbar() {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
-				<Image
-					src="/assets/icons/hamburger.svg"
-					alt="menu"
-					width={30}
-					height={30}
-					className="cursor-pointer lg:hidden min-w-[30px] link"
-				/>
+				<button className="cursor-pointer lg:hidden link" type="button">
+					<Image
+						src="/assets/icons/hamburger.svg"
+						alt="menu"
+						width={30}
+						height={30}
+						className="cursor-pointer lg:hidden link"
+					/>
+				</button>
 			</SheetTrigger>
 			<SheetContent className="border-none mx-auto">
 				<SheetClose asChild>
