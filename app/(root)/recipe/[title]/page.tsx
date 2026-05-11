@@ -1,5 +1,3 @@
-import CreateReview from "@/components/forms/CreateReview";
-import DeleteAction from "@/components/DeleteAction";
 import RatingNumber from "@/components/RatingNumber";
 import ReviewCard from "@/components/cards/ReviewCard";
 import SaveAction from "@/components/SaveAction";
@@ -8,13 +6,13 @@ import {
 	calculateAverageRatingAndCountForRecipe,
 	getReviews,
 } from "@/lib/actions/review.action";
-import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
 import { formatNumber } from "@/lib/utils";
-import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import { publicImageUrl } from "@/lib/contstants";
 import RecipePdfLink from "@/components/RecipePdfLink";
+import RecipeOwnerActions from "@/components/RecipeOwnerActions";
+import CreateReviewSection from "@/components/CreateReviewSection";
 
 interface Props {
 	params: {
@@ -32,22 +30,10 @@ async function Page({ params }: Props) {
 		return <p className="h3 text-center">Recipe not found</p>;
 	}
 
-	let mongoUser;
-
-	const { userId: clerkId } = await auth();
-
-	if (clerkId) {
-		mongoUser = await getMongoUserFromClerkId(clerkId);
-	}
-
-	const reviewsResult = await getReviews({ recipe: result?.recipe?._id });
-	const ratingResult = await calculateAverageRatingAndCountForRecipe(
-		result.recipe._id,
-	);
-
-	const userAlreadyRated = reviewsResult?.reviews?.find(
-		(review) => review.user.clerkId === clerkId,
-	);
+	const [reviewsResult, ratingResult] = await Promise.all([
+		getReviews({ recipe: result.recipe._id }),
+		calculateAverageRatingAndCountForRecipe(result.recipe._id),
+	]);
 
 	const {
 		_id,
@@ -61,14 +47,12 @@ async function Page({ params }: Props) {
 		cuisine,
 	} = result.recipe;
 
-	const formattedTime = new Date(String(createdAt)).toLocaleDateString(
-		"en-US",
-		{
-			day: "numeric",
-			month: "long",
-			year: "numeric",
-		},
-	);
+	const formattedTime = new Intl.DateTimeFormat("en-US", {
+		day: "numeric",
+		month: "long",
+		year: "numeric",
+		timeZone: "UTC",
+	}).format(new Date(createdAt));
 
 	return (
 		<main className="">
@@ -87,25 +71,11 @@ async function Page({ params }: Props) {
 						</h1>
 
 						<div className="flex justify-start  gap-2 max-sm:w-full lg:w-full mb-6 items-center">
-							{clerkId === createdBy?.clerkId && (
-								<>
-									<Link
-										className="secondary-btn text-center lg:w-[160px]"
-										href={`/recipe/edit/${_id}`}
-									>
-										Edit recipe
-									</Link>
-									<DeleteAction
-										userClerkId={createdBy?.clerkId}
-										id={_id.toString()}
-										type="recipe"
-									/>
-								</>
-							)}
-							<SaveAction
-								id={_id.toString()}
-								isSaved={mongoUser?.saved.includes(_id)}
+							<RecipeOwnerActions
+								authorClerkId={createdBy?.clerkId}
+								recipeId={_id.toString()}
 							/>
+							<SaveAction id={_id.toString()} />
 						</div>
 					</div>
 
@@ -199,12 +169,7 @@ async function Page({ params }: Props) {
 				</div>
 			</section>
 
-			{!userAlreadyRated && (
-				<CreateReview
-					recipe={_id.toString()}
-					user={mongoUser?._id.toString()}
-				/>
-			)}
+			<CreateReviewSection recipeId={_id.toString()} />
 
 			{reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
 				<div className="mb-4  px-8 max-w-6xl mx-auto">
