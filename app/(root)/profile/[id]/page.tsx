@@ -49,11 +49,6 @@ async function Page({ params, searchParams }: ParamsProps) {
 					<div className="flex gap-4 justify-between">
 						<h1 className="h1">{result?.user?.name.toUpperCase()}</h1>
 						<EditProfileButton profileClerkId={clerkId} />
-						{/* {clerkId === userId && (
-							<Link className="secondary-outline-btn" href="/profile/edit">
-								Edit profile
-							</Link>
-						)} */}
 					</div>
 					<p className="text-accent-500 my-1">@{result?.user?.username}</p>
 					{result.user.bio && <p>{result.user.bio}</p>}
@@ -63,7 +58,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 							<div className="flex gap-4 items-center">
 								{instagram && (
 									<a href={instagram} target="_blank" className="link">
-										<Image
+										<img
 											src="/assets/icons/instagram.svg"
 											alt="instagram"
 											width={30}
@@ -73,7 +68,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 								)}
 								{facebook && (
 									<a href={facebook} target="_blank" className="link">
-										<Image
+										<img
 											src="/assets/icons/facebook.svg"
 											alt="facebook"
 											width={30}
@@ -83,7 +78,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 								)}
 								{youTube && (
 									<a href={youTube} target="_blank" className="link">
-										<Image
+										<img
 											src="/assets/icons/youtube.svg"
 											alt="youtube"
 											width={60}
