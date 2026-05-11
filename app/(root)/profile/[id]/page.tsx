@@ -18,7 +18,8 @@ interface ParamsProps extends SearchParamsProps {
 }
 
 async function Page({ params, searchParams }: ParamsProps) {
-	const { id: clerkId } = params;
+	const { id: clerkId } = await params;
+	const { sort } = await searchParams;
 	const { userId } = await auth();
 
 	const mongoUser = await getMongoUserFromClerkId(clerkId);
@@ -26,7 +27,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 	const result = await getUserById(clerkId);
 	const userRecipes = await getRecipesByUserId({
 		id: mongoUser?._id,
-		sort: searchParams.sort ? searchParams.sort : "",
+		sort: sort ? sort : "",
 	});
 
 	if (!result.user) {

@@ -1,4 +1,3 @@
-import React from "react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 import Image from "next/image";
 
@@ -12,13 +11,15 @@ async function MobileNavbar() {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
-				<Image
-					src="/assets/icons/hamburger.svg"
-					alt="menu"
-					width={30}
-					height={30}
-					className="cursor-pointer lg:hidden min-w-[30px] link"
-				/>
+				<button className="cursor-pointer lg:hidden link" type="button">
+					<Image
+						src="/assets/icons/hamburger.svg"
+						alt="menu"
+						width={30}
+						height={30}
+						className="cursor-pointer lg:hidden link"
+					/>
+				</button>
 			</SheetTrigger>
 			<SheetContent className="border-none mx-auto">
 				<SheetClose asChild>
@@ -36,7 +37,7 @@ async function MobileNavbar() {
 								height={30}
 								title="saved recipes"
 							/>{" "}
-							<p className="text-xl uppercase">Saved</p>
+							<span className="text-xl uppercase">Saved</span>
 						</Link>
 					</SheetClose>
 					<SheetClose asChild>
@@ -48,7 +49,7 @@ async function MobileNavbar() {
 								height={30}
 								title="saved recipes"
 							/>{" "}
-							<p className="text-xl uppercase">Profile</p>
+							<span className="text-xl uppercase">Profile</span>
 						</Link>
 					</SheetClose>
 					{CATEGORIES.map((category) => (
@@ -60,9 +61,7 @@ async function MobileNavbar() {
 									width={30}
 									height={30}
 								/>
-								<p className="uppercase font-bold text-xl text-primary-500 link">
-									{category.title}
-								</p>
+								<span className="text-xl uppercase"> {category.title} </span>
 							</Link>
 						</SheetClose>
 					))}

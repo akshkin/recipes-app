@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { extractTextFromPDF } from "@/lib/pdfExtractor";
 import { parseRecipe } from "@/lib/actions/recipe.action";
 
 // const data = {
@@ -76,6 +75,7 @@ function UploadRecipe({
 			return;
 		}
 
+		const { extractTextFromPDF } = await import("@/lib/pdfExtractor");
 		try {
 			setLoading(true);
 			setError("");
@@ -101,7 +101,6 @@ function UploadRecipe({
 			setError(
 				"Failed to extract recipe. Please try again after some time. Possible reasons could be that the PDF is scanned or the text is in a language other than English.",
 			);
-			console.error(err);
 		} finally {
 			setLoading(false);
 			// Clear the file input value to allow re-uploading the same file if needed
