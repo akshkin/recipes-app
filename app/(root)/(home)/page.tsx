@@ -10,10 +10,11 @@ interface PageProps {
 }
 
 export default async function Home({ searchParams, params }: PageProps) {
+	const { page, filter, sort } = await searchParams;
 	const result = await getRecipes({
-		page: searchParams.page ? +searchParams.page : 1,
-		filter: searchParams.filter ? searchParams.filter : "",
-		sort: searchParams.sort ? searchParams.sort : "",
+		page: page ? +page : 1,
+		filter: filter ? filter : "",
+		sort: sort ? sort : "",
 	});
 
 	return (
@@ -35,10 +36,7 @@ export default async function Home({ searchParams, params }: PageProps) {
 			</div>
 
 			{result?.isNextPage && (
-				<Pagination
-					page={searchParams.page ? +searchParams.page : 1}
-					isNextPage={result.isNextPage}
-				/>
+				<Pagination page={page ? +page : 1} isNextPage={result.isNextPage} />
 			)}
 		</main>
 	);

@@ -13,14 +13,13 @@ async function Page({ searchParams }: SearchParamsProps) {
 		return <p>Please login to continue!</p>;
 	}
 
-	const filter = searchParams.filter ? searchParams.filter : "";
-	const sort = searchParams.sort ? searchParams.sort : "";
+	const { filter, sort, page } = await searchParams;
 
 	const result = await getSavedPosts({
 		id: userId,
-		page: searchParams.page ? +searchParams.page : 1,
-		filter,
-		sort,
+		page: page ? +page : 1,
+		filter: filter ? filter : "",
+		sort: sort ? sort : "",
 	});
 
 	if (!result?.savedPosts) {
@@ -51,7 +50,7 @@ async function Page({ searchParams }: SearchParamsProps) {
 					</div>
 
 					<Pagination
-						page={searchParams.page ? +searchParams.page : 1}
+						page={page ? +page : 1}
 						isNextPage={result?.isNextPage || false}
 					/>
 				</>

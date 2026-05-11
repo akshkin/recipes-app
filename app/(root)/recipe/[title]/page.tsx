@@ -13,7 +13,6 @@ import { formatNumber } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import { publicImageUrl } from "@/lib/contstants";
 import RecipePdfLink from "@/components/RecipePdfLink";
 
@@ -24,7 +23,7 @@ interface Props {
 }
 
 async function Page({ params }: Props) {
-	const title = params.title;
+	const { title } = await params;
 	const decodedTitle = decodeURIComponent(title);
 
 	const result = await getRecipeByTitle({ title: decodedTitle });
@@ -62,11 +61,14 @@ async function Page({ params }: Props) {
 		cuisine,
 	} = result.recipe;
 
-	const formattedTime = new Date(createdAt).toLocaleDateString("en-US", {
-		day: "numeric",
-		month: "long",
-		year: "numeric",
-	});
+	const formattedTime = new Date(String(createdAt)).toLocaleDateString(
+		"en-US",
+		{
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+		},
+	);
 
 	return (
 		<main className="">
@@ -120,7 +122,7 @@ async function Page({ params }: Props) {
 					<RecipePdfLink recipe={JSON.stringify(result.recipe)} title={title} />
 
 					<p className="text-gray-700">
-						Created: <time>{formattedTime}</time>
+						Created: <time suppressHydrationWarning>{formattedTime}</time>
 					</p>
 
 					<p className="text-2xl mt-4">{description}</p>

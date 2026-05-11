@@ -31,6 +31,7 @@ function RecipeCard({
 				width={200}
 				height={120}
 				className="z-0 w-full h-2/3 object-cover rounded-t-lg"
+				loading="lazy"
 			/>
 
 			<div className="p-2 flex flex-col">
