@@ -1,15 +1,13 @@
-import React from "react";
 import {
 	getMongoUserFromClerkId,
 	getUserById,
 } from "@/lib/actions/user.action";
 import { getRecipesByUserId } from "@/lib/actions/recipe.action";
 import Image from "next/image";
-import Link from "next/link";
 import RecipeCard from "@/components/cards/RecipeCard";
-import { auth } from "@clerk/nextjs/server";
 import FilterAndSort from "@/components/FilterAndSort";
 import { SearchParamsProps } from "@/types";
+import EditProfileButton from "@/components/EditProfileButton";
 
 interface ParamsProps extends SearchParamsProps {
 	params: {
@@ -20,15 +18,16 @@ interface ParamsProps extends SearchParamsProps {
 async function Page({ params, searchParams }: ParamsProps) {
 	const { id: clerkId } = await params;
 	const { sort } = await searchParams;
-	const { userId } = await auth();
 
 	const mongoUser = await getMongoUserFromClerkId(clerkId);
 
-	const result = await getUserById(clerkId);
-	const userRecipes = await getRecipesByUserId({
-		id: mongoUser?._id,
-		sort: sort ? sort : "",
-	});
+	const [result, userRecipes] = await Promise.all([
+		getUserById(clerkId),
+		getRecipesByUserId({
+			id: mongoUser?._id,
+			sort: sort || "",
+		}),
+	]);
 
 	if (!result.user) {
 		return <p className="text-center">User not found</p>;
@@ -49,11 +48,12 @@ async function Page({ params, searchParams }: ParamsProps) {
 				<div>
 					<div className="flex gap-4 justify-between">
 						<h1 className="h1">{result?.user?.name.toUpperCase()}</h1>
-						{clerkId === userId && (
+						<EditProfileButton profileClerkId={clerkId} />
+						{/* {clerkId === userId && (
 							<Link className="secondary-outline-btn" href="/profile/edit">
 								Edit profile
 							</Link>
-						)}
+						)} */}
 					</div>
 					<p className="text-accent-500 my-1">@{result?.user?.username}</p>
 					{result.user.bio && <p>{result.user.bio}</p>}
