@@ -47,6 +47,8 @@ async function Hero() {
 				width={400}
 				height={250}
 				className="object-cover rounded-r-lg max-md:hidden"
+				priority
+				fetchPriority="high"
 			/>
 		</div>
 	);

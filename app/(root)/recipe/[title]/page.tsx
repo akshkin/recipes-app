@@ -148,6 +148,7 @@ async function Page({ params }: Props) {
 					alt={title}
 					width={300}
 					height={400}
+					priority
 				/>
 			</section>
 
