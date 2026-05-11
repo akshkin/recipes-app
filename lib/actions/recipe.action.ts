@@ -314,3 +314,17 @@ export async function parseRecipe(recipeText: string) {
 		throw error;
 	}
 }
+
+export async function checkIfRecipeSavedByUser(
+	userId: string,
+	recipeId: string,
+) {
+	try {
+		connectToDatabase();
+		const user = await User.findOne({ clerkId: userId });
+		return user?.saved.includes(recipeId) || false;
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
