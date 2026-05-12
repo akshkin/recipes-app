@@ -11,13 +11,13 @@ import {
 	EditRecipeParams,
 	GetAllRecipesParams,
 	GetRecipeByTitleParams,
-	GetRecipesWithAverageRating,
 	GetUserRecipesParams,
 } from "@/types";
 import User from "@/database-models/user.model";
 import { returnSortOptions } from "../utils";
 import Review from "@/database-models/review.model";
 import { parseRecipeWithLLM } from "../recipeParser";
+import mongoose from "mongoose";
 
 export async function createRecipe(params: CreateRecipeParams) {
 	try {
@@ -119,16 +119,11 @@ export async function getRecipes(params: GetAllRecipesParams) {
 			.skip(skipAmount)
 			.sort(sortOptions);
 
-		const recipesWithRating = await getRecipesWithAverageRating({
-			recipes,
-			sort,
-		});
-
 		const totalRecipes = await Recipe.countDocuments({ category });
 
 		const isNextPage = totalRecipes > skipAmount + recipes.length;
 
-		return { recipes: recipesWithRating, isNextPage };
+		return { recipes: recipes, isNextPage };
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -171,11 +166,7 @@ export async function getRecipesByUserId(params: GetUserRecipesParams) {
 		}
 		const recipes = await Recipe.find({ createdBy: id }).sort(sortOptions);
 
-		const recipesWithRating = await getRecipesWithAverageRating({
-			recipes,
-			sort,
-		});
-		return recipesWithRating;
+		return recipes;
 	} catch (error) {
 		console.log(error);
 	}
@@ -249,62 +240,6 @@ export async function deleteRecipe(params: DeleteRecipeParams) {
 	}
 }
 
-export async function getRecipesWithAverageRating(
-	params: GetRecipesWithAverageRating,
-) {
-	try {
-		const { recipes, sort } = params;
-		const recipeIds = recipes.map((recipe) => recipe._id);
-
-		const aggregateResult = await Review.aggregate([
-			{
-				$match: { recipe: { $in: recipeIds } },
-			},
-			{
-				$group: {
-					_id: "$recipe",
-					averageRating: { $avg: "$rating" },
-					ratingCount: { $sum: 1 },
-				},
-			},
-		]);
-
-		// create a Map where the keys are the _id of recipes (converted to strings) and the values are the corresponding average ratings calculated from the aggregation result.
-		const ratingMap = new Map(
-			aggregateResult.map((result) => [
-				result._id.toString(),
-				{
-					averageRating: result.averageRating,
-					ratingCount: result.ratingCount,
-				},
-			]),
-		);
-
-		const recipesWithRating = recipes.map((recipe) => ({
-			...recipe.toObject(),
-			averageRating: ratingMap.get(recipe._id.toString())?.averageRating || 0,
-			ratingCount: ratingMap.get(recipe._id.toString())?.ratingCount || 0,
-		}));
-
-		let sortedRecipes = [...recipesWithRating];
-
-		// sort recipes by rating
-
-		if (sort) {
-			if (sort === "rating_asc") {
-				sortedRecipes.sort((a, b) => a.averageRating - b.averageRating);
-			} else if (sort === "rating_desc") {
-				sortedRecipes.sort((a, b) => b.averageRating - a.averageRating);
-			}
-		}
-
-		return sortedRecipes;
-	} catch (error) {
-		console.error(error);
-		throw error;
-	}
-}
-
 export async function parseRecipe(recipeText: string) {
 	try {
 		const response = await parseRecipeWithLLM(recipeText);
@@ -327,4 +262,32 @@ export async function checkIfRecipeSavedByUser(
 		console.error(error);
 		throw error;
 	}
+}
+
+export async function updateRecipeRating(recipeId: string) {
+	const stats = await Review.aggregate([
+		{
+			$match: {
+				recipe: new mongoose.Types.ObjectId(recipeId),
+			},
+		},
+		{
+			$group: {
+				_id: "$recipe",
+				averageRating: { $avg: "$rating" },
+				ratingsCount: { $sum: 1 },
+			},
+		},
+	]);
+
+	await Recipe.findByIdAndUpdate(
+		recipeId,
+		{
+			$set: {
+				averageRating: Math.round((stats[0]?.averageRating || 0) * 10) / 10,
+				ratingsCount: stats[0]?.ratingsCount || 0,
+			},
+		},
+		{ new: true, strict: true },
+	);
 }
