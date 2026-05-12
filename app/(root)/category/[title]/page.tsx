@@ -2,7 +2,7 @@ import FilterAndSort from "@/components/FilterAndSort";
 import Pagination from "@/components/Pagination";
 import RecipeCard from "@/components/cards/RecipeCard";
 import { getRecipesByCategory } from "@/lib/actions/category.action";
-import { SearchParamsProps } from "@/types";
+import { Recipe, SearchParamsProps } from "@/types";
 import Link from "next/link";
 
 interface Props extends SearchParamsProps {
@@ -28,7 +28,7 @@ async function Page({ params, searchParams }: Props) {
 				<>
 					<FilterAndSort filter={false} />
 					<div className="custom-grid my-8">
-						{result?.recipes?.map((recipe) => (
+						{result?.recipes?.map((recipe: Recipe) => (
 							<RecipeCard
 								key={recipe._id}
 								_id={recipe._id}

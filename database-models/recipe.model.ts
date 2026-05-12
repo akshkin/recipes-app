@@ -12,6 +12,8 @@ export interface IRecipe extends mongoose.Document {
 	ingredients: { ingredient: string }[];
 	method: { step: string }[];
 	review: mongoose.Schema.Types.ObjectId[];
+	averageRating: number;
+	ratingsCount: number;
 	createdAt: Date;
 }
 

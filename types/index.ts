@@ -137,3 +137,11 @@ export interface Profile {
 	};
 	image: string;
 }
+
+export type Recipe = {
+	_id: string;
+	image: string;
+	title: string;
+	averageRating: number;
+	ratingsCount: number;
+};
