@@ -27,18 +27,3 @@ export default function RecipeOwnerActions({
 		</>
 	);
 }
-
-/**
- *                               <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
-+                               <button
-+                                 className="cursor-pointer lg:hidden link"
-+                                 type="button"
-+                                 aria-haspopup="dialog"
-+                                 aria-expanded={false}
-+                                 aria-controls="radix-_R_95knflb_"
-+                                 data-state="closed"
-+                                 onClick={function handleEvent}
-+                                 ref={function}
-+       
- * 
- */
