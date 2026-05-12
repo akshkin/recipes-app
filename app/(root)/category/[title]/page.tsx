@@ -35,7 +35,7 @@ async function Page({ params, searchParams }: Props) {
 								image={recipe.image}
 								title={recipe.title}
 								averageRating={recipe.averageRating}
-								ratingCount={recipe.ratingCount}
+								ratingsCount={recipe.ratingsCount}
 							/>
 						))}
 					</div>

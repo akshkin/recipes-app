@@ -1,18 +1,14 @@
 import RatingNumber from "@/components/RatingNumber";
-import ReviewCard from "@/components/cards/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
-import {
-	calculateAverageRatingAndCountForRecipe,
-	getReviews,
-} from "@/lib/actions/review.action";
 import { formatNumber } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { publicImageUrl } from "@/lib/contstants";
 import RecipePdfLink from "@/components/RecipePdfLink";
 import RecipeOwnerActions from "@/components/RecipeOwnerActions";
-import CreateReviewSection from "@/components/CreateReviewSection";
+import { Suspense } from "react";
+import ReviewsSection from "@/components/ReviewsSection";
 
 interface Props {
 	params: {
@@ -30,11 +26,6 @@ async function Page({ params }: Props) {
 		return <p className="h3 text-center">Recipe not found</p>;
 	}
 
-	const [reviewsResult, ratingResult] = await Promise.all([
-		getReviews({ recipe: result.recipe._id }),
-		calculateAverageRatingAndCountForRecipe(result.recipe._id),
-	]);
-
 	const {
 		_id,
 		image,
@@ -45,6 +36,8 @@ async function Page({ params }: Props) {
 		description,
 		category,
 		cuisine,
+		averageRating,
+		ratingsCount,
 	} = result.recipe;
 
 	const formattedTime = new Intl.DateTimeFormat("en-US", {
@@ -60,10 +53,9 @@ async function Page({ params }: Props) {
 				<div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
 					<div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse ">
 						<div className="flex gap-1 items-center mb-2">
-							<RatingNumber value={ratingResult.averageRating} />
-							{ratingResult.averageRating} (
-							{formatNumber(ratingResult.countRatings)}{" "}
-							{ratingResult.countRatings === 1 ? "rating" : "ratings"})
+							<RatingNumber value={averageRating ?? 0} />
+							{ratingsCount} ({formatNumber(ratingsCount)}{" "}
+							{ratingsCount === 1 ? "rating" : "ratings"})
 						</div>
 
 						<h1 className="text-4xl font-bold lg:text-5xl line-clamp-2 mb-2">
@@ -169,25 +161,11 @@ async function Page({ params }: Props) {
 				</div>
 			</section>
 
-			<CreateReviewSection recipeId={_id.toString()} />
-
-			{reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
-				<div className="mb-4  px-8 max-w-6xl mx-auto">
-					<h3 className="font-bold h3 mb-4">Reviews</h3>
-					{reviewsResult?.reviews.map((review) => (
-						<ReviewCard
-							key={review._id}
-							userImage={review.user.image}
-							userName={review.user.name}
-							comment={review.comment}
-							_id={review._id.toString()}
-							rating={review.rating}
-							userClerkId={review.user.clerkId}
-							date={review.createdAt}
-						/>
-					))}
-				</div>
-			) : null}
+			<Suspense
+				fallback={<p className="text-center mb-8">Loading reviews...</p>}
+			>
+				<ReviewsSection id={_id.toString()} />
+			</Suspense>
 		</main>
 	);
 }

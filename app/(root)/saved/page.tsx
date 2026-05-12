@@ -40,7 +40,7 @@ async function Page({ searchParams }: SearchParamsProps) {
 									title={recipe.title}
 									image={recipe.image}
 									averageRating={recipe.averageRating}
-									ratingCount={recipe.ratingCount}
+									ratingsCount={recipe.ratingsCount}
 								/>
 							))
 						) : (
