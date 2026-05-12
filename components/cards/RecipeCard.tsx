@@ -10,7 +10,7 @@ interface RecipeProps {
 	image: string;
 	title: string;
 	averageRating: number;
-	ratingCount: number;
+	ratingsCount: number;
 }
 
 function RecipeCard({
@@ -18,7 +18,7 @@ function RecipeCard({
 	image,
 	_id,
 	averageRating,
-	ratingCount,
+	ratingsCount,
 }: RecipeProps) {
 	return (
 		<Link
@@ -41,9 +41,9 @@ function RecipeCard({
 				</h2>
 				<div className="flex gap-2">
 					<RatingNumber value={averageRating} />
-					<span className={`text-sm text-gray-${ratingCount ? 700 : 400}`}>
-						({formatNumber(ratingCount)}{" "}
-						{ratingCount === 1 ? "rating" : "ratings"})
+					<span className={`text-sm text-gray-${ratingsCount ? 700 : 400}`}>
+						({formatNumber(ratingsCount ?? 0)}{" "}
+						{ratingsCount === 1 ? "rating" : "ratings"})
 					</span>
 				</div>
 			</div>

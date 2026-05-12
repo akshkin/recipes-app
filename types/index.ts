@@ -95,6 +95,7 @@ export interface GetReviewParams {
 	recipe: string;
 }
 export interface DeleteReviewParams {
+	recipe: string;
 	reviewId: string;
 	path: string;
 }
@@ -120,11 +121,6 @@ export interface GetSavedRecipesParams {
 
 export interface GetUserRecipesParams {
 	id: string;
-	sort?: string;
-}
-
-export interface GetRecipesWithAverageRating {
-	recipes: IRecipe[];
 	sort?: string;
 }
 
