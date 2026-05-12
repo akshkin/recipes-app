@@ -1,33 +1,27 @@
-"use client";
-
-import { useAuth } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
 import CreateReview from "./forms/CreateReview";
 import { hasUserReviewedRecipe } from "@/lib/actions/review.action";
+import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
 
-export default function CreateReviewSection({
+export default async function CreateReviewSection({
 	recipeId,
 }: {
 	recipeId: string;
 }) {
-	const { userId } = useAuth();
+	const { userId } = await auth();
 
-	const [canReview, setCanReview] = useState(false);
-	const [mongoUserId, setMongoUserId] = useState("");
+	const mongoUser = await getMongoUserFromClerkId(userId!);
+	if (!mongoUser) return;
 
-	useEffect(() => {
-		if (!userId) return;
+	const result = await hasUserReviewedRecipe(mongoUser._id, recipeId);
 
-		async function checkReviewStatus() {
-			const result = await hasUserReviewedRecipe(userId!, recipeId);
-			setCanReview(result.canReview);
-			setMongoUserId(result.mongoUserId);
-		}
+	// show review form only if user is logged in and has not reviewed the recipe yet
+	if (!userId || !result.canReview) return null;
 
-		checkReviewStatus();
-	}, [recipeId, userId]);
-
-	if (!userId || !canReview) return null;
-
-	return <CreateReview recipe={recipeId} user={mongoUserId} />;
+	return (
+		<CreateReview
+			recipe={JSON.parse(JSON.stringify(recipeId))}
+			user={mongoUser._id.toString()}
+		/>
+	);
 }
