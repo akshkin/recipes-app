@@ -45,7 +45,7 @@ function FilterAndSort({ filter }: Props) {
 					defaultValue={searchParams.get("filter") || ""}
 					onValueChange={(content) => handleFilterChange("filter", content)}
 				>
-					<SelectTrigger className="w-full">
+					<SelectTrigger className="w-full" aria-label="Select category">
 						<SelectValue placeholder="Select category" />
 					</SelectTrigger>
 					<SelectContent className="bg-white">
@@ -62,7 +62,7 @@ function FilterAndSort({ filter }: Props) {
 				defaultValue={searchParams.get("sort") || ""}
 				onValueChange={(content) => handleFilterChange("sort", content)}
 			>
-				<SelectTrigger className="w-full">
+				<SelectTrigger className="w-full" aria-label="Sort by">
 					<SelectValue placeholder="Sort by" />
 				</SelectTrigger>
 				<SelectContent className="bg-white">
