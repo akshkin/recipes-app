@@ -4,7 +4,6 @@ import RecipeCard from "@/components/cards/RecipeCard";
 import { getSavedPosts } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
-import React from "react";
 
 async function Page({ searchParams }: SearchParamsProps) {
 	const { userId } = await auth();
@@ -13,18 +12,17 @@ async function Page({ searchParams }: SearchParamsProps) {
 		return <p>Please login to continue!</p>;
 	}
 
-	const filter = searchParams.filter ? searchParams.filter : "";
-	const sort = searchParams.sort ? searchParams.sort : "";
+	const { filter, sort, page } = await searchParams;
 
 	const result = await getSavedPosts({
 		id: userId,
-		page: searchParams.page ? +searchParams.page : 1,
-		filter,
-		sort,
+		page: page ? +page : 1,
+		filter: filter ? filter : "",
+		sort: sort ? sort : "",
 	});
 
 	if (!result?.savedPosts) {
-		return <p>User not found</p>;
+		return <p>You haven't saved any recipes yet!</p>;
 	}
 
 	return (
@@ -42,7 +40,7 @@ async function Page({ searchParams }: SearchParamsProps) {
 									title={recipe.title}
 									image={recipe.image}
 									averageRating={recipe.averageRating}
-									ratingCount={recipe.ratingCount}
+									ratingsCount={recipe.ratingsCount}
 								/>
 							))
 						) : (
@@ -51,7 +49,7 @@ async function Page({ searchParams }: SearchParamsProps) {
 					</div>
 
 					<Pagination
-						page={searchParams.page ? +searchParams.page : 1}
+						page={page ? +page : 1}
 						isNextPage={result?.isNextPage || false}
 					/>
 				</>

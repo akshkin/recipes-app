@@ -1,21 +1,14 @@
-import CreateReview from "@/components/forms/CreateReview";
-import DeleteAction from "@/components/DeleteAction";
 import RatingNumber from "@/components/RatingNumber";
-import ReviewCard from "@/components/cards/ReviewCard";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
-import {
-	calculateAverageRatingAndCountForRecipe,
-	getReviews,
-} from "@/lib/actions/review.action";
-import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
 import { formatNumber } from "@/lib/utils";
-import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import { publicImageUrl } from "@/lib/contstants";
 import RecipePdfLink from "@/components/RecipePdfLink";
+import RecipeOwnerActions from "@/components/RecipeOwnerActions";
+import { Suspense } from "react";
+import ReviewsSection from "@/components/ReviewsSection";
 
 interface Props {
 	params: {
@@ -24,7 +17,7 @@ interface Props {
 }
 
 async function Page({ params }: Props) {
-	const title = params.title;
+	const { title } = await params;
 	const decodedTitle = decodeURIComponent(title);
 
 	const result = await getRecipeByTitle({ title: decodedTitle });
@@ -32,23 +25,6 @@ async function Page({ params }: Props) {
 	if (!result.recipe) {
 		return <p className="h3 text-center">Recipe not found</p>;
 	}
-
-	let mongoUser;
-
-	const { userId: clerkId } = await auth();
-
-	if (clerkId) {
-		mongoUser = await getMongoUserFromClerkId(clerkId);
-	}
-
-	const reviewsResult = await getReviews({ recipe: result?.recipe?._id });
-	const ratingResult = await calculateAverageRatingAndCountForRecipe(
-		result.recipe._id,
-	);
-
-	const userAlreadyRated = reviewsResult?.reviews?.find(
-		(review) => review.user.clerkId === clerkId,
-	);
 
 	const {
 		_id,
@@ -60,13 +36,16 @@ async function Page({ params }: Props) {
 		description,
 		category,
 		cuisine,
+		averageRating,
+		ratingsCount,
 	} = result.recipe;
 
-	const formattedTime = new Date(createdAt).toLocaleDateString("en-US", {
+	const formattedTime = new Intl.DateTimeFormat("en-US", {
 		day: "numeric",
 		month: "long",
 		year: "numeric",
-	});
+		timeZone: "UTC",
+	}).format(new Date(createdAt));
 
 	return (
 		<main className="">
@@ -74,10 +53,9 @@ async function Page({ params }: Props) {
 				<div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
 					<div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse ">
 						<div className="flex gap-1 items-center mb-2">
-							<RatingNumber value={ratingResult.averageRating} />
-							{ratingResult.averageRating} (
-							{formatNumber(ratingResult.countRatings)}{" "}
-							{ratingResult.countRatings === 1 ? "rating" : "ratings"})
+							<RatingNumber value={averageRating ?? 0} />
+							{ratingsCount} ({formatNumber(ratingsCount)}{" "}
+							{ratingsCount === 1 ? "rating" : "ratings"})
 						</div>
 
 						<h1 className="text-4xl font-bold lg:text-5xl line-clamp-2 mb-2">
@@ -85,25 +63,11 @@ async function Page({ params }: Props) {
 						</h1>
 
 						<div className="flex justify-start  gap-2 max-sm:w-full lg:w-full mb-6 items-center">
-							{clerkId === createdBy?.clerkId && (
-								<>
-									<Link
-										className="secondary-btn text-center lg:w-[160px]"
-										href={`/recipe/edit/${_id}`}
-									>
-										Edit recipe
-									</Link>
-									<DeleteAction
-										userClerkId={createdBy?.clerkId}
-										id={_id.toString()}
-										type="recipe"
-									/>
-								</>
-							)}
-							<SaveAction
-								id={_id.toString()}
-								isSaved={mongoUser?.saved.includes(_id)}
+							<RecipeOwnerActions
+								authorClerkId={createdBy?.clerkId}
+								recipeId={_id.toString()}
 							/>
+							<SaveAction id={_id.toString()} />
 						</div>
 					</div>
 
@@ -120,7 +84,7 @@ async function Page({ params }: Props) {
 					<RecipePdfLink recipe={JSON.stringify(result.recipe)} title={title} />
 
 					<p className="text-gray-700">
-						Created: <time>{formattedTime}</time>
+						Created: <time suppressHydrationWarning>{formattedTime}</time>
 					</p>
 
 					<p className="text-2xl mt-4">{description}</p>
@@ -148,6 +112,7 @@ async function Page({ params }: Props) {
 					alt={title}
 					width={300}
 					height={400}
+					priority
 				/>
 			</section>
 
@@ -196,30 +161,11 @@ async function Page({ params }: Props) {
 				</div>
 			</section>
 
-			{!userAlreadyRated && (
-				<CreateReview
-					recipe={_id.toString()}
-					user={mongoUser?._id.toString()}
-				/>
-			)}
-
-			{reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
-				<div className="mb-4  px-8 max-w-6xl mx-auto">
-					<h3 className="font-bold h3 mb-4">Reviews</h3>
-					{reviewsResult?.reviews.map((review) => (
-						<ReviewCard
-							key={review._id}
-							userImage={review.user.image}
-							userName={review.user.name}
-							comment={review.comment}
-							_id={review._id.toString()}
-							rating={review.rating}
-							userClerkId={review.user.clerkId}
-							date={review.createdAt}
-						/>
-					))}
-				</div>
-			) : null}
+			<Suspense
+				fallback={<p className="text-center mb-8">Loading reviews...</p>}
+			>
+				<ReviewsSection id={_id.toString()} />
+			</Suspense>
 		</main>
 	);
 }

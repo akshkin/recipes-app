@@ -1,15 +1,13 @@
-import React from "react";
 import {
 	getMongoUserFromClerkId,
 	getUserById,
 } from "@/lib/actions/user.action";
 import { getRecipesByUserId } from "@/lib/actions/recipe.action";
 import Image from "next/image";
-import Link from "next/link";
 import RecipeCard from "@/components/cards/RecipeCard";
-import { auth } from "@clerk/nextjs/server";
 import FilterAndSort from "@/components/FilterAndSort";
 import { SearchParamsProps } from "@/types";
+import EditProfileButton from "@/components/EditProfileButton";
 
 interface ParamsProps extends SearchParamsProps {
 	params: {
@@ -18,16 +16,18 @@ interface ParamsProps extends SearchParamsProps {
 }
 
 async function Page({ params, searchParams }: ParamsProps) {
-	const { id: clerkId } = params;
-	const { userId } = await auth();
+	const { id: clerkId } = await params;
+	const { sort } = await searchParams;
 
 	const mongoUser = await getMongoUserFromClerkId(clerkId);
 
-	const result = await getUserById(clerkId);
-	const userRecipes = await getRecipesByUserId({
-		id: mongoUser?._id,
-		sort: searchParams.sort ? searchParams.sort : "",
-	});
+	const [result, userRecipes] = await Promise.all([
+		getUserById(clerkId),
+		getRecipesByUserId({
+			id: mongoUser?._id,
+			sort: sort || "",
+		}),
+	]);
 
 	if (!result.user) {
 		return <p className="text-center">User not found</p>;
@@ -48,11 +48,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 				<div>
 					<div className="flex gap-4 justify-between">
 						<h1 className="h1">{result?.user?.name.toUpperCase()}</h1>
-						{clerkId === userId && (
-							<Link className="secondary-outline-btn" href="/profile/edit">
-								Edit profile
-							</Link>
-						)}
+						<EditProfileButton profileClerkId={clerkId} />
 					</div>
 					<p className="text-accent-500 my-1">@{result?.user?.username}</p>
 					{result.user.bio && <p>{result.user.bio}</p>}
@@ -62,7 +58,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 							<div className="flex gap-4 items-center">
 								{instagram && (
 									<a href={instagram} target="_blank" className="link">
-										<Image
+										<img
 											src="/assets/icons/instagram.svg"
 											alt="instagram"
 											width={30}
@@ -72,7 +68,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 								)}
 								{facebook && (
 									<a href={facebook} target="_blank" className="link">
-										<Image
+										<img
 											src="/assets/icons/facebook.svg"
 											alt="facebook"
 											width={30}
@@ -82,7 +78,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 								)}
 								{youTube && (
 									<a href={youTube} target="_blank" className="link">
-										<Image
+										<img
 											src="/assets/icons/youtube.svg"
 											alt="youtube"
 											width={60}
@@ -108,7 +104,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 									title={recipe.title}
 									image={recipe.image}
 									averageRating={recipe.averageRating}
-									ratingCount={recipe.ratingCount}
+									ratingsCount={recipe.ratingsCount}
 								/>
 							))}
 						</div>

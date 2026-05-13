@@ -15,7 +15,6 @@ import { revalidatePath } from "next/cache";
 import Recipe from "@/database-models/recipe.model";
 import { returnSortOptions } from "../utils";
 import Category from "@/database-models/category.model";
-import { getRecipesWithAverageRating } from "./recipe.action";
 
 export async function createUser(params: CreateUserParams) {
 	try {
@@ -153,14 +152,11 @@ export async function getSavedPosts(params: GetSavedRecipesParams) {
 			return { message: "User not found" };
 		}
 
-		const recipesWithRating = await getRecipesWithAverageRating({
-			recipes: user.saved,
-			sort,
-		});
+		const savedRecipes = user.saved;
 
-		const isNextPage = recipesWithRating.length > pageSize;
+		const isNextPage = savedRecipes.length > pageSize;
 
-		return { savedPosts: recipesWithRating, isNextPage };
+		return { savedPosts: savedRecipes, isNextPage };
 	} catch (error) {
 		console.log(error);
 		throw error;

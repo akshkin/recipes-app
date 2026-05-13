@@ -1,12 +1,10 @@
-import { CATEGORIES } from "@/constants";
-import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import MobileNavbar from "./MobileNavbar";
 import Searchbar from "../Searchbar";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import NavbarCategories from "./NavbarCategories";
 import { auth } from "@clerk/nextjs/server";
+import ClerkUserButton from "../ClerkUserButton";
 
 async function Navbar() {
 	const { userId } = await auth();
@@ -15,7 +13,7 @@ async function Navbar() {
 		<header className="pt-4 flex flex-col bg-white">
 			<div className="flex justify-between gap-3 items-center ml-3 ">
 				<Link href="/" className="link max-sm:pb-3">
-					<Image src="/assets/logo.svg" alt="logo" width={100} height={70} />
+					<img src="/assets/logo.svg" alt="logo" width={100} height={70} />
 				</Link>
 
 				<div className="flex w-full  items-center justify-end gap-4 px-4 pb-4 sm:py-3">
@@ -29,7 +27,7 @@ async function Navbar() {
 						<div className="flex gap-3  items-center">
 							<div className="flex max-lg:hidden gap-2 items-center">
 								<Link href="/saved" className="flex link">
-									<Image
+									<img
 										src="/assets/icons/bookmark.svg"
 										alt="bookmark"
 										width={30}
@@ -39,7 +37,7 @@ async function Navbar() {
 									<span>Saved</span>
 								</Link>
 								<Link href={`/profile/${userId}`} className="flex gap-1 link">
-									<Image
+									<img
 										src="/assets/icons/profile-circle.svg"
 										alt="profile"
 										width={30}
@@ -55,7 +53,7 @@ async function Navbar() {
 							>
 								Create recipe
 							</Link>
-							<UserButton />
+							<ClerkUserButton />
 						</div>
 					</SignedIn>
 					<MobileNavbar />

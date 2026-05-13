@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { useAuth } from "@clerk/nextjs";
@@ -13,9 +12,10 @@ interface Props {
 	userClerkId: string;
 	type: string;
 	id: string;
+	recipeId?: string;
 }
 
-function DeleteAction({ userClerkId, type, id }: Props) {
+function DeleteAction({ userClerkId, type, id, recipeId }: Props) {
 	const { userId } = useAuth();
 	const pathname = usePathname();
 	const router = useRouter();
@@ -24,7 +24,11 @@ function DeleteAction({ userClerkId, type, id }: Props) {
 		try {
 			if (window.confirm(`Are you sure you want to delete this ${type}?`)) {
 				if (type === "review") {
-					await deleteReview({ reviewId: id, path: pathname });
+					await deleteReview({
+						recipe: recipeId!,
+						reviewId: id,
+						path: pathname,
+					});
 					toast.success("Review was successfully deleted");
 				} else if (type === "recipe") {
 					await deleteRecipe({ id, path: pathname });

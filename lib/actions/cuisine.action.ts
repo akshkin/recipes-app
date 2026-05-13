@@ -5,38 +5,34 @@ import { connectToDatabase } from "../mongoose";
 import { GetRecipeByCategoryTitleParams } from "@/types";
 import Recipe from "@/database-models/recipe.model";
 import { returnSortOptions } from "../utils";
-import { getRecipesWithAverageRating } from "./recipe.action";
 
 export async function getRecipesByCuisine(
-  params: GetRecipeByCategoryTitleParams
+	params: GetRecipeByCategoryTitleParams,
 ) {
-  try {
-    connectToDatabase();
-    const { title, page = 1, pageSize = 10, sort } = params;
+	try {
+		connectToDatabase();
+		const { title, page = 1, pageSize = 10, sort } = params;
 
-    let sortOptions;
+		let sortOptions;
 
-    if (sort) {
-      sortOptions = returnSortOptions(sort);
-    }
+		if (sort) {
+			sortOptions = returnSortOptions(sort);
+		}
 
-    const skipAmount = (page - 1) * pageSize;
+		const skipAmount = (page - 1) * pageSize;
 
-    const cuisine = await Cuisine.findOne({ title }).populate({
-      path: "recipes",
-      model: Recipe,
-      options: { skip: skipAmount, limit: pageSize + 1, sort: sortOptions },
-    });
+		const cuisine = await Cuisine.findOne({ title }).populate({
+			path: "recipes",
+			model: Recipe,
+			options: { skip: skipAmount, limit: pageSize + 1, sort: sortOptions },
+		});
 
-    const recipesWithRating = await getRecipesWithAverageRating({
-      recipes: cuisine.recipes,
-      sort,
-    });
+		const recipes = cuisine.recipes;
 
-    const isNextPage = recipesWithRating.length > pageSize;
+		const isNextPage = recipes.length > pageSize;
 
-    return { recipes: recipesWithRating, isNextPage };
-  } catch (error) {
-    console.log(error);
-  }
+		return { recipes, isNextPage };
+	} catch (error) {
+		console.log(error);
+	}
 }
