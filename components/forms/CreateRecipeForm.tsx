@@ -31,6 +31,7 @@ import { getPresignedUrl } from "@/lib/actions/storage";
 import { publicImageUrl } from "@/lib/contstants";
 import { supabase } from "@/lib/supabase";
 import imageCompression from "browser-image-compression";
+import CancelButton from "../ui/CancelButton";
 
 interface RecipeFormProps {
 	mongoUserId: string;
@@ -400,21 +401,24 @@ function CreateRecipeForm({
 					Add step
 				</Button>
 
-				<Button disabled={isLoading} className="btn mt-8" type="submit">
-					{isLoading ? (
-						<span className="flex gap-2">
-							<Image
-								src="/assets/icons/bubble-loading.svg"
-								alt="loading"
-								width={20}
-								height={20}
-							/>{" "}
-							Submitting
-						</span>
-					) : (
-						"Submit"
-					)}
-				</Button>
+				<div className="flex gap-4 mt-8">
+					<Button disabled={isLoading} className="btn" type="submit">
+						{isLoading ? (
+							<span className="flex gap-2">
+								<Image
+									src="/assets/icons/bubble-loading.svg"
+									alt="loading"
+									width={20}
+									height={20}
+								/>{" "}
+								Creating...
+							</span>
+						) : (
+							"Create Recipe"
+						)}
+					</Button>
+					<CancelButton />
+				</div>
 			</form>
 		</Form>
 	);
