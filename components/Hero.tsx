@@ -5,7 +5,7 @@ import Image from "next/image";
 async function Hero() {
 	return (
 		<section className="flex items-start justify-center h-[60vh] rounded-lg w-full max-sm:py-3 mx-auto">
-			<div className="p-6 md:pl-20">
+			<div className="pt-6 pl-[calc(100vw-95%)]">
 				<h1 className="text-4xl font-semibold">
 					Discover delicious <span className="text-orange-500">recipes</span>
 				</h1>
