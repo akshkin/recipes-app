@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
 import Navbar from "@/components/navbar/Navbar";
 import Sidebar from "@/components/Sidebar";
@@ -15,6 +16,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 				</div>
 				{/* <Sidebar /> */}
 			</div>
+			<Footer />
 			<ToastContainer />
 		</div>
 	);

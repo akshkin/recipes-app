@@ -3,7 +3,7 @@ import Link from "next/link";
 
 function Sidebar() {
 	return (
-		<div className="my-6">
+		<div className="my-6" id="cuisines">
 			<h2 className="h2">Cuisines</h2>
 			<div className="flex gap-3 overflow-x-scroll my-3">
 				{CUISINES.map((cuisine) => (

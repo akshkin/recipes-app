@@ -36,24 +36,28 @@ export default async function Home({ searchParams }: PageProps) {
 				<JoinSection />
 				<Sidebar />
 				<FeaturedRecipe recipe={featuredRecipe} />
-				<h2 className="h2 mt-8">All recipes</h2>
-				<FilterAndSort filter={true} />
-				<div className="custom-grid mb-8">
-					{result.recipes.map((recipe) => (
-						<RecipeCard
-							key={recipe._id}
-							_id={recipe._id}
-							title={recipe.title}
-							image={recipe.image}
-							averageRating={recipe.averageRating}
-							ratingsCount={recipe.ratingsCount}
+				<section id="all-recipes">
+					<h2 className="h2 mt-8">All recipes</h2>
+					<FilterAndSort filter={true} />
+					<div className="custom-grid mb-8">
+						{result.recipes.map((recipe) => (
+							<RecipeCard
+								key={recipe._id}
+								_id={recipe._id}
+								title={recipe.title}
+								image={recipe.image}
+								averageRating={recipe.averageRating}
+								ratingsCount={recipe.ratingsCount}
+							/>
+						))}
+					</div>
+					{result?.isNextPage && (
+						<Pagination
+							page={page ? +page : 1}
+							isNextPage={result.isNextPage}
 						/>
-					))}
-				</div>
-
-				{result?.isNextPage && (
-					<Pagination page={page ? +page : 1} isNextPage={result.isNextPage} />
-				)}
+					)}
+				</section>
 			</div>
 		</main>
 	);
@@ -91,7 +95,7 @@ function FeaturedRecipe({ recipe }: Recipe) {
 	const { image, title, description, averageRating, ratingsCount } = recipe;
 
 	return (
-		<section className="mb-4 ">
+		<section className="mb-4" id="featured">
 			<h2 className="h2 mb-3">Featured recipe</h2>
 			<div className="flex gap-3 md:h-[300px] max-md:flex-col border rounded-r-md md:rounded-e-md border-gray-300 md:border-l-0">
 				<Image
