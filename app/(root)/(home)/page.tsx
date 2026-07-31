@@ -35,9 +35,9 @@ export default async function Home({ searchParams, params }: PageProps) {
 				<SubSection />
 				<Sidebar />
 				<FeaturedRecipe recipe={featuredRecipe} />
-				<h2 className="h1">All recipes</h2>
+				<h2 className="h2 mt-8">All recipes</h2>
 				<FilterAndSort filter={true} />
-				<div className="custom-grid mb-8 p-8">
+				<div className="custom-grid mb-8">
 					{result.recipes.map((recipe) => (
 						<RecipeCard
 							key={recipe._id}
@@ -85,7 +85,7 @@ type Recipe = {
 
 function FeaturedRecipe({ recipe }: Recipe) {
 	const { image, title, description, averageRating, ratingsCount } = recipe;
-	console.log(title);
+
 	return (
 		<section className="mb-4 ">
 			<h2 className="h2 mb-3">Featured recipe</h2>

@@ -39,7 +39,7 @@ function FilterAndSort({ filter }: Props) {
 	}
 
 	return (
-		<div className="mt-8 mb-4 flex flex-col sm:flex-row gap-3 w-full px-8 justify-center items-center max-w-lg z-30">
+		<div className="mt-4 mb-4 flex flex-col sm:flex-row gap-3 w-fulljustify-center items-center max-w-lg z-30">
 			{filter && (
 				<Select
 					defaultValue={searchParams.get("filter") || ""}
