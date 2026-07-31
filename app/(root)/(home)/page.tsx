@@ -1,12 +1,11 @@
 import FilterAndSort from "@/components/FilterAndSort";
 import Hero from "@/components/Hero";
 import Pagination from "@/components/Pagination";
-import RatingNumber from "@/components/RatingNumber";
 import Sidebar from "@/components/Sidebar";
 import RecipeCard from "@/components/cards/RecipeCard";
 import { getRecipes } from "@/lib/actions/recipe.action";
 import { publicImageUrl } from "@/lib/contstants";
-import { formatNumber } from "@/lib/utils";
+import { FileUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -60,15 +59,18 @@ export default async function Home({ searchParams, params }: PageProps) {
 
 function SubSection() {
 	return (
-		<section className="border bg-light-800 border-orange-300 rounded-md my-3 p-4">
-			<h2 className="text-2xl font-semibold ">Import recipes instantly!</h2>
-			<p className="text-sm mt-2 mb-4">
-				Already have your recipe as PDF? Upload a recipe PDF and we will
-				automatically fill the recipe for you.
-			</p>
-			<Link href="/create-recipe" className="btn text-sm">
-				Try now
-			</Link>
+		<section className="border bg-light-800 border-orange-300 rounded-md my-5 p-4 flex flex-row-reverse justify-start items-center gap-4 ">
+			<div className=" w-full">
+				<h2 className="text-2xl font-semibold ">Import recipes instantly!</h2>
+				<p className="text-sm mt-2 mb-4">
+					Already have your recipe as PDF? Upload a recipe PDF and we will
+					automatically fill the recipe for you.
+				</p>
+				<Link href="/create-recipe" className="btn text-sm">
+					Try now
+				</Link>
+			</div>
+			<FileUp size={50} className="w-24" />
 		</section>
 	);
 }

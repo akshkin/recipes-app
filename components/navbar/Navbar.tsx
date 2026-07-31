@@ -17,7 +17,7 @@ async function Navbar() {
 				</Link>
 
 				<div className="flex w-full  items-center justify-end gap-4 px-4 pb-4 sm:py-3">
-					<Searchbar />
+					<Searchbar className="max-sm:hidden w-[50%]" />
 					<SignedOut>
 						<Link href="/sign-in" className="btn min-w-[100px] text-center">
 							Sign In
@@ -47,10 +47,7 @@ async function Navbar() {
 									<span>Profile</span>
 								</Link>
 							</div>
-							<Link
-								className="btn max-xs:w-[120px] w-[150px] text-center"
-								href="/create-recipe"
-							>
+							<Link className="btn text-center" href="/create-recipe">
 								Create recipe
 							</Link>
 							<ClerkUserButton />

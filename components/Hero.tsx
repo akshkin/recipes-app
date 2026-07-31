@@ -4,7 +4,7 @@ import Image from "next/image";
 
 async function Hero() {
 	return (
-		<section className="flex items-start justify-center h-[60vh] rounded-lg w-full max-sm:py-3 mx-auto">
+		<section className="flex items-start justify-center  h-fit rounded-lg w-full max-sm:py-3 mx-auto">
 			<div className="pt-6 pl-[calc(100vw-95%)]">
 				<h1 className="text-5xl lg:text-7xl font-semibold">
 					Discover delicious <span className="text-orange-500">recipes</span>
@@ -14,8 +14,8 @@ async function Hero() {
 					Find, share and create recipes{" "}
 					<span className="block">from around the world</span>
 				</p>
-				<Searchbar />
-				<div className="mt-4 flex flex-wrap gap-3">
+				<Searchbar className="w-full max-w-[600px] " />
+				<div className="mt-6 flex flex-wrap gap-3">
 					<Link
 						href="/cuisine/italian"
 						className="link text-sm  border border-accent-500 px-6 py-1 rounded-full"
@@ -42,12 +42,12 @@ async function Hero() {
 					</Link>
 				</div>
 			</div>
-			<div className="h-full w-[70%] bg-black">
+			<div className="h-[50vh] w-[70%] bg-black">
 				<Image
 					src="/assets/hero-image.jpg"
 					alt=""
 					className="object-cover block w-full h-full"
-					height={600}
+					height={400}
 					width={800}
 					loading="eager"
 				/>
