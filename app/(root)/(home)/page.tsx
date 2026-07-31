@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Pagination from "@/components/Pagination";
 import RecipeCard from "@/components/cards/RecipeCard";
 import { getRecipes } from "@/lib/actions/recipe.action";
+import Link from "next/link";
 
 interface PageProps {
 	searchParams: { [key: string]: string | undefined };
@@ -20,6 +21,7 @@ export default async function Home({ searchParams, params }: PageProps) {
 	return (
 		<main className="flex min-h-screen flex-col items-center pt-0 pl-0 mb-6">
 			<Hero />
+			<SubSection />
 			<h1 className="h1">All recipes</h1>
 			<FilterAndSort filter={true} />
 			<div className="custom-grid mb-8 p-8">
@@ -39,5 +41,20 @@ export default async function Home({ searchParams, params }: PageProps) {
 				<Pagination page={page ? +page : 1} isNextPage={result.isNextPage} />
 			)}
 		</main>
+	);
+}
+
+function SubSection() {
+	return (
+		<section className="border bg-light-800 border-orange-300 rounded-md my-3 p-4 w-[70%]">
+			<h2 className="text-2xl font-semibold ">Import recipes instantly!</h2>
+			<p className="text-sm mt-2 mb-4">
+				Already have your recipe as PDF? Upload a recipe PDF and we will
+				automatically fill the recipe for for you.
+			</p>
+			<Link href="/create-recipe" className="btn text-sm">
+				Try now
+			</Link>
+		</section>
 	);
 }

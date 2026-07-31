@@ -13,7 +13,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 				<div className="w-full">
 					<Suspense fallback={<Loading />}>{children}</Suspense>
 				</div>
-				<Sidebar />
+				{/* <Sidebar /> */}
 			</div>
 			<ToastContainer />
 		</div>

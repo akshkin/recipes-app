@@ -1,29 +1,57 @@
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
-import WelcomeUser from "./WelcomeUser";
+import Searchbar from "./Searchbar";
+import Image from "next/image";
 
 async function Hero() {
 	return (
-		<div className="flex flex-col items-start justify-center bg-light-800 rounded-lg p-6 w-full max-md:h-[35vh] max-sm:py-3 mx-auto">
-			<WelcomeUser />
+		<section className="flex items-start justify-center h-[60vh] rounded-lg w-full max-sm:py-3 mx-auto">
+			<div className="p-6 md:pl-20">
+				<h1 className="text-4xl font-semibold">
+					Discover delicious <span className="text-orange-500">recipes</span>
+				</h1>
 
-			<p className="mb-4 text-lg">
-				Do you love creating recipes and sharing with the world? We now have a
-				feature where you can upload a PDF of your recipe and we will auto-fill
-				the form for you! No more copy-pasting, just upload and create your
-				recipe in minutes!
-			</p>
-			<SignedIn>
-				<Link href="/create-recipe" className="btn">
-					Create recipe
-				</Link>
-			</SignedIn>
-			<SignedOut>
-				<Link className="secondary-btn" href="/sign-up">
-					Join us now
-				</Link>
-			</SignedOut>
-		</div>
+				<p className="text-gray-700 text-lg my-4">
+					Find, share and create recipes from around the world
+				</p>
+				<Searchbar />
+				<div className="mt-4 flex flex-wrap gap-3">
+					<Link
+						href="/cuisine/italian"
+						className="link text-sm  border border-accent-500 px-6 py-1 rounded-full"
+					>
+						Italian
+					</Link>
+					<Link
+						href="/cuisine/indian"
+						className="link text-sm  border border-accent-500 px-6 py-1 rounded-full"
+					>
+						Indian
+					</Link>
+					<Link
+						href="/cuisine/american"
+						className="link  text-sm border border-accent-500 px-6 py-1 rounded-full"
+					>
+						American
+					</Link>
+					<Link
+						href="/category/dessert"
+						className="link text-sm  border border-accent-500 px-6 py-1 rounded-full"
+					>
+						Dessert
+					</Link>
+				</div>
+			</div>
+			<div className="h-full w-[70%] bg-black">
+				<Image
+					src="/assets/hero-image.jpg"
+					alt=""
+					className="object-cover block w-full h-full"
+					height={600}
+					width={800}
+					loading="eager"
+				/>
+			</div>
+		</section>
 	);
 }
 
