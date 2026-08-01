@@ -49,8 +49,17 @@ async function Page({ params }: Props) {
 
 	return (
 		<main className="">
-			<section className=" bg-light-800 flex flex-col lg:flex-row-reverse lg:items-center sm:items-start gap-12 lg:min-h-[75vh]">
-				<div className="p-8 max-lg:pb-0 lg:pl-0 flex flex-col justify-center w-full lg:w-[50%]">
+			<section
+				className="flex bg-cover bg-center max-sm:flex-col  gap-4 p-6 lg:p-16 text-white relative"
+				style={{
+					backgroundImage: `url('${publicImageUrl}/${image}')`,
+				}}
+			>
+				<div className="absolute inset-0 bg-black/50" />
+				<div className="max-lg:pb-0 lg:pl-0 flex flex-col gap-2 justify-center w-full relative ">
+					<span className="bg-accent-500 rounded-xl px-2 py-1 w-fit text-xs">
+						{category.title.toUpperCase()}
+					</span>
 					<div className="w-full flex items-start justify-between max-sm: flex-col-reverse lg:flex-col-reverse ">
 						<div className="flex gap-1 items-center mb-2">
 							<RatingNumber value={averageRating ?? 0} />
@@ -61,59 +70,50 @@ async function Page({ params }: Props) {
 						<h1 className="text-4xl font-bold lg:text-5xl line-clamp-2 mb-2">
 							{decodedTitle}
 						</h1>
-
-						<div className="flex justify-start  gap-2 max-sm:w-full lg:w-full mb-6 items-center">
-							<RecipeOwnerActions
-								authorClerkId={createdBy?.clerkId}
-								recipeId={_id.toString()}
-							/>
-							<SaveAction id={_id.toString()} />
-						</div>
 					</div>
 
-					<p className="italic mb-4">
-						Author:{" "}
-						<Link
-							className="text-accent-500"
-							href={`/profile/${createdBy?.clerkId}`}
-						>
+					<p className="text-xs">
+						By{" "}
+						<Link className="" href={`/profile/${createdBy?.clerkId}`}>
 							{createdBy?.name}
 						</Link>
 					</p>
-
-					<RecipePdfLink recipe={JSON.stringify(result.recipe)} title={title} />
-
-					<p className="text-gray-700">
+					<p className="text-xs mt-1">
 						Created: <time suppressHydrationWarning>{formattedTime}</time>
 					</p>
 
-					<p className="text-2xl mt-4">{description}</p>
+					<div className="my-6 flex justify-start gap-2 flex-wrap items-center">
+						<RecipeOwnerActions
+							authorClerkId={createdBy?.clerkId}
+							recipeId={_id.toString()}
+						/>
+						<SaveAction id={_id.toString()} />
+						<RecipePdfLink
+							recipe={JSON.stringify(result.recipe)}
+							title={title}
+						/>
+					</div>
+				</div>
+				<div className="bg-white z-10 w-[300px] max-sm:w-full rounded-md text-gray-800 p-4">
+					<h2 className="text-2xl font-bold mb-4">About this recipe</h2>
+					<p className="text-lg mt-4">{description}</p>
 
-					<div className="mb-0 mt-4 flex flex-col sm:flex-row gap-8">
-						<p>
-							<span className="h3">Category</span> :{" "}
+					<div className="mb-0 mt-4 flex flex-col  gap-4">
+						<p className="flex justify-between items-center">
+							<span className="font-semibold">Category</span>
 							<span className="text-primary-500">
 								{category.title.toUpperCase()}
 							</span>
 						</p>
 
-						<p>
-							<span className="h3">Cuisine </span> :{" "}
+						<p className="flex justify-between items-center">
+							<span className="font-semibold">Cuisine </span>
 							<span className="text-primary-500">
 								{cuisine.title.toUpperCase()}
 							</span>
 						</p>
 					</div>
 				</div>
-
-				<Image
-					className="max-lg:h-[50vh] w-full lg:w-1/2 object-cover bg-red-300 lg:min-h-[75vh]"
-					src={`${publicImageUrl}/${image}`}
-					alt={title}
-					width={300}
-					height={400}
-					priority
-				/>
 			</section>
 
 			<section className="flex flex-col lg:flex-row justify-center lg:items-start max-w-6xl gap-12 p-8 mx-auto">

@@ -46,7 +46,7 @@ function SaveAction({ id }: Props) {
 	return (
 		<>
 			{userId && (
-				<Button className="secondary-outline-btn" onClick={toggleSave}>
+				<Button className="text-accent-500 bg-white" onClick={toggleSave}>
 					{isSaved ? "Saved" : "Save"}
 					{isSaved ? (
 						<Image
