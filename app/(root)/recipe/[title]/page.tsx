@@ -2,7 +2,6 @@ import RatingNumber from "@/components/RatingNumber";
 import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import { formatNumber } from "@/lib/utils";
-import Image from "next/image";
 import Link from "next/link";
 import { publicImageUrl } from "@/lib/contstants";
 import RecipePdfLink from "@/components/RecipePdfLink";
@@ -48,15 +47,17 @@ async function Page({ params }: Props) {
 	}).format(new Date(createdAt));
 
 	return (
-		<main className="">
-			<section
+		<div className="relative">
+			{/* hero */}
+			<header
 				className="flex bg-cover bg-center max-sm:flex-col  gap-4 p-6 lg:p-16 text-white relative"
 				style={{
 					backgroundImage: `url('${publicImageUrl}/${image}')`,
 				}}
 			>
 				<div className="absolute inset-0 bg-black/50" />
-				<div className="max-lg:pb-0 lg:pl-0 flex flex-col gap-2 justify-center w-full relative ">
+				<div className="max-lg:pb-0  flex flex-col gap-2 justify-center w-full relative max-w-7xl mx-auto">
+					<Link href="..">Back</Link>
 					<span className="bg-accent-500 rounded-xl px-2 py-1 w-fit text-xs">
 						{category.title.toUpperCase()}
 					</span>
@@ -82,7 +83,7 @@ async function Page({ params }: Props) {
 						Created: <time suppressHydrationWarning>{formattedTime}</time>
 					</p>
 
-					<div className="my-6 flex justify-start gap-2 flex-wrap items-center">
+					{/* <div className="my-6 flex justify-start gap-2 flex-wrap items-center">
 						<RecipeOwnerActions
 							authorClerkId={createdBy?.clerkId}
 							recipeId={_id.toString()}
@@ -92,81 +93,102 @@ async function Page({ params }: Props) {
 							recipe={JSON.stringify(result.recipe)}
 							title={title}
 						/>
-					</div>
+					</div> */}
 				</div>
-				<div className="bg-white z-10 w-[300px] max-sm:w-full rounded-md text-gray-800 p-4">
-					<h2 className="text-2xl font-bold mb-4">About this recipe</h2>
-					<p className="text-lg mt-4">{description}</p>
-
-					<div className="mb-0 mt-4 flex flex-col  gap-4">
-						<p className="flex justify-between items-center">
-							<span className="font-semibold">Category</span>
-							<span className="text-primary-500">
-								{category.title.toUpperCase()}
-							</span>
-						</p>
-
-						<p className="flex justify-between items-center">
-							<span className="font-semibold">Cuisine </span>
-							<span className="text-primary-500">
-								{cuisine.title.toUpperCase()}
-							</span>
-						</p>
-					</div>
-				</div>
-			</section>
-
-			<section className="flex flex-col lg:flex-row justify-center lg:items-start max-w-6xl gap-12 p-8 mx-auto">
-				<div className="lg:w-[50%] ">
-					<h3 className="font-bold text-xl my-4">Ingredients</h3>
-					<ul className="list-none ml-0 pl-0 bg-primary-100 rounded-lg ">
-						{ingredients.map(
-							(
-								ingredient: { _id: string; ingredient: string },
-								index: number,
-							) => (
-								<li
-									key={ingredient._id}
-									className={`mx-3 py-2.5 
+			</header>
+			<div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-3">
+				<main className="w-full max-w-6xl mx-auto">
+					<div className="flex flex-col lg:flex-row lg:justify-start lg:items-start gap-12 p-6 lg:p-16">
+						<section className="w-full border rounded-md border-gray-200 ">
+							<h2 className="font-bold text-xl my-4 ml-3">Ingredients</h2>
+							<ul className="list-none ml-0 pl-0 rounded-lg ">
+								{ingredients.map(
+									(
+										ingredient: { _id: string; ingredient: string },
+										index: number,
+									) => (
+										<li
+											key={ingredient._id}
+											className={`mx-3 py-2.5 
                 ${
 									index !== ingredients.length - 1
-										? "border-b-[1px] border-slate-400"
+										? "border-b border-slate-200"
 										: "first-line:"
 								}
                   `}
-								>
-									{ingredient.ingredient}
-								</li>
-							),
-						)}
-					</ul>
-				</div>
-				<div className="lg:w-[50%]">
-					<h3 className="font-bold text-xl my-4">Method</h3>
-					<ul className="list-none ml-0 pl-0 rounded-lg">
-						{method.map(
-							(item: { _id: string; step: string }, index: number) => (
-								<li
-									className={`px-6 py-2.5 bg-primary-100 rounded-lg my-3 `}
-									key={item._id}
-								>
-									<span className="text-accent-500 text-xl font-bold">
-										{index + 1}{" "}
-									</span>
-									{item.step}
-								</li>
-							),
-						)}
-					</ul>
-				</div>
-			</section>
+										>
+											{ingredient.ingredient}
+										</li>
+									),
+								)}
+							</ul>
+						</section>
+						<section className="w-full border rounded-md border-gray-200 ">
+							<h2 className="font-bold text-xl my-4 ml-3">Method</h2>
+							<ul className="list-none ml-0 pl-0 rounded-lg">
+								{method.map(
+									(item: { _id: string; step: string }, index: number) => (
+										<li
+											className={`mx-3 py-2.5 ${index !== method.length - 1 ? "border-b border-slate-300" : ""}`}
+											key={item._id}
+										>
+											<span className="text-accent-500 text-xl font-bold pr-2">
+												{index + 1}
+												{"  "}
+											</span>
+											{item.step}
+										</li>
+									),
+								)}
+							</ul>
+						</section>
+					</div>
+					<Suspense
+						fallback={<p className="text-center mb-8">Loading reviews...</p>}
+					>
+						<ReviewsSection id={_id.toString()} />
+					</Suspense>
+				</main>
+				<aside className="bg-white max-lg:order-first lg:block self-start lg:sticky h-fit lg:top-24 lg:-mt-[15rem] lg:z-20 lg:mr-6 rounded-md p-4 mb-2 shadow max-sm:w-full text-gray-800">
+					<div className="">
+						<h2 className="text-2xl font-bold mb-4">About this recipe</h2>
+						<p className="text-lg mt-4">{description}</p>
 
-			<Suspense
-				fallback={<p className="text-center mb-8">Loading reviews...</p>}
-			>
-				<ReviewsSection id={_id.toString()} />
-			</Suspense>
-		</main>
+						<div className="mb-0 mt-4 flex flex-col gap-4">
+							<p className="flex justify-between items-center">
+								<span className="font-semibold">Category</span>
+								<span className="text-primary-500">
+									{category.title.toUpperCase()}
+								</span>
+							</p>
+
+							<p className="flex justify-between items-center">
+								<span className="font-semibold">Cuisine </span>
+								<span className="text-primary-500">
+									{cuisine.title.toUpperCase()}
+								</span>
+							</p>
+						</div>
+					</div>
+					<div className="flex gap-2 flex-wrap lg:flex-col lg:w-full max-lg:items-center my-2">
+						<div className="lg:bg-light-800 lg:p-2 lg:flex flex-col gap-3 lg:rounded-md">
+							<h3 className="max-lg:hidden font-bold text-xl my-3">
+								Liked this recipe?
+							</h3>
+							<SaveAction id={_id.toString()} />
+							<RecipePdfLink
+								recipe={JSON.stringify(result.recipe)}
+								title={title}
+							/>
+						</div>
+						<RecipeOwnerActions
+							authorClerkId={createdBy?.clerkId}
+							recipeId={_id.toString()}
+						/>
+					</div>
+				</aside>
+			</div>
+		</div>
 	);
 }
 

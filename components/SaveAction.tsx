@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { toggleSaveRecipe } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 import { checkIfRecipeSavedByUser } from "@/lib/actions/recipe.action";
+import Link from "next/link";
 
 interface Props {
 	id: string;
@@ -45,8 +46,11 @@ function SaveAction({ id }: Props) {
 
 	return (
 		<>
-			{userId && (
-				<Button className="text-accent-500 bg-white" onClick={toggleSave}>
+			{userId ? (
+				<Button
+					className="text-accent-500 bg-white border border-accent-500 rounded-md"
+					onClick={toggleSave}
+				>
 					{isSaved ? "Saved" : "Save"}
 					{isSaved ? (
 						<Image
@@ -66,6 +70,10 @@ function SaveAction({ id }: Props) {
 						/>
 					)}
 				</Button>
+			) : (
+				<Link href="/sign-in" className="btn text-center">
+					Sign in to save
+				</Link>
 			)}
 		</>
 	);
