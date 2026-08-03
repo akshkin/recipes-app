@@ -38,7 +38,7 @@ html {
   } */
 
 	.btn {
-		@apply px-4 py-2.5 text-white rounded-md hover:filter hover:brightness-105 focus:opacity-80 bg-primary-500 shadow-lg;
+		@apply px-4 py-2 text-white rounded-md hover:filter hover:brightness-105 focus:opacity-80 bg-primary-500 shadow-lg;
 	}
 
 	.link {
@@ -47,15 +47,15 @@ html {
 	}
 
 	.secondary-btn {
-		@apply px-4 py-2.5 text-sm text-white rounded-md hover:filter hover:brightness-105 focus:opacity-80 bg-accent-500 shadow-lg;
+		@apply px-4 py-2 text-sm text-white rounded-md hover:filter hover:brightness-105 focus:opacity-80 bg-accent-500 shadow-lg;
 	}
 
 	.secondary-outline-btn {
-		@apply px-4 py-2.5 text-sm rounded-md hover:filter hover:brightness-105 focus:opacity-80 border border-accent-500 shadow-lg;
+		@apply px-4 py-2 text-sm rounded-md hover:filter hover:brightness-105 focus:opacity-80 border border-accent-500 shadow-lg;
 	}
 
 	.danger-btn {
-		@apply px-4 py-2.5 text-white rounded-md hover:filter hover:brightness-105 focus:opacity-80 bg-red-500 shadow-lg;
+		@apply px-4 py-2 text-white rounded-md hover:filter hover:brightness-105 focus:opacity-80 bg-red-500 shadow-lg;
 	}
 
 	.h1 {

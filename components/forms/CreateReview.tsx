@@ -81,10 +81,10 @@ function CreateReview({ recipe, user }: CreateReviewProps) {
 
 	return (
 		<Form {...form}>
-			<h2 className="h2 mb-3">Write a Review</h2>
+			<h2 className="h3 mb-3">Write a Review</h2>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="mt-0 mb-6 flex flex-col items-start justify-center gap-4 max-w-[500px]"
+				className="mt-0 mb-6 flex flex-col items-start justify-center gap-4 "
 			>
 				<div className="flex gap-2">
 					<FormLabel>Rating</FormLabel>
@@ -100,6 +100,7 @@ function CreateReview({ recipe, user }: CreateReviewProps) {
 							<Textarea
 								{...field}
 								placeholder="Let us know your thoughts on this recipe"
+								className="resize-none"
 							/>
 							<FormMessage className="text-red-400 w-full" />
 						</FormItem>

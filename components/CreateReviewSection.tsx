@@ -12,12 +12,12 @@ export default async function CreateReviewSection({
 
 	if (!userId) {
 		return (
-			<>
+			<div>
 				<CreateReview recipe={JSON.parse(JSON.stringify(recipeId))} user={""} />
 				<p className="-mt-4 text-xs text-gray-500 mb-6">
 					You would need to log in to write a review.
 				</p>
-			</>
+			</div>
 		);
 	}
 

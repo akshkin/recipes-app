@@ -149,7 +149,7 @@ async function Page({ params }: Props) {
 						<ReviewsSection id={_id.toString()} />
 					</Suspense>
 				</main>
-				<aside className="bg-white max-lg:order-first lg:block self-start lg:sticky h-fit lg:top-24 lg:-mt-[15rem] lg:z-20 lg:mr-6 rounded-md p-4 mb-2 shadow max-sm:w-full text-gray-800">
+				<aside className="bg-white max-lg:order-first lg:block self-start lg:sticky h-fit lg:top-20 lg:-mt-[15rem] lg:z-20 lg:mr-6 rounded-md p-4 mb-2 shadow max-sm:w-full text-gray-800">
 					<div className="">
 						<h2 className="text-2xl font-bold mb-4">About this recipe</h2>
 						<p className="text-lg mt-4">{description}</p>
@@ -171,7 +171,7 @@ async function Page({ params }: Props) {
 						</div>
 					</div>
 					<div className="flex gap-2 flex-wrap lg:flex-col lg:w-full max-lg:items-center my-2">
-						<div className="lg:bg-light-800 lg:p-2 lg:flex flex-col gap-3 lg:rounded-md">
+						<div className="flex gap-3  lg:bg-light-800 lg:p-2 lg:flex-col max-lg:items-center lg:rounded-md">
 							<h3 className="max-lg:hidden font-bold text-xl my-3">
 								Liked this recipe?
 							</h3>
@@ -185,6 +185,13 @@ async function Page({ params }: Props) {
 							authorClerkId={createdBy?.clerkId}
 							recipeId={_id.toString()}
 						/>
+					</div>
+					<div className="flex flex-col gap-2 mt-4 max-lg:w-fit">
+						<h3 className="h3">Create your own recipe</h3>
+						<p className="text-left">Share you recipes with the community!</p>
+						<Link href="/create-recipe" className="btn text-center">
+							Create recipe
+						</Link>
 					</div>
 				</aside>
 			</div>
