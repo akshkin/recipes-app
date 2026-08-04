@@ -98,6 +98,8 @@ function CreateRecipeForm({
 		name: "method",
 	});
 
+	const isEditing = type === "edit" && parsedRecipe ? true : false;
+
 	async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
 		if (event.target.files) {
 			const imageFile = event?.target?.files[0];
@@ -186,7 +188,7 @@ function CreateRecipeForm({
 					setImageUrl(newImagePath);
 				}
 			}
-			if (type === "create") {
+			if (!isEditing) {
 				await createRecipe({
 					...values,
 					createdBy: mongoUserId,
@@ -194,7 +196,7 @@ function CreateRecipeForm({
 					image: newImagePath,
 					path: pathname,
 				});
-			} else if (type === "edit") {
+			} else if (isEditing) {
 				await editRecipe({
 					_id: parsedRecipe._id,
 					updateData: {
@@ -207,7 +209,7 @@ function CreateRecipeForm({
 				});
 			}
 
-			const messageVariable = type === "create" ? "created" : "edited";
+			const messageVariable = !isEditing ? "created" : "edited";
 			toast.success(`Recipe ${messageVariable} successfully`, {
 				position: "top-right",
 				closeOnClick: true,
@@ -265,7 +267,7 @@ function CreateRecipeForm({
 						</FormItem>
 					)}
 				/>
-				{type === "create" && (
+				{!isEditing && (
 					<div className="flex flex-col gap-3 w-full sm:flex-row mt-4 ">
 						<FormField
 							control={form.control}
@@ -418,10 +420,10 @@ function CreateRecipeForm({
 									width={20}
 									height={20}
 								/>{" "}
-								Creating...
+								{!isEditing ? "Creating..." : "Saving..."}
 							</span>
 						) : (
-							"Create Recipe"
+							<span>{!isEditing ? "Create Recipe" : "Save Recipe"}</span>
 						)}
 					</Button>
 					<CancelButton />

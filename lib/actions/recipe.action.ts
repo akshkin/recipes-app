@@ -18,6 +18,8 @@ import { returnSortOptions } from "../utils";
 import Review from "@/database-models/review.model";
 import { parseRecipeWithLLM } from "../recipeParser";
 import mongoose from "mongoose";
+import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export async function createRecipe(params: CreateRecipeParams) {
 	try {
@@ -89,8 +91,12 @@ export async function createRecipe(params: CreateRecipeParams) {
 			cuisine: existingCuisine?._id || newCuisine._id,
 		});
 
-		revalidatePath(path);
+		revalidatePath(`/recipe/${encodeURIComponent(recipe.title)}`);
+		redirect(`/recipe/${encodeURIComponent(recipe.title)}`);
 	} catch (error) {
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		throw error;
 	}
 }
@@ -219,8 +225,12 @@ export async function editRecipe(params: EditRecipeParams) {
 			{ new: true },
 		);
 
-		revalidatePath(path);
+		revalidatePath(`/recipe/${encodeURIComponent(recipe.title)}`);
+		redirect(`/recipe/${encodeURIComponent(recipe.title)}`);
 	} catch (error: any) {
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		console.log(error.message);
 		throw error;
 	}
