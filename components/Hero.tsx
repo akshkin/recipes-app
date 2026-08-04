@@ -7,7 +7,7 @@ async function Hero() {
 		<section className="flex items-start justify-center  h-fit rounded-lg w-full max-sm:py-3 mx-auto">
 			<div className="pt-6 pl-[calc(100vw-95%)]">
 				<h1 className="text-5xl lg:text-7xl font-semibold">
-					Discover delicious <span className="text-orange-500">recipes</span>
+					Discover delicious <span className="text-orange-600">recipes</span>
 				</h1>
 
 				<p className="text-gray-700 text-lg my-4">

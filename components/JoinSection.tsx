@@ -31,7 +31,7 @@ function JoinSection() {
 						width={400}
 						height={300}
 						alt="mother and daughter baking"
-						className="object-fit md:rounded-r-md max-md:w-full max-md:rounded-b-md max-h-[300px] w-1/3"
+						className="object-cover md:rounded-r-md max-md:w-full max-md:rounded-b-md max-h-[300px] w-1/3"
 					/>
 				</section>
 			)}
