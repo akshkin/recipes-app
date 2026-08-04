@@ -27,12 +27,17 @@ export default async function CreateReviewSection({
 	const result = await hasUserReviewedRecipe(mongoUser._id, recipeId);
 
 	// show review form only if user is logged in and has not reviewed the recipe yet
-	if (!result.canReview) return null;
 
 	return (
-		<CreateReview
-			recipe={JSON.parse(JSON.stringify(recipeId))}
-			user={mongoUser._id.toString()}
-		/>
+		<>
+			{result.canReview ? (
+				<CreateReview
+					recipe={JSON.parse(JSON.stringify(recipeId))}
+					user={mongoUser._id.toString()}
+				/>
+			) : (
+				<p>Thank you for taking the time to review this recipe.</p>
+			)}
+		</>
 	);
 }
