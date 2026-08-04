@@ -144,16 +144,7 @@ function CreateRecipeForm({
 		try {
 			const oldImagePath = imageUrl;
 			let newImagePath = imageUrl;
-			if (oldImagePath) {
-				// delete the image if user has already uploaed the image and tries to upload another image
-				const { data, error } = await supabase.storage
-					.from("recipe")
-					.remove([oldImagePath]);
-				setImageUrl("");
-				if (error) {
-					toast.error("An error occured");
-				}
-			}
+
 			//save recipe title in a uniform way
 			const recipeTitle = form
 				.getValues("title")
@@ -166,13 +157,29 @@ function CreateRecipeForm({
 				const response = await getPresignedUrl(filePath);
 
 				if (response.signedUrl) {
-					await fetch(response.signedUrl, {
+					const uploadResponse = await fetch(response.signedUrl, {
 						method: "PUT",
 						headers: {
 							"Content-Type": file.type,
+							"Cache-Control": "public, max-age=31536000, immutable",
 						},
 						body: file,
 					});
+
+					if (!uploadResponse.ok) {
+						toast.error("Upload failed");
+					}
+
+					if (oldImagePath) {
+						// delete the image if user has already uploaed the image and tries to upload another image
+						const { data, error } = await supabase.storage
+							.from("recipe")
+							.remove([oldImagePath]);
+						setImageUrl("");
+						if (error) {
+							toast.error("An error occured");
+						}
+					}
 
 					// set image path received from presigned url
 					newImagePath = response.path;
