@@ -8,6 +8,7 @@ import RecipePdfLink from "@/components/RecipePdfLink";
 import RecipeOwnerActions from "@/components/RecipeOwnerActions";
 import { Suspense } from "react";
 import ReviewsSection from "@/components/ReviewsSection";
+import BackButton from "@/components/BackButton";
 
 interface Props {
 	params: {
@@ -57,7 +58,7 @@ async function Page({ params }: Props) {
 			>
 				<div className="absolute inset-0 bg-black/50" />
 				<div className="max-lg:pb-0  flex flex-col gap-2 justify-center w-full relative max-w-7xl mx-auto">
-					<Link href="..">Back</Link>
+					<BackButton />
 					<span className="bg-accent-500 rounded-xl px-2 py-1 w-fit text-xs">
 						{category.title.toUpperCase()}
 					</span>

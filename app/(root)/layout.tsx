@@ -10,7 +10,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="">
 			<Navbar />
-			<div className="flex">
+			<div className="flex min-h-screen">
 				<div className="w-full">
 					<Suspense fallback={<Loading />}>{children}</Suspense>
 				</div>
