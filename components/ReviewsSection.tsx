@@ -6,7 +6,7 @@ import { getReviews } from "@/lib/actions/review.action";
 async function ReviewsSection({ id }: { id: string }) {
 	const reviewsResult = await getReviews({ recipe: id });
 	return (
-		<section className="px-6 lg:px-16 mx-auto">
+		<section className="px-6 lg:px-8 py-6 mx-auto">
 			<div className="flex max-sm:flex-col gap-4">
 				<div className="flex-1">
 					<CreateReviewSection recipeId={id} />
