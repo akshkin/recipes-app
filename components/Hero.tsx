@@ -42,7 +42,7 @@ async function Hero() {
 					</Link>
 				</div>
 			</div>
-			<div className="h-[50vh] w-[70%] bg-black">
+			<div className="h-[50vh] w-[70%] bg-white">
 				<Image
 					src="/assets/hero-image.jpg"
 					alt=""
