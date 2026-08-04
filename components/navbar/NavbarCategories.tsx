@@ -15,12 +15,7 @@ function NavbarCategories() {
 					href={`/category/${category.title}`}
 					className="flex gap-2"
 				>
-					<img
-						src={category.image}
-						alt={category.title}
-						width={40}
-						height={40}
-					/>
+					<img src={category.image} alt="" width={40} height={40} />
 					<p
 						className={`uppercase py-3 font-bold text-xl  link ${
 							pathname.includes(category.title)
