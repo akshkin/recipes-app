@@ -73,6 +73,6 @@ html {
 	}
 
 	.mask-image {
-		@apply bg-gradient-to-b from-transparent via-transparent to-black;
+		@apply bg-gradient-to-l from-transparent via-transparent to-black;
 	}
 }
