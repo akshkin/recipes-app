@@ -9,6 +9,7 @@ import FilterAndSort from "@/components/FilterAndSort";
 import { SearchParamsProps } from "@/types";
 import EditProfileButton from "@/components/EditProfileButton";
 import Link from "next/link";
+import SidebarLayout from "@/components/SidebarLayout";
 
 interface ParamsProps extends SearchParamsProps {
 	params: {
@@ -34,78 +35,80 @@ async function Page({ params, searchParams }: ParamsProps) {
 		return <p className="text-center">User not found</p>;
 	}
 
-	console.log(result);
 	const { instagram, facebook, youTube } = result?.user?.socialLinks;
 
 	return (
-		// <div className="m-8 flex flex-col justify-center items-center gap-6">
-		<div className="">
-			<header className="relative w-full p-8">
-				<Image
-					src="/assets/profile-hero.jpg"
-					alt=""
-					width={500}
-					height={300}
-					className="w-full h-full object-cover absolute -z-10 inset-0 blur-lg"
-				/>
-				<div className="flex items-center gap-4 z-100 py-8 max-w-3xl mx-auto">
+		<SidebarLayout
+			headerChildren={
+				<>
 					<Image
-						src={result?.user?.image}
-						alt="avatar"
-						width={200}
-						height={200}
-						className="object-cover rounded-full border-[1px] border-primary-500"
+						src="/assets/profile-hero.jpg"
+						alt=""
+						width={500}
+						height={300}
+						className="w-full h-full object-cover absolute -z-10 inset-0 blur-lg"
 					/>
-					<div>
-						<h1 className="h1 font-bold">{result?.user?.name.toUpperCase()}</h1>
+					<div className="flex items-center gap-4 z-100 py-8">
+						<Image
+							src={result?.user?.image}
+							alt="avatar"
+							width={200}
+							height={200}
+							className="object-cover rounded-full border-[1px] border-primary-500"
+						/>
+						<div>
+							<h1 className="h1 font-bold">
+								{result?.user?.name.toUpperCase()}
+							</h1>
 
-						<p className="text-primary-500 my-1">@{result?.user?.username}</p>
-						{userRecipes?.length ? (
-							<p className="text-primary-700">Recipe creator</p>
-						) : null}
-						{instagram || facebook || youTube ? (
-							<div className="flex gap-3 my-4">
-								{/* <p>Find me here: </p> */}
-								<div className="flex gap-4 items-center">
-									{instagram && (
-										<a href={instagram} target="_blank" className="link">
-											<img
-												src="/assets/icons/instagram.svg"
-												alt="instagram"
-												width={30}
-												height={30}
-											/>
-										</a>
-									)}
-									{facebook && (
-										<a href={facebook} target="_blank" className="link">
-											<img
-												src="/assets/icons/facebook.svg"
-												alt="facebook"
-												width={30}
-												height={30}
-											/>
-										</a>
-									)}
-									{youTube && (
-										<a href={youTube} target="_blank" className="link">
-											<img
-												src="/assets/icons/youtube.svg"
-												alt="youtube"
-												width={60}
-												height={60}
-											/>
-										</a>
-									)}
+							<p className="text-primary-500 my-1">@{result?.user?.username}</p>
+							{userRecipes?.length ? (
+								<p className="text-primary-700">Recipe creator</p>
+							) : null}
+							{instagram || facebook || youTube ? (
+								<div className="flex gap-3 my-4">
+									{/* <p>Find me here: </p> */}
+									<div className="flex gap-4 items-center">
+										{instagram && (
+											<a href={instagram} target="_blank" className="link">
+												<img
+													src="/assets/icons/instagram.svg"
+													alt="instagram"
+													width={30}
+													height={30}
+												/>
+											</a>
+										)}
+										{facebook && (
+											<a href={facebook} target="_blank" className="link">
+												<img
+													src="/assets/icons/facebook.svg"
+													alt="facebook"
+													width={30}
+													height={30}
+												/>
+											</a>
+										)}
+										{youTube && (
+											<a href={youTube} target="_blank" className="link">
+												<img
+													src="/assets/icons/youtube.svg"
+													alt="youtube"
+													width={60}
+													height={60}
+												/>
+											</a>
+										)}
+									</div>
 								</div>
-							</div>
-						) : null}
-						<EditProfileButton profileClerkId={clerkId} />
+							) : null}
+							<EditProfileButton profileClerkId={clerkId} />
+						</div>
 					</div>
-				</div>
-			</header>
-			<div className="p-8 w-full grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-3">
-				<main>
+				</>
+			}
+			mainChildren={
+				<>
 					{userRecipes && userRecipes.length > 0 && (
 						<>
 							<h2 className="h2 text-center">My recipes</h2>
@@ -124,8 +127,10 @@ async function Page({ params, searchParams }: ParamsProps) {
 							</div>
 						</>
 					)}
-				</main>
-				<aside className="bg-white max-lg:order-first lg:block self-start lg:sticky h-fit lg:top-20 lg:-mt-[15rem] lg:z-20 lg:mr-6 rounded-md p-4 mb-2 shadow max-sm:w-full text-gray-800">
+				</>
+			}
+			asideChildren={
+				<>
 					<div className="">
 						{result?.user?.bio && (
 							<>
@@ -165,9 +170,9 @@ async function Page({ params, searchParams }: ParamsProps) {
 							Create recipe
 						</Link>
 					</div>
-				</aside>
-			</div>
-		</div>
+				</>
+			}
+		/>
 	);
 }
 
