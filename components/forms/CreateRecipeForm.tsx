@@ -218,7 +218,7 @@ function CreateRecipeForm({
 
 			form.reset();
 
-			router.push("/");
+			router.replace(`/recipe/${encodeURIComponent(capitalizedTitle)}`);
 		} catch (error: any) {
 			toast.error(error.message, {
 				position: "top-right",
