@@ -143,7 +143,7 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
 			.populate({
 				path: "createdBy",
 				model: User,
-				select: "name clerkId",
+				select: "name clerkId image",
 			})
 			.populate({ path: "category", model: "Category", select: "title" })
 			.populate({ path: "cuisine", model: "Cuisine", select: "title" });

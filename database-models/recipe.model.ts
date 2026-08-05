@@ -20,6 +20,7 @@ export interface IRecipe extends mongoose.Document {
 	averageRating: number;
 	ratingsCount: number;
 	createdAt: Date;
+	updatedAt: Date;
 }
 
 export const DietaryTag = [
@@ -29,11 +30,9 @@ export const DietaryTag = [
 	"Keto",
 	"Paleo",
 	"Pescatarian",
-	"Low-Carb",
 	"Low-Fat",
 	"Dairy-Free",
 	"Nut-Free",
-	"Halal",
 ] as const;
 
 const RecipeSchema = new Schema(
