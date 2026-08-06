@@ -102,12 +102,15 @@ export async function createRecipe(params: CreateRecipeParams) {
 export async function getRecipes(params: GetAllRecipesParams) {
 	try {
 		connectToDatabase();
-		const { page = 1, pageSize = 20, filter, sort } = params;
+		const { page = 1, pageSize = 20, filter, sort, diet, time } = params;
+
+		const query: Record<string, any> = {};
 
 		let category;
 
 		if (filter) {
 			category = await Category.findOne({ title: filter });
+			query.category = category._id;
 		}
 
 		let sortOptions = {};
@@ -116,14 +119,24 @@ export async function getRecipes(params: GetAllRecipesParams) {
 			sortOptions = returnSortOptions(sort);
 		}
 
+		if (diet) {
+			query.dietaryTags = { $all: Array.isArray(diet) ? diet : [diet] };
+		}
+
+		if (time) {
+			query.$expr = {
+				$lte: [{ $add: ["$prepTime", "$cookTime"] }, Number(time)],
+			};
+		}
+
 		const skipAmount = (page - 1) * pageSize;
 
-		const recipes = await Recipe.find(category ? { category } : {})
+		const recipes = await Recipe.find(query)
 			.limit(pageSize)
 			.skip(skipAmount)
 			.sort(sortOptions);
 
-		const totalRecipes = await Recipe.countDocuments({ category });
+		const totalRecipes = await Recipe.countDocuments(query);
 
 		const isNextPage = totalRecipes > skipAmount + recipes.length;
 
@@ -297,4 +310,17 @@ export async function updateRecipeRating(recipeId: string) {
 		},
 		{ new: true, strict: true },
 	);
+}
+
+export async function getFeaturedRecipe() {
+	try {
+		connectToDatabase();
+		const title = "Healthy Chocolate Chip Cookies";
+		const recipe = await Recipe.findOne({ title });
+
+		return { recipe };
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
 }

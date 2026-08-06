@@ -1,5 +1,3 @@
-import { IRecipe } from "@/database-models/recipe.model";
-
 export interface SearchParamsProps {
 	searchParams: { [key: string]: string | undefined };
 }
@@ -21,6 +19,8 @@ export interface GetAllRecipesParams {
 	page?: number;
 	pageSize?: number;
 	sort?: string;
+	diet?: string;
+	time?: string;
 }
 
 export interface GetRecipeByTitleParams {

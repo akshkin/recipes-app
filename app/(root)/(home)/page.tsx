@@ -4,7 +4,7 @@ import JoinSection from "@/components/JoinSection";
 import Pagination from "@/components/Pagination";
 import Sidebar from "@/components/Sidebar";
 import RecipeCard from "@/components/cards/RecipeCard";
-import { getRecipes } from "@/lib/actions/recipe.action";
+import { getFeaturedRecipe, getRecipes } from "@/lib/actions/recipe.action";
 import { publicImageUrl } from "@/lib/contstants";
 import { FileUp } from "lucide-react";
 import Image from "next/image";
@@ -16,17 +16,17 @@ interface PageProps {
 }
 
 export default async function Home({ searchParams }: PageProps) {
-	const { page, filter, sort } = await searchParams;
-	const result = await getRecipes({
-		page: page ? +page : 1,
-		filter: filter ? filter : "",
-		sort: sort ? sort : "",
-	});
-
-	const featuredRecipe = result.recipes.find(
-		(recipe) =>
-			recipe?.title.toLowerCase() === "healthy chocolate chip cookies",
-	);
+	const { page, filter, sort, diet, time } = await searchParams;
+	const [result, featured] = await Promise.all([
+		getRecipes({
+			page: page ? +page : 1,
+			filter: filter ?? "",
+			sort: sort ?? "",
+			diet: diet ?? "",
+			time: time ?? "",
+		}),
+		getFeaturedRecipe(),
+	]);
 
 	return (
 		<main className="flex min-h-screen flex-col items-center pt-0 pl-0 mb-6 ">
@@ -35,21 +35,27 @@ export default async function Home({ searchParams }: PageProps) {
 				<SubSection />
 				<JoinSection />
 				<Sidebar />
-				<FeaturedRecipe recipe={featuredRecipe} />
+				<FeaturedRecipe recipe={featured.recipe} />
 				<section id="all-recipes">
 					<h2 className="h2 mt-8">All recipes</h2>
 					<FilterAndSort filter={true} />
 					<div className="custom-grid mb-8">
-						{result.recipes.map((recipe) => (
-							<RecipeCard
-								key={recipe._id}
-								_id={recipe._id}
-								title={recipe.title}
-								image={recipe.image}
-								averageRating={recipe.averageRating}
-								ratingsCount={recipe.ratingsCount}
-							/>
-						))}
+						{result.recipes.length > 0 ? (
+							result.recipes.map((recipe) => (
+								<RecipeCard
+									key={recipe._id}
+									_id={recipe._id}
+									title={recipe.title}
+									image={recipe.image}
+									averageRating={recipe.averageRating}
+									ratingsCount={recipe.ratingsCount}
+								/>
+							))
+						) : (
+							<p>
+								No recipes with applied filters. Please try with other filters
+							</p>
+						)}
 					</div>
 					{result?.isNextPage && (
 						<Pagination
