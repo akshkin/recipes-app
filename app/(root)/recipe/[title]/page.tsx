@@ -56,14 +56,15 @@ async function Page({ params }: Props) {
 		year: "numeric",
 		timeZone: "UTC",
 	}).format(new Date(createdAt));
-	const formattedTimeUpdated = new Intl.DateTimeFormat("en-US", {
-		day: "numeric",
-		month: "long",
-		year: "numeric",
-		timeZone: "UTC",
-	}).format(new Date(updatedAt));
 
-	console.log("Recipe data:", result.recipe);
+	const formattedTimeUpdated =
+		updatedAt &&
+		new Intl.DateTimeFormat("en-US", {
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+			timeZone: "UTC",
+		})?.format(new Date(updatedAt));
 
 	return (
 		<SidebarLayout
@@ -144,8 +145,8 @@ async function Page({ params }: Props) {
 						</div>
 						{dietaryTags.length > 0 ? (
 							<div className="flex flex-wrap gap-2 mt-4">
-								{dietaryTags.map((tag: string) => {
-									const { icon: Icon, color } = dietaryTagsConst[tag];
+								{dietaryTags?.map((tag: string) => {
+									const { icon: Icon, color } = dietaryTagsConst?.[tag];
 									return (
 										<span
 											key={tag}

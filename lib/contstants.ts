@@ -2,12 +2,12 @@ import {
 	Bone,
 	Drumstick,
 	Fish,
+	HeartPulse,
 	Leaf,
 	LeafyGreen,
 	MilkOff,
 	NutOff,
 	Salad,
-	Wheat,
 	WheatOff,
 } from "lucide-react";
 
@@ -45,11 +45,14 @@ export const dietaryTagsConst: Record<string, { icon: any; color: string }> = {
 		color: "text-orange-500",
 	},
 
-	"Low-Fat": {
+	"Low-Carb": {
 		icon: Salad,
 		color: "text-orange-500",
 	},
-
+	"Low-Fat": {
+		icon: HeartPulse,
+		color: "text-orange-500",
+	},
 	"Nut-Free": {
 		icon: NutOff,
 		color: "text-orange-500",

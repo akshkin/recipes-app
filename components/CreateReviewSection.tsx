@@ -2,6 +2,7 @@ import CreateReview from "./forms/CreateReview";
 import { hasUserReviewedRecipe } from "@/lib/actions/review.action";
 import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
+import { BadgeCheck, MessageSquareHeart } from "lucide-react";
 
 export default async function CreateReviewSection({
 	recipeId,
@@ -31,12 +32,27 @@ export default async function CreateReviewSection({
 	return (
 		<>
 			{result.canReview ? (
-				<CreateReview
-					recipe={JSON.parse(JSON.stringify(recipeId))}
-					user={mongoUser._id.toString()}
-				/>
+				<div className="flex max-sm:flex-col gap-4">
+					<div className="flex-1">
+						<CreateReview
+							recipe={JSON.parse(JSON.stringify(recipeId))}
+							user={mongoUser._id.toString()}
+						/>
+					</div>
+					<div className="flex flex-grow-0 flex-col gap-4 bg-gray-100 p-4 rounded-md text-sm text-gray-700 sm:max-w-[250px] items-center justify-between max-sm:hidden">
+						<MessageSquareHeart size={100} />
+						<p>
+							Your feedback matters. Please provide your honest feedback and
+							rating. Your review will help others in the community make
+							informed decisions about trying this recipe.
+						</p>
+					</div>
+				</div>
 			) : (
-				<p>Thank you for taking the time to review this recipe.</p>
+				<p className="my-3 flex items-center gap-2 text-md text-gray-500">
+					<BadgeCheck color="green" />
+					Thank you for taking the time to review this recipe.
+				</p>
 			)}
 		</>
 	);
