@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 // Define your types based on your API or Database response
 interface Recipe {
 	title: string;
-	updatedAt: string;
+	updatedAt: Date;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -22,12 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// 2. Fetch data for your dynamic routes (CMS, database, external API)
 	try {
 		const res = await getRecipes({});
-		const products: Recipe[] = res.recipes;
+		const recipes: Recipe[] = res.recipes;
 
 		// Map dynamic items into the required sitemap format
-		const dynamicRoutes: MetadataRoute.Sitemap = products.map((product) => ({
-			url: `${BASE_URL}/products/${product.title}`,
-			lastModified: new Date(product.updatedAt),
+		const dynamicRoutes: MetadataRoute.Sitemap = recipes.map((recipe) => ({
+			url: `${BASE_URL}/recipe/${recipe.title}`,
+			lastModified: recipe.updatedAt,
 			priority: 0.6,
 		}));
 
