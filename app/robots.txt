@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /private/
+ 
+Sitemap: https://recipes-app-flame.vercel.app/sitemap.xml
