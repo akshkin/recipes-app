@@ -7,8 +7,14 @@ const inter = Inter({ subsets: ["latin"] });
 const cormorant = Cormorant({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Recipes App",
-	description: "An app to store and view recipes",
+	title: {
+		default: "Recipes App",
+		// child page title
+		template: "%s | Recipes App",
+	},
+	verification: { google: "8bJStQEZR72Tu35oVEk98fnq5lLMtoKdlQY8psrhApI" },
+	description:
+		"Discover, create, and save delicious recipes for every occasion.",
 };
 
 export default function RootLayout({
