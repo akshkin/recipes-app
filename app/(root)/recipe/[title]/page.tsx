@@ -12,15 +12,51 @@ import BackButton from "@/components/BackButton";
 import Image from "next/image";
 import SidebarLayout from "@/components/SidebarLayout";
 import { Clock3, HandPlatter } from "lucide-react";
-import { IRecipe } from "@/database-models/recipe.model";
 
-interface Props {
+import type { Metadata } from "next";
+
+type Props = {
+	params: Promise<{
+		title: string;
+	}>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { title } = await params;
+
+	const result = await getRecipeByTitle({ title: decodeURIComponent(title) });
+
+	if (!result.recipe) {
+		return {
+			title: "Recipe not found",
+		};
+	}
+
+	const recipe = result.recipe;
+
+	return {
+		title: recipe.title,
+		description: recipe.description,
+		openGraph: {
+			title: recipe.title,
+			description: recipe.description,
+			images: [
+				{
+					url: recipe.image,
+					alt: recipe.title,
+				},
+			],
+		},
+	};
+}
+
+interface PageProps {
 	params: {
 		title: string;
 	};
 }
 
-async function Page({ params }: Props) {
+async function Page({ params }: PageProps) {
 	const { title } = await params;
 	const decodedTitle = decodeURIComponent(title);
 
