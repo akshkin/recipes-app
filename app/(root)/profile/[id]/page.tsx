@@ -57,7 +57,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 							className="object-cover rounded-full border-[1px] border-primary-500"
 						/>
 						<div>
-							<h1 className="h1 font-bold">
+							<h1 className="h1 font-bold text-black">
 								{result?.user?.name.toUpperCase()}
 							</h1>
 

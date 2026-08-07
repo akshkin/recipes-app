@@ -13,7 +13,10 @@ export default function EditProfileButton({ profileClerkId }: Props) {
 	if (userId !== profileClerkId) return null;
 
 	return (
-		<Link className="secondary-outline-btn" href="/profile/edit">
+		<Link
+			className="secondary-outline-btn text-accent-500"
+			href="/profile/edit"
+		>
 			Edit profile
 		</Link>
 	);
