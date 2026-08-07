@@ -3,7 +3,7 @@ import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import { formatNumber } from "@/lib/utils";
 import Link from "next/link";
-import { publicImageUrl } from "@/lib/contstants";
+import { dietaryTagsConst, publicImageUrl } from "@/lib/contstants";
 import RecipePdfLink from "@/components/RecipePdfLink";
 import RecipeOwnerActions from "@/components/RecipeOwnerActions";
 import { Suspense } from "react";
@@ -11,6 +11,8 @@ import ReviewsSection from "@/components/ReviewsSection";
 import BackButton from "@/components/BackButton";
 import Image from "next/image";
 import SidebarLayout from "@/components/SidebarLayout";
+import { Clock3, HandPlatter } from "lucide-react";
+import { IRecipe } from "@/database-models/recipe.model";
 
 interface Props {
 	params: {
@@ -33,6 +35,12 @@ async function Page({ params }: Props) {
 		image,
 		createdBy,
 		createdAt,
+		updatedAt,
+		prepTime,
+		cookTime,
+		servings,
+		servingUnit,
+		dietaryTags,
 		ingredients,
 		method,
 		description,
@@ -42,12 +50,21 @@ async function Page({ params }: Props) {
 		ratingsCount,
 	} = result.recipe;
 
-	const formattedTime = new Intl.DateTimeFormat("en-US", {
+	const formattedTimeCreated = new Intl.DateTimeFormat("en-US", {
 		day: "numeric",
 		month: "long",
 		year: "numeric",
 		timeZone: "UTC",
 	}).format(new Date(createdAt));
+
+	const formattedTimeUpdated =
+		updatedAt &&
+		new Intl.DateTimeFormat("en-US", {
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+			timeZone: "UTC",
+		})?.format(new Date(updatedAt));
 
 	return (
 		<SidebarLayout
@@ -80,15 +97,69 @@ async function Page({ params }: Props) {
 							</h1>
 						</div>
 
-						<p className="text-xs">
-							By{" "}
+						<p className="text-xs flex gap-2 items-center">
+							<Image
+								src={createdBy?.image}
+								alt=""
+								width={24}
+								height={24}
+								className="rounded-full"
+							/>
 							<Link className="" href={`/profile/${createdBy?.clerkId}`}>
 								{createdBy?.name}
 							</Link>
 						</p>
-						<p className="text-xs mt-1">
+						{/* <p className="text-xs mt-1">
 							Created: <time suppressHydrationWarning>{formattedTime}</time>
-						</p>
+						</p> */}
+						<div className="flex flex-wrap gap-2 my-">
+							{prepTime && (
+								<div className="flex gap-2 items-center border border-white rounded-md p-2">
+									<Clock3 />
+									<div>
+										<p className="text-xs text-gray-200">Prep time</p>
+										<p className="text-xs font-bold">{prepTime} minutes</p>
+									</div>
+								</div>
+							)}
+							{cookTime && (
+								<div className="flex gap-2 items-center border border-white rounded-md p-2">
+									<Clock3 />
+									<div>
+										<p className="text-xs text-gray-200">Cook time</p>
+										<p className="text-xs font-bold">{cookTime} minutes</p>
+									</div>
+								</div>
+							)}
+							{servings && (
+								<div className="flex gap-2 items-center border border-white rounded-md p-2">
+									<HandPlatter />
+									<div>
+										<p className="text-xs text-gray-200">Servings</p>
+										<p className="text-xs font-bold">
+											{servings} {servingUnit}
+										</p>
+									</div>
+								</div>
+							)}
+						</div>
+						{dietaryTags.length > 0 ? (
+							<div className="flex flex-wrap gap-2 mt-4">
+								{dietaryTags?.map((tag: string) => {
+									const { icon: Icon, color } = dietaryTagsConst?.[tag];
+									return (
+										<span
+											key={tag}
+											title={tag}
+											className={`px-3 py-1 rounded-full text-xs font-semibold ${color}`}
+										>
+											<Icon className="inline-block w-4 h-4 mr-1" />
+											{tag}
+										</span>
+									);
+								})}
+							</div>
+						) : null}
 					</div>
 				</>
 			}
@@ -163,6 +234,16 @@ async function Page({ params }: Props) {
 								<span className="text-primary-500">
 									{cuisine.title.toUpperCase()}
 								</span>
+							</p>
+							{updatedAt && (
+								<p className="flex justify-between items-center">
+									<span className="font-semibold">Updated </span>
+									<time suppressHydrationWarning>{formattedTimeUpdated}</time>
+								</p>
+							)}
+							<p className="flex justify-between items-center">
+								<span className="font-semibold">Created </span>
+								<time suppressHydrationWarning>{formattedTimeCreated}</time>
 							</p>
 						</div>
 					</div>

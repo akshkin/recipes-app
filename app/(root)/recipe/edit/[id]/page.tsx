@@ -25,6 +25,11 @@ async function Page({ params }: { params: { id: string } }) {
 		_id,
 		title,
 		description,
+		prepTime,
+		cookTime,
+		servings,
+		servingUnit,
+		dietaryTags,
 		category,
 		cuisine,
 		ingredients,
@@ -32,11 +37,18 @@ async function Page({ params }: { params: { id: string } }) {
 		method,
 	} = result?.recipe;
 
+	console.log("Recipe data:", result?.recipe);
+
 	const recipe = {
 		_id,
 		title,
 		description,
+		prepTime,
+		cookTime,
+		servings,
+		servingUnit,
 		image,
+		dietaryTags,
 		category: category.title,
 		cuisine: cuisine.title,
 		ingredients,
@@ -44,14 +56,14 @@ async function Page({ params }: { params: { id: string } }) {
 	};
 
 	return (
-		<>
+		<main className="px-4 my-4 max-w-5xl mx-auto">
 			<h1 className="text-center mb-6 h1">Edit recipe</h1>
 			<CreateRecipeForm
 				recipe={JSON.stringify(recipe)}
 				mongoUserId={mongoUser?._id.toString()}
 				type="edit"
 			/>
-		</>
+		</main>
 	);
 }
 

@@ -7,7 +7,7 @@ function CreateRecipeContainer({ mongoUserId }: { mongoUserId: string }) {
 	const [prefilledForm, setPrefilledForm] = useState<string>();
 
 	return (
-		<div>
+		<div className="max-w-5xl mx-auto p-4">
 			<UploadRecipe setPrefilledForm={setPrefilledForm} />
 			<CreateRecipeForm
 				type="create"

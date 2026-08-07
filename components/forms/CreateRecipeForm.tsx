@@ -32,6 +32,7 @@ import { publicImageUrl } from "@/lib/contstants";
 import { supabase } from "@/lib/supabase";
 import imageCompression from "browser-image-compression";
 import CancelButton from "../ui/CancelButton";
+import { DietaryTag } from "@/database-models/recipe.model";
 
 interface RecipeFormProps {
 	mongoUserId: string;
@@ -63,6 +64,11 @@ function CreateRecipeForm({
 			: {
 					title: parsedRecipe ? parsedRecipe.title : "",
 					description: "",
+					prepTime: undefined,
+					cookTime: undefined,
+					servings: undefined,
+					servingUnit: "",
+					dietaryTags: [],
 					category: "",
 					cuisine: "",
 					ingredients: [{ ingredient: "" }],
@@ -233,7 +239,7 @@ function CreateRecipeForm({
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="m-8 mt-0 flex flex-col items-start justify-center gap-4"
+				className="mt-0 flex flex-col items-start justify-center gap-4 "
 			>
 				<FormField
 					control={form.control}
@@ -267,6 +273,74 @@ function CreateRecipeForm({
 						</FormItem>
 					)}
 				/>
+				<div className="flex gap-3 flex-col sm:flex-row w-full">
+					<FormField
+						control={form.control}
+						name="prepTime"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Prep Time <span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="Prep time in minutes" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="cookTime"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Cook Time <span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="Cook time in minutes" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+				</div>
+				<div className="flex gap-3 flex-col sm:flex-row w-full">
+					<FormField
+						control={form.control}
+						name="servings"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Servings <span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="Number of servings" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="servingUnit"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Serving Unit <span className="text-gray-500">(Optional)</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="e.g., people, portions" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+				</div>
 				{!isEditing && (
 					<div className="flex flex-col gap-3 w-full sm:flex-row mt-4 ">
 						<FormField
@@ -349,6 +423,41 @@ function CreateRecipeForm({
 				) : (
 					<FormMessage className="text-red-500">Image is required</FormMessage>
 				)}
+				<FormLabel className="h3 mt-4">
+					Dietary Tags - Select all that apply{" "}
+					<span className="text-gray-500">(Optional)</span>
+				</FormLabel>
+				<FormField
+					control={form.control}
+					name="dietaryTags"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Dietary Tags</FormLabel>
+
+							<div className="flex flex-wrap gap-3">
+								{DietaryTag.map((tag) => (
+									<label
+										key={tag}
+										className="flex items-center gap-2 cursor-pointer"
+									>
+										<input
+											type="checkbox"
+											checked={field.value?.includes(tag)}
+											onChange={(e) =>
+												field.onChange(
+													e.target.checked
+														? [...field.value, tag]
+														: field.value?.filter((t) => t !== tag),
+												)
+											}
+										/>
+										{tag}
+									</label>
+								))}
+							</div>
+						</FormItem>
+					)}
+				/>
 
 				<FormLabel className="h3 mt-4">
 					Ingredients <span className="text-red-500">*</span>

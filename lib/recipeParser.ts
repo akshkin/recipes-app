@@ -3,6 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 const ai = new GoogleGenAI({});
 
 export async function parseRecipeWithLLM(recipeText: string) {
+	console.log("jfvbirbvr;o");
 	const response = await ai.models.generateContent({
 		model: "gemini-3-flash-preview",
 		contents: `
@@ -16,6 +17,11 @@ export async function parseRecipeWithLLM(recipeText: string) {
 			{
 			"title": "Recipe name",
 			"description": "Brief description",
+			"prepTime": 30,
+			"cookTime": 45,
+			"servings": 4,
+			"servingUnit": "people",
+			"dietaryTags": ["Vegetarian", "Gluten-Free"],
 			"ingredients": [
 				{ "ingredient": "2 cups flour" },
 				{ "ingredient": "1 tsp salt" }

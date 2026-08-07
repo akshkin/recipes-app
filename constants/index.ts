@@ -52,3 +52,8 @@ export const FILTERS = [
 	{ title: "Highest rated", value: "rating_desc" },
 	{ title: "Lowest rated", value: "rating_asc" },
 ];
+
+export const RECIPETIME = [
+	{ title: "Under 30 minutes", value: 30 },
+	{ title: "30 - 60 minutes", value: 60 },
+];
