@@ -9,7 +9,8 @@ interface Recipe {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const BASE_URL =
-		process.env.NEXT_PUBLIC_BASE_URL || "https://recipes-app-flame.vercel.app";
+		process.env.NEXT_PUBLIC_BASE_URL ||
+		"https://community-recipes-app.vercel.app";
 
 	// 1. Define your static routes
 	const staticRoutes: MetadataRoute.Sitemap = [
