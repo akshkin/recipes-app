@@ -1,5 +1,3 @@
-import { IRecipe } from "@/database-models/recipe.model";
-
 export interface SearchParamsProps {
 	searchParams: { [key: string]: string | undefined };
 }
@@ -21,6 +19,8 @@ export interface GetAllRecipesParams {
 	page?: number;
 	pageSize?: number;
 	sort?: string;
+	diet?: string;
+	time?: string;
 }
 
 export interface GetRecipeByTitleParams {
@@ -95,6 +95,7 @@ export interface GetReviewParams {
 	recipe: string;
 }
 export interface DeleteReviewParams {
+	recipe: string;
 	reviewId: string;
 	path: string;
 }
@@ -123,11 +124,6 @@ export interface GetUserRecipesParams {
 	sort?: string;
 }
 
-export interface GetRecipesWithAverageRating {
-	recipes: IRecipe[];
-	sort?: string;
-}
-
 export interface Profile {
 	_id: string;
 	name: string;
@@ -140,4 +136,13 @@ export interface Profile {
 		youTube: string;
 	};
 	image: string;
+	joinedAt: Date;
 }
+
+export type Recipe = {
+	_id: string;
+	image: string;
+	title: string;
+	averageRating: number;
+	ratingsCount: number;
+};

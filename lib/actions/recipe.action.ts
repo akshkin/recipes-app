@@ -1,6 +1,6 @@
 "use server";
 
-import Recipe, { IRecipe } from "@/database-models/recipe.model";
+import Recipe from "@/database-models/recipe.model";
 import { connectToDatabase } from "../mongoose";
 import Category from "@/database-models/category.model";
 import { revalidatePath } from "next/cache";
@@ -11,13 +11,14 @@ import {
 	EditRecipeParams,
 	GetAllRecipesParams,
 	GetRecipeByTitleParams,
-	GetRecipesWithAverageRating,
 	GetUserRecipesParams,
 } from "@/types";
 import User from "@/database-models/user.model";
 import { returnSortOptions } from "../utils";
 import Review from "@/database-models/review.model";
 import { parseRecipeWithLLM } from "../recipeParser";
+import mongoose from "mongoose";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export async function createRecipe(params: CreateRecipeParams) {
 	try {
@@ -91,6 +92,9 @@ export async function createRecipe(params: CreateRecipeParams) {
 
 		revalidatePath(path);
 	} catch (error) {
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		throw error;
 	}
 }
@@ -98,12 +102,15 @@ export async function createRecipe(params: CreateRecipeParams) {
 export async function getRecipes(params: GetAllRecipesParams) {
 	try {
 		connectToDatabase();
-		const { page = 1, pageSize = 20, filter, sort } = params;
+		const { page = 1, pageSize = 20, filter, sort, diet, time } = params;
+
+		const query: Record<string, any> = {};
 
 		let category;
 
 		if (filter) {
 			category = await Category.findOne({ title: filter });
+			query.category = category._id;
 		}
 
 		let sortOptions = {};
@@ -112,23 +119,28 @@ export async function getRecipes(params: GetAllRecipesParams) {
 			sortOptions = returnSortOptions(sort);
 		}
 
+		if (diet) {
+			query.dietaryTags = { $all: Array.isArray(diet) ? diet : [diet] };
+		}
+
+		if (time) {
+			query.$expr = {
+				$lte: [{ $add: ["$prepTime", "$cookTime"] }, Number(time)],
+			};
+		}
+
 		const skipAmount = (page - 1) * pageSize;
 
-		const recipes = await Recipe.find(category ? { category } : {})
+		const recipes = await Recipe.find(query)
 			.limit(pageSize)
 			.skip(skipAmount)
 			.sort(sortOptions);
 
-		const recipesWithRating = await getRecipesWithAverageRating({
-			recipes,
-			sort,
-		});
-
-		const totalRecipes = await Recipe.countDocuments({ category });
+		const totalRecipes = await Recipe.countDocuments(query);
 
 		const isNextPage = totalRecipes > skipAmount + recipes.length;
 
-		return { recipes: recipesWithRating, isNextPage };
+		return { recipes: recipes, isNextPage };
 	} catch (error) {
 		console.log(error);
 		throw error;
@@ -144,7 +156,7 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
 			.populate({
 				path: "createdBy",
 				model: User,
-				select: "name clerkId",
+				select: "name clerkId image",
 			})
 			.populate({ path: "category", model: "Category", select: "title" })
 			.populate({ path: "cuisine", model: "Cuisine", select: "title" });
@@ -171,11 +183,7 @@ export async function getRecipesByUserId(params: GetUserRecipesParams) {
 		}
 		const recipes = await Recipe.find({ createdBy: id }).sort(sortOptions);
 
-		const recipesWithRating = await getRecipesWithAverageRating({
-			recipes,
-			sort,
-		});
-		return recipesWithRating;
+		return recipes;
 	} catch (error) {
 		console.log(error);
 	}
@@ -230,6 +238,9 @@ export async function editRecipe(params: EditRecipeParams) {
 
 		revalidatePath(path);
 	} catch (error: any) {
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		console.log(error.message);
 		throw error;
 	}
@@ -249,66 +260,65 @@ export async function deleteRecipe(params: DeleteRecipeParams) {
 	}
 }
 
-export async function getRecipesWithAverageRating(
-	params: GetRecipesWithAverageRating,
-) {
+export async function parseRecipe(recipeText: string) {
 	try {
-		const { recipes, sort } = params;
-		const recipeIds = recipes.map((recipe) => recipe._id);
-
-		const aggregateResult = await Review.aggregate([
-			{
-				$match: { recipe: { $in: recipeIds } },
-			},
-			{
-				$group: {
-					_id: "$recipe",
-					averageRating: { $avg: "$rating" },
-					ratingCount: { $sum: 1 },
-				},
-			},
-		]);
-
-		// create a Map where the keys are the _id of recipes (converted to strings) and the values are the corresponding average ratings calculated from the aggregation result.
-		const ratingMap = new Map(
-			aggregateResult.map((result) => [
-				result._id.toString(),
-				{
-					averageRating: result.averageRating,
-					ratingCount: result.ratingCount,
-				},
-			]),
-		);
-
-		const recipesWithRating = recipes.map((recipe) => ({
-			...recipe.toObject(),
-			averageRating: ratingMap.get(recipe._id.toString())?.averageRating || 0,
-			ratingCount: ratingMap.get(recipe._id.toString())?.ratingCount || 0,
-		}));
-
-		let sortedRecipes = [...recipesWithRating];
-
-		// sort recipes by rating
-
-		if (sort) {
-			if (sort === "rating_asc") {
-				sortedRecipes.sort((a, b) => a.averageRating - b.averageRating);
-			} else if (sort === "rating_desc") {
-				sortedRecipes.sort((a, b) => b.averageRating - a.averageRating);
-			}
-		}
-
-		return sortedRecipes;
+		const response = await parseRecipeWithLLM(recipeText);
+		return response;
 	} catch (error) {
 		console.error(error);
 		throw error;
 	}
 }
 
-export async function parseRecipe(recipeText: string) {
+export async function checkIfRecipeSavedByUser(
+	userId: string,
+	recipeId: string,
+) {
 	try {
-		const response = await parseRecipeWithLLM(recipeText);
-		return response;
+		connectToDatabase();
+		const user = await User.findOne({ clerkId: userId });
+		return user?.saved.includes(recipeId) || false;
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
+export async function updateRecipeRating(recipeId: string) {
+	const stats = await Review.aggregate([
+		{
+			$match: {
+				recipe: new mongoose.Types.ObjectId(recipeId),
+			},
+		},
+		{
+			$group: {
+				_id: "$recipe",
+				averageRating: { $avg: "$rating" },
+				ratingsCount: { $sum: 1 },
+			},
+		},
+	]);
+
+	await Recipe.findByIdAndUpdate(
+		recipeId,
+		{
+			$set: {
+				averageRating: Math.round((stats[0]?.averageRating || 0) * 10) / 10,
+				ratingsCount: stats[0]?.ratingsCount || 0,
+			},
+		},
+		{ new: true, strict: true },
+	);
+}
+
+export async function getFeaturedRecipe() {
+	try {
+		connectToDatabase();
+		const title = "Healthy Chocolate Chip Cookies";
+		const recipe = await Recipe.findOne({ title });
+
+		return { recipe };
 	} catch (error) {
 		console.error(error);
 		throw error;

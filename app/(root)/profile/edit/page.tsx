@@ -2,7 +2,6 @@ import EditProfile from "@/components/forms/EditProfile";
 import { getUserById } from "@/lib/actions/user.action";
 import { Profile } from "@/types";
 import { auth } from "@clerk/nextjs/server";
-import React from "react";
 
 async function Page() {
 	const { userId: clerkId } = await auth();
@@ -12,6 +11,10 @@ async function Page() {
 	}
 
 	const result = await getUserById(clerkId);
+
+	if (!result?.user) {
+		return <p className="text-center">Profile not found</p>;
+	}
 
 	const { bio, socialLinks } = result?.user as Profile;
 

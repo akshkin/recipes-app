@@ -5,7 +5,9 @@ import { supabase } from "../supabase";
 export async function getPresignedUrl(filePath: string) {
 	const { data, error } = await supabase.storage
 		.from("recipe")
-		.createSignedUploadUrl(filePath);
+		.createSignedUploadUrl(filePath, {
+			upsert: true,
+		});
 
 	if (error) {
 		console.error(error);

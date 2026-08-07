@@ -10,20 +10,21 @@ interface RecipeProps {
 	image: string;
 	title: string;
 	averageRating: number;
-	ratingCount: number;
+	ratingsCount: number;
 }
 
+// max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px]
 function RecipeCard({
 	title,
 	image,
 	_id,
 	averageRating,
-	ratingCount,
+	ratingsCount,
 }: RecipeProps) {
 	return (
 		<Link
 			href={`/recipe/${title}`}
-			className="relative border-[1px] rounded-lg max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px] h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md"
+			className="relative border-[1px] w-full rounded-lg h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md"
 		>
 			<div className="relative w-full h-2/3">
 				<Image
@@ -41,9 +42,9 @@ function RecipeCard({
 				</h2>
 				<div className="flex gap-2">
 					<RatingNumber value={averageRating} />
-					<span className={`text-sm text-gray-${ratingCount ? 700 : 400}`}>
-						({formatNumber(ratingCount)}{" "}
-						{ratingCount === 1 ? "rating" : "ratings"})
+					<span className={`text-sm text-gray-${ratingsCount ? 700 : 400}`}>
+						({formatNumber(ratingsCount ?? 0)}{" "}
+						{ratingsCount === 1 ? "rating" : "ratings"})
 					</span>
 				</div>
 			</div>

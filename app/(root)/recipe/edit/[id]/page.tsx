@@ -2,7 +2,6 @@ import CreateRecipeForm from "@/components/forms/CreateRecipeForm";
 import { getRecipeById } from "@/lib/actions/recipe.action";
 import { getMongoUserFromClerkId } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
-import React from "react";
 
 async function Page({ params }: { params: { id: string } }) {
 	const { id } = await params;
@@ -13,8 +12,10 @@ async function Page({ params }: { params: { id: string } }) {
 		return <p>Please login to continue</p>;
 	}
 
-	const mongoUser = await getMongoUserFromClerkId(clerkId);
-	const result = await getRecipeById(id);
+	const [mongoUser, result] = await Promise.all([
+		getMongoUserFromClerkId(clerkId),
+		getRecipeById(id),
+	]);
 
 	if (!result?.recipe) {
 		return <p>Recipe not found</p>;
@@ -24,6 +25,11 @@ async function Page({ params }: { params: { id: string } }) {
 		_id,
 		title,
 		description,
+		prepTime,
+		cookTime,
+		servings,
+		servingUnit,
+		dietaryTags,
 		category,
 		cuisine,
 		ingredients,
@@ -31,11 +37,18 @@ async function Page({ params }: { params: { id: string } }) {
 		method,
 	} = result?.recipe;
 
+	console.log("Recipe data:", result?.recipe);
+
 	const recipe = {
 		_id,
 		title,
 		description,
+		prepTime,
+		cookTime,
+		servings,
+		servingUnit,
 		image,
+		dietaryTags,
 		category: category.title,
 		cuisine: cuisine.title,
 		ingredients,
@@ -43,14 +56,14 @@ async function Page({ params }: { params: { id: string } }) {
 	};
 
 	return (
-		<>
+		<main className="px-4 my-4 max-w-5xl mx-auto">
 			<h1 className="text-center mb-6 h1">Edit recipe</h1>
 			<CreateRecipeForm
 				recipe={JSON.stringify(recipe)}
 				mongoUserId={mongoUser?._id.toString()}
 				type="edit"
 			/>
-		</>
+		</main>
 	);
 }
 

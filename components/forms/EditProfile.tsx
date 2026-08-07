@@ -20,6 +20,7 @@ import { updateUserBioAndLinks } from "@/lib/actions/user.action";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import CancelButton from "../ui/CancelButton";
 
 interface EditProfileProps {
 	bio: string;
@@ -144,13 +145,7 @@ function EditProfile({ bio, socialLinks }: EditProfileProps) {
 							"Save"
 						)}
 					</Button>
-					<Button
-						className="border-2 hover:border-gray-500"
-						type="button"
-						onClick={() => router.back()}
-					>
-						Cancel
-					</Button>
+					<CancelButton />
 				</div>
 			</form>
 		</Form>

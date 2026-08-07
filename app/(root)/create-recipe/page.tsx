@@ -13,7 +13,7 @@ async function Page() {
 
 	return (
 		<>
-			<h1 className="text-center mb-10 h1">Create recipe</h1>
+			<h1 className="text-center h1">Create recipe</h1>
 			<CreateRecipeContainer mongoUserId={mongoUser?._id.toString()} />
 		</>
 	);

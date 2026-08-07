@@ -31,6 +31,8 @@ import { getPresignedUrl } from "@/lib/actions/storage";
 import { publicImageUrl } from "@/lib/contstants";
 import { supabase } from "@/lib/supabase";
 import imageCompression from "browser-image-compression";
+import CancelButton from "../ui/CancelButton";
+import { DietaryTag } from "@/database-models/recipe.model";
 
 interface RecipeFormProps {
 	mongoUserId: string;
@@ -62,6 +64,11 @@ function CreateRecipeForm({
 			: {
 					title: parsedRecipe ? parsedRecipe.title : "",
 					description: "",
+					prepTime: undefined,
+					cookTime: undefined,
+					servings: undefined,
+					servingUnit: "",
+					dietaryTags: [],
 					category: "",
 					cuisine: "",
 					ingredients: [{ ingredient: "" }],
@@ -96,6 +103,8 @@ function CreateRecipeForm({
 		control: form.control,
 		name: "method",
 	});
+
+	const isEditing = type === "edit" && parsedRecipe ? true : false;
 
 	async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
 		if (event.target.files) {
@@ -143,16 +152,7 @@ function CreateRecipeForm({
 		try {
 			const oldImagePath = imageUrl;
 			let newImagePath = imageUrl;
-			if (oldImagePath) {
-				// delete the image if user has already uploaed the image and tries to upload another image
-				const { data, error } = await supabase.storage
-					.from("recipe")
-					.remove([oldImagePath]);
-				setImageUrl("");
-				if (error) {
-					toast.error("An error occured");
-				}
-			}
+
 			//save recipe title in a uniform way
 			const recipeTitle = form
 				.getValues("title")
@@ -165,20 +165,36 @@ function CreateRecipeForm({
 				const response = await getPresignedUrl(filePath);
 
 				if (response.signedUrl) {
-					await fetch(response.signedUrl, {
+					const uploadResponse = await fetch(response.signedUrl, {
 						method: "PUT",
 						headers: {
 							"Content-Type": file.type,
+							"Cache-Control": "public, max-age=31536000, immutable",
 						},
 						body: file,
 					});
+
+					if (!uploadResponse.ok) {
+						toast.error("Upload failed");
+					}
+
+					if (oldImagePath) {
+						// delete the image if user has already uploaed the image and tries to upload another image
+						const { data, error } = await supabase.storage
+							.from("recipe")
+							.remove([oldImagePath]);
+						setImageUrl("");
+						if (error) {
+							toast.error("An error occured");
+						}
+					}
 
 					// set image path received from presigned url
 					newImagePath = response.path;
 					setImageUrl(newImagePath);
 				}
 			}
-			if (type === "create") {
+			if (!isEditing) {
 				await createRecipe({
 					...values,
 					createdBy: mongoUserId,
@@ -186,7 +202,7 @@ function CreateRecipeForm({
 					image: newImagePath,
 					path: pathname,
 				});
-			} else if (type === "edit") {
+			} else if (isEditing) {
 				await editRecipe({
 					_id: parsedRecipe._id,
 					updateData: {
@@ -199,7 +215,7 @@ function CreateRecipeForm({
 				});
 			}
 
-			const messageVariable = type === "create" ? "created" : "edited";
+			const messageVariable = !isEditing ? "created" : "edited";
 			toast.success(`Recipe ${messageVariable} successfully`, {
 				position: "top-right",
 				closeOnClick: true,
@@ -208,7 +224,7 @@ function CreateRecipeForm({
 
 			form.reset();
 
-			router.push("/");
+			router.replace(`/recipe/${encodeURIComponent(capitalizedTitle)}`);
 		} catch (error: any) {
 			toast.error(error.message, {
 				position: "top-right",
@@ -223,7 +239,7 @@ function CreateRecipeForm({
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="m-8 mt-0 flex flex-col items-start justify-center gap-4"
+				className="mt-0 flex flex-col items-start justify-center gap-4 "
 			>
 				<FormField
 					control={form.control}
@@ -257,7 +273,75 @@ function CreateRecipeForm({
 						</FormItem>
 					)}
 				/>
-				{type === "create" && (
+				<div className="flex gap-3 flex-col sm:flex-row w-full">
+					<FormField
+						control={form.control}
+						name="prepTime"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Prep Time <span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="Prep time in minutes" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="cookTime"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Cook Time <span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="Cook time in minutes" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+				</div>
+				<div className="flex gap-3 flex-col sm:flex-row w-full">
+					<FormField
+						control={form.control}
+						name="servings"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Servings <span className="text-red-500">*</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="Number of servings" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="servingUnit"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel className="h3 mt-4">
+									Serving Unit <span className="text-gray-500">(Optional)</span>
+								</FormLabel>
+								<FormControl>
+									<Input placeholder="e.g., people, portions" {...field} />
+								</FormControl>
+
+								<FormMessage className="text-red-500" />
+							</FormItem>
+						)}
+					/>
+				</div>
+				{!isEditing && (
 					<div className="flex flex-col gap-3 w-full sm:flex-row mt-4 ">
 						<FormField
 							control={form.control}
@@ -339,6 +423,41 @@ function CreateRecipeForm({
 				) : (
 					<FormMessage className="text-red-500">Image is required</FormMessage>
 				)}
+				<FormLabel className="h3 mt-4">
+					Dietary Tags - Select all that apply{" "}
+					<span className="text-gray-500">(Optional)</span>
+				</FormLabel>
+				<FormField
+					control={form.control}
+					name="dietaryTags"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Dietary Tags</FormLabel>
+
+							<div className="flex flex-wrap gap-3">
+								{DietaryTag.map((tag) => (
+									<label
+										key={tag}
+										className="flex items-center gap-2 cursor-pointer"
+									>
+										<input
+											type="checkbox"
+											checked={field.value?.includes(tag)}
+											onChange={(e) =>
+												field.onChange(
+													e.target.checked
+														? [...field.value, tag]
+														: field.value?.filter((t) => t !== tag),
+												)
+											}
+										/>
+										{tag}
+									</label>
+								))}
+							</div>
+						</FormItem>
+					)}
+				/>
 
 				<FormLabel className="h3 mt-4">
 					Ingredients <span className="text-red-500">*</span>
@@ -400,21 +519,24 @@ function CreateRecipeForm({
 					Add step
 				</Button>
 
-				<Button disabled={isLoading} className="btn mt-8" type="submit">
-					{isLoading ? (
-						<span className="flex gap-2">
-							<Image
-								src="/assets/icons/bubble-loading.svg"
-								alt="loading"
-								width={20}
-								height={20}
-							/>{" "}
-							Submitting
-						</span>
-					) : (
-						"Submit"
-					)}
-				</Button>
+				<div className="flex gap-4 mt-8">
+					<Button disabled={isLoading} className="btn" type="submit">
+						{isLoading ? (
+							<span className="flex gap-2">
+								<Image
+									src="/assets/icons/bubble-loading.svg"
+									alt="loading"
+									width={20}
+									height={20}
+								/>{" "}
+								{!isEditing ? "Creating..." : "Saving..."}
+							</span>
+						) : (
+							<span>{!isEditing ? "Create Recipe" : "Save Recipe"}</span>
+						)}
+					</Button>
+					<CancelButton />
+				</div>
 			</form>
 		</Form>
 	);

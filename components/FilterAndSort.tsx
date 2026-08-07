@@ -7,11 +7,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "./ui/select";
-import { CATEGORIES, FILTERS } from "@/constants";
+import { CATEGORIES, FILTERS, RECIPETIME } from "@/constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery, removeUrlKeys } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import { dietaryTagsConst } from "@/lib/contstants";
 
 interface Props {
 	filter?: boolean;
@@ -33,19 +34,19 @@ function FilterAndSort({ filter }: Props) {
 	function clearFilters() {
 		const newUrl = removeUrlKeys({
 			params: searchParams.toString(),
-			keysToRemove: ["filter", "sort"],
+			keysToRemove: ["filter", "sort", "diet", "time"],
 		});
 		router.push(newUrl, { scroll: false });
 	}
 
 	return (
-		<div className="mt-8 mb-4 flex flex-col sm:flex-row gap-3 w-full px-8 justify-center items-center max-w-lg z-30">
+		<div className="mt-4 mb-4 flex flex-col sm:flex-row gap-3 w-full justify-center items-center  z-30">
 			{filter && (
 				<Select
 					defaultValue={searchParams.get("filter") || ""}
 					onValueChange={(content) => handleFilterChange("filter", content)}
 				>
-					<SelectTrigger className="w-full">
+					<SelectTrigger className="w-full" aria-label="Select category">
 						<SelectValue placeholder="Select category" />
 					</SelectTrigger>
 					<SelectContent className="bg-white">
@@ -62,13 +63,43 @@ function FilterAndSort({ filter }: Props) {
 				defaultValue={searchParams.get("sort") || ""}
 				onValueChange={(content) => handleFilterChange("sort", content)}
 			>
-				<SelectTrigger className="w-full">
+				<SelectTrigger className="w-full" aria-label="Sort by">
 					<SelectValue placeholder="Sort by" />
 				</SelectTrigger>
 				<SelectContent className="bg-white">
 					{FILTERS.map((filter) => (
 						<SelectItem key={filter.value} value={filter.value}>
 							{filter.title}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+			<Select
+				defaultValue={searchParams.get("diet") || ""}
+				onValueChange={(content) => handleFilterChange("diet", content)}
+			>
+				<SelectTrigger className="w-full" aria-label="Diet specific">
+					<SelectValue placeholder="Diet specific" />
+				</SelectTrigger>
+				<SelectContent className="bg-white">
+					{Object.keys(dietaryTagsConst).map((tag) => (
+						<SelectItem key={tag} value={tag}>
+							{tag}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+			<Select
+				defaultValue={searchParams.get("time") || ""}
+				onValueChange={(content) => handleFilterChange("time", content)}
+			>
+				<SelectTrigger className="w-full" aria-label="By time">
+					<SelectValue placeholder="By time" />
+				</SelectTrigger>
+				<SelectContent className="bg-white">
+					{RECIPETIME.map((time) => (
+						<SelectItem key={time.title} value={time.value.toLocaleString()}>
+							{time.title}
 						</SelectItem>
 					))}
 				</SelectContent>
