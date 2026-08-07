@@ -10,18 +10,34 @@ export default async function CreateReviewSection({
 }) {
 	const { userId } = await auth();
 
-	const mongoUser = await getMongoUserFromClerkId(userId!);
+	if (!userId) {
+		return (
+			<div>
+				<CreateReview recipe={JSON.parse(JSON.stringify(recipeId))} user={""} />
+				<p className="-mt-4 text-xs text-gray-500 mb-6">
+					You would need to log in to write a review.
+				</p>
+			</div>
+		);
+	}
+
+	const mongoUser = await getMongoUserFromClerkId(userId);
 	if (!mongoUser) return;
 
 	const result = await hasUserReviewedRecipe(mongoUser._id, recipeId);
 
 	// show review form only if user is logged in and has not reviewed the recipe yet
-	if (!userId || !result.canReview) return null;
 
 	return (
-		<CreateReview
-			recipe={JSON.parse(JSON.stringify(recipeId))}
-			user={mongoUser._id.toString()}
-		/>
+		<>
+			{result.canReview ? (
+				<CreateReview
+					recipe={JSON.parse(JSON.stringify(recipeId))}
+					user={mongoUser._id.toString()}
+				/>
+			) : (
+				<p>Thank you for taking the time to review this recipe.</p>
+			)}
+		</>
 	);
 }

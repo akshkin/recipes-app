@@ -13,6 +13,7 @@ interface RecipeProps {
 	ratingsCount: number;
 }
 
+// max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px]
 function RecipeCard({
 	title,
 	image,
@@ -23,7 +24,7 @@ function RecipeCard({
 	return (
 		<Link
 			href={`/recipe/${title}`}
-			className="relative border-[1px] rounded-lg max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px] h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md"
+			className="relative border-[1px] w-full rounded-lg h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md"
 		>
 			<div className="relative w-full h-2/3">
 				<Image

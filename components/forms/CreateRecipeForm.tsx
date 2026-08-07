@@ -98,6 +98,8 @@ function CreateRecipeForm({
 		name: "method",
 	});
 
+	const isEditing = type === "edit" && parsedRecipe ? true : false;
+
 	async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
 		if (event.target.files) {
 			const imageFile = event?.target?.files[0];
@@ -144,16 +146,7 @@ function CreateRecipeForm({
 		try {
 			const oldImagePath = imageUrl;
 			let newImagePath = imageUrl;
-			if (oldImagePath) {
-				// delete the image if user has already uploaed the image and tries to upload another image
-				const { data, error } = await supabase.storage
-					.from("recipe")
-					.remove([oldImagePath]);
-				setImageUrl("");
-				if (error) {
-					toast.error("An error occured");
-				}
-			}
+
 			//save recipe title in a uniform way
 			const recipeTitle = form
 				.getValues("title")
@@ -166,20 +159,36 @@ function CreateRecipeForm({
 				const response = await getPresignedUrl(filePath);
 
 				if (response.signedUrl) {
-					await fetch(response.signedUrl, {
+					const uploadResponse = await fetch(response.signedUrl, {
 						method: "PUT",
 						headers: {
 							"Content-Type": file.type,
+							"Cache-Control": "public, max-age=31536000, immutable",
 						},
 						body: file,
 					});
+
+					if (!uploadResponse.ok) {
+						toast.error("Upload failed");
+					}
+
+					if (oldImagePath) {
+						// delete the image if user has already uploaed the image and tries to upload another image
+						const { data, error } = await supabase.storage
+							.from("recipe")
+							.remove([oldImagePath]);
+						setImageUrl("");
+						if (error) {
+							toast.error("An error occured");
+						}
+					}
 
 					// set image path received from presigned url
 					newImagePath = response.path;
 					setImageUrl(newImagePath);
 				}
 			}
-			if (type === "create") {
+			if (!isEditing) {
 				await createRecipe({
 					...values,
 					createdBy: mongoUserId,
@@ -187,7 +196,7 @@ function CreateRecipeForm({
 					image: newImagePath,
 					path: pathname,
 				});
-			} else if (type === "edit") {
+			} else if (isEditing) {
 				await editRecipe({
 					_id: parsedRecipe._id,
 					updateData: {
@@ -200,7 +209,7 @@ function CreateRecipeForm({
 				});
 			}
 
-			const messageVariable = type === "create" ? "created" : "edited";
+			const messageVariable = !isEditing ? "created" : "edited";
 			toast.success(`Recipe ${messageVariable} successfully`, {
 				position: "top-right",
 				closeOnClick: true,
@@ -209,7 +218,7 @@ function CreateRecipeForm({
 
 			form.reset();
 
-			router.push("/");
+			router.replace(`/recipe/${encodeURIComponent(capitalizedTitle)}`);
 		} catch (error: any) {
 			toast.error(error.message, {
 				position: "top-right",
@@ -258,7 +267,7 @@ function CreateRecipeForm({
 						</FormItem>
 					)}
 				/>
-				{type === "create" && (
+				{!isEditing && (
 					<div className="flex flex-col gap-3 w-full sm:flex-row mt-4 ">
 						<FormField
 							control={form.control}
@@ -411,10 +420,10 @@ function CreateRecipeForm({
 									width={20}
 									height={20}
 								/>{" "}
-								Creating...
+								{!isEditing ? "Creating..." : "Saving..."}
 							</span>
 						) : (
-							"Create Recipe"
+							<span>{!isEditing ? "Create Recipe" : "Save Recipe"}</span>
 						)}
 					</Button>
 					<CancelButton />

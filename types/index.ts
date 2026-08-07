@@ -136,6 +136,7 @@ export interface Profile {
 		youTube: string;
 	};
 	image: string;
+	joinedAt: Date;
 }
 
 export type Recipe = {

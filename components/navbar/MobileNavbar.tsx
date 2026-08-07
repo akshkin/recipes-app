@@ -11,13 +11,13 @@ async function MobileNavbar() {
 
 	return (
 		<Sheet>
-			<SheetTrigger>
+			<SheetTrigger aria-label="Open menu" className="lg:hidden">
 				<Image
 					src="/assets/icons/hamburger.svg"
 					alt="menu"
 					width={30}
 					height={30}
-					className="cursor-pointer lg:hidden link"
+					className="cursor-pointer link"
 				/>
 			</SheetTrigger>
 			<SheetContent className="border-none mx-auto">

@@ -1,6 +1,6 @@
 "use server";
 
-import Recipe, { IRecipe } from "@/database-models/recipe.model";
+import Recipe from "@/database-models/recipe.model";
 import { connectToDatabase } from "../mongoose";
 import Category from "@/database-models/category.model";
 import { revalidatePath } from "next/cache";
@@ -18,6 +18,7 @@ import { returnSortOptions } from "../utils";
 import Review from "@/database-models/review.model";
 import { parseRecipeWithLLM } from "../recipeParser";
 import mongoose from "mongoose";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export async function createRecipe(params: CreateRecipeParams) {
 	try {
@@ -91,6 +92,9 @@ export async function createRecipe(params: CreateRecipeParams) {
 
 		revalidatePath(path);
 	} catch (error) {
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		throw error;
 	}
 }
@@ -221,6 +225,9 @@ export async function editRecipe(params: EditRecipeParams) {
 
 		revalidatePath(path);
 	} catch (error: any) {
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		console.log(error.message);
 		throw error;
 	}

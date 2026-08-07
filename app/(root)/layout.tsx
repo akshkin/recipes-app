@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
 import Navbar from "@/components/navbar/Navbar";
 import Sidebar from "@/components/Sidebar";
@@ -9,12 +10,13 @@ function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="">
 			<Navbar />
-			<div className="flex">
+			<div className="flex min-h-screen">
 				<div className="w-full">
 					<Suspense fallback={<Loading />}>{children}</Suspense>
 				</div>
-				<Sidebar />
+				{/* <Sidebar /> */}
 			</div>
+			<Footer />
 			<ToastContainer />
 		</div>
 	);

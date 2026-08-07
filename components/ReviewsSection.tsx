@@ -1,3 +1,4 @@
+import { MessageSquareHeart } from "lucide-react";
 import CreateReviewSection from "./CreateReviewSection";
 import ReviewCard from "./cards/ReviewCard";
 import { getReviews } from "@/lib/actions/review.action";
@@ -5,12 +6,24 @@ import { getReviews } from "@/lib/actions/review.action";
 async function ReviewsSection({ id }: { id: string }) {
 	const reviewsResult = await getReviews({ recipe: id });
 	return (
-		<>
-			<CreateReviewSection recipeId={id} />
+		<section className="py-6 mx-auto">
+			<div className="flex max-sm:flex-col gap-4">
+				<div className="flex-1">
+					<CreateReviewSection recipeId={id} />
+				</div>
+				<div className="flex flex-grow-0 flex-col gap-4 bg-gray-100 p-4 rounded-md text-sm text-gray-700 sm:max-w-[250px] items-center justify-between max-sm:hidden">
+					<MessageSquareHeart size={100} />
+					<p>
+						Your feedback matters. Please provide your honest feedback and
+						rating. Your review will help others in the community make informed
+						decisions about trying this recipe.
+					</p>
+				</div>
+			</div>
 
 			{reviewsResult?.reviews && reviewsResult?.reviews?.length > 0 ? (
-				<div className="mb-4  px-8 max-w-6xl mx-auto">
-					<h3 className="font-bold h3 mb-4">Reviews</h3>
+				<div className="mb-4 ">
+					<h3 className="font-bold h3 mb-4">What others are saying</h3>
 					{reviewsResult?.reviews.map((review) => (
 						<ReviewCard
 							key={review._id}
@@ -26,7 +39,7 @@ async function ReviewsSection({ id }: { id: string }) {
 					))}
 				</div>
 			) : null}
-		</>
+		</section>
 	);
 }
 

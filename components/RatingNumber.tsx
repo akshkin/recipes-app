@@ -8,7 +8,7 @@ function RatingNumber({ value }: { value: number }) {
 				<>
 					{Array.from({ length: value }, (_, i) => (
 						<span key={i}>
-							<img
+							<Image
 								src="/assets/icons/star.svg"
 								alt={`star ${i + 1}`}
 								width={20}
@@ -18,7 +18,7 @@ function RatingNumber({ value }: { value: number }) {
 						</span>
 					))}
 					{value > Math.floor(value) ? (
-						<img
+						<Image
 							src="/assets/icons/half-star.svg"
 							alt="half-star"
 							width={20}

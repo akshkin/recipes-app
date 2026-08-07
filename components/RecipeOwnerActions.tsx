@@ -17,10 +17,7 @@ export default function RecipeOwnerActions({
 
 	return (
 		<>
-			<Link
-				className="secondary-btn text-center lg:w-[160px]"
-				href={`/recipe/edit/${_id}`}
-			>
+			<Link className="secondary-btn text-center" href={`/recipe/edit/${_id}`}>
 				Edit recipe
 			</Link>
 			<DeleteAction userClerkId={userId} id={_id.toString()} type="recipe" />
