@@ -8,7 +8,7 @@ import {
 	Font,
 	StyleSheet,
 } from "@react-pdf/renderer";
-import { publicImageUrl } from "@/lib/contstants";
+import { publicImageUrl } from "@/lib/constants";
 
 interface Props {
 	recipe: string;

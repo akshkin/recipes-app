@@ -1,5 +1,5 @@
 import { getFeaturedRecipe } from "@/lib/actions/recipe.action";
-import { publicImageUrl } from "@/lib/contstants";
+import { publicImageUrl } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 
