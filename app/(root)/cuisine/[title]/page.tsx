@@ -1,3 +1,4 @@
+import AllCuisines from "@/components/AllCuisines";
 import BackButton from "@/components/BackButton";
 import FilterAndSort from "@/components/FilterAndSort";
 import Pagination from "@/components/Pagination";
@@ -27,8 +28,9 @@ async function Page({ params, searchParams }: Props) {
 	return (
 		<main className="flex min-h-screen flex-col p-8">
 			<BackButton />
+			<AllCuisines />
 			<h1 className="h1 text-center mt-4">{title.toUpperCase()}</h1>
-			{result?.totalRecipes && <FilterAndSort filter={false} />}
+			{result?.totalRecipes ? <FilterAndSort filter={false} /> : null}
 			{result?.recipes?.length ? (
 				<>
 					<div className="custom-grid my-8">

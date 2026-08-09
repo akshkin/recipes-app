@@ -3,7 +3,7 @@ import FeaturedRecipe from "@/components/FeaturedRecipe";
 import Hero from "@/components/Hero";
 import JoinSection from "@/components/JoinSection";
 import Loading from "@/components/Loading";
-import Sidebar from "@/components/Sidebar";
+import AllCuisines from "@/components/AllCuisines";
 import { FileUp } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -22,7 +22,7 @@ export default async function Home({ searchParams }: PageProps) {
 			<div className="w-[90%] max-w-[1500px]">
 				<SubSection />
 				<JoinSection />
-				<Sidebar />
+				<AllCuisines />
 				<Suspense fallback={<Loading />}>
 					<FeaturedRecipe />
 					<AllRecipes {...searchParams} />
