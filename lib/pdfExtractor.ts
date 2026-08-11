@@ -65,11 +65,6 @@ export async function extractTextFromPDF(
 	// No usable text → OCR
 	let ocrText = "";
 
-	//logger
-	const worker = await createWorker("eng", 1, {
-		logger: (m) => console.log(m),
-	});
-
 	for (let i = 1; i <= pdf.numPages; i++) {
 		const page = await pdf.getPage(i);
 
