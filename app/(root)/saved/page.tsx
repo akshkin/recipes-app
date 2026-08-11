@@ -1,57 +1,45 @@
-import FilterAndSort from "@/components/FilterAndSort";
-import Pagination from "@/components/Pagination";
-import RecipeCard from "@/components/cards/RecipeCard";
-import { getSavedPosts } from "@/lib/actions/user.action";
-import { SearchParamsProps } from "@/types";
+import CollectionRecipes from "@/components/CollectionRecipes";
+import { getCollections } from "@/lib/actions/collection.action";
 import { auth } from "@clerk/nextjs/server";
 
-async function Page({ searchParams }: SearchParamsProps) {
+async function Page() {
 	const { userId } = await auth();
 
 	if (!userId) {
 		return <p>Please login to continue!</p>;
 	}
 
-	const { filter, sort, page } = await searchParams;
+	const result = await getCollections({ clerkId: userId });
+	console.log(typeof result.collections);
 
-	const result = await getSavedPosts({
-		id: userId,
-		page: page ? +page : 1,
-		filter: filter ? filter : "",
-		sort: sort ? sort : "",
-	});
-
-	if (!result?.savedPosts) {
+	if (!result?.collections) {
 		return <p>You haven't saved any recipes yet!</p>;
 	}
 
 	return (
 		<main className="flex min-h-screen flex-col items-center mt-6 p-4">
-			{result?.savedPosts.length > 0 || filter || sort ? (
+			{result?.collections.length ? (
 				<>
-					<h1 className="text-center h1">Saved recipes</h1>
-					<FilterAndSort filter={true} />
-					<div className="custom-grid my-6 p-2">
-						{result.savedPosts.length ? (
-							result.savedPosts.map((recipe: any) => (
-								<RecipeCard
-									key={recipe._id}
-									_id={recipe._id.toString()}
-									title={recipe.title}
-									image={recipe.image}
-									averageRating={recipe.averageRating}
-									ratingsCount={recipe.ratingsCount}
+					<h1 className="text-center h1 mb-3">My collections</h1>
+					<p>
+						Here you can organize your recipes in collections to find them
+						easily!
+					</p>
+					{result.collections.length ? (
+						result.collections.map((collection) => (
+							<div className="my-4">
+								<h3 className="text-2xl font-bold">
+									{collection.name} {collection.name === "Saved" && "(default)"}
+								</h3>
+								<CollectionRecipes
+									key={collection._id}
+									recipes={collection.recipes}
 								/>
-							))
-						) : (
-							<p className="text-center">No results found</p>
-						)}
-					</div>
-
-					<Pagination
-						page={page ? +page : 1}
-						isNextPage={result?.isNextPage || false}
-					/>
+							</div>
+						))
+					) : (
+						<p className="text-center">No results found</p>
+					)}
 				</>
 			) : (
 				<h3 className="my-6">No recipes to show yet</h3>
