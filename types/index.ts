@@ -126,6 +126,23 @@ export interface GetUserRecipesParams {
 	sort?: string;
 }
 
+export interface CreateCollectionParams {
+	clerkId: string;
+	name: string;
+	path: string;
+}
+
+export interface GetAllCollections {
+	clerkId: string;
+	// path: string;
+}
+
+export interface SaveRecipeInCollectionParams {
+	clerkId: string;
+	name: string;
+	recipeId: string;
+}
+
 export interface Profile {
 	_id: string;
 	name: string;
