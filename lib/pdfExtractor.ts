@@ -93,8 +93,6 @@ export async function extractTextFromPDF(
 		ocrText += result.data.text + "\n";
 	}
 
-	worker.terminate();
-
 	return {
 		type: "ocr",
 		text: ocrText.trim(),
