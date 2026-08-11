@@ -11,6 +11,7 @@ function UploadRecipe({
 }) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [loadingText, setLoadingText] = useState("");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,10 +32,13 @@ function UploadRecipe({
 		try {
 			setLoading(true);
 			setIsRecipeExtracting(true);
+			setLoadingText("✨ Extracting text from your file...");
 			setError("");
 
 			// Extract text from PDF
 			const text = await extractTextFromPDF(file);
+
+			setLoadingText("✨ Understanding your recipe...");
 
 			// Parse with LLM
 			const response = await parseRecipe(text.text);
@@ -52,9 +56,7 @@ function UploadRecipe({
 			}
 		} catch (err) {
 			console.log(err);
-			setError(
-				"Failed to extract recipe. Please try again after some time. Possible reasons could be that the PDF is scanned or the text is in a language other than English.",
-			);
+			setError("Failed to extract recipe. Please try again after some time.");
 		} finally {
 			setLoading(false);
 			setIsRecipeExtracting(false);
@@ -78,7 +80,7 @@ function UploadRecipe({
 				/>
 				<div className="text-center">
 					{loading ? (
-						<p className="animate-pulse">Extracting recipe...</p>
+						<p className="animate-pulse">{loadingText}</p>
 					) : (
 						<>
 							<p className="text-lg font-medium">
