@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
 import Navbar from "@/components/navbar/Navbar";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/AllCuisines";
 import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

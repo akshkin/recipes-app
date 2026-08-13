@@ -3,7 +3,7 @@ import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import { formatNumber } from "@/lib/utils";
 import Link from "next/link";
-import { dietaryTagsConst, publicImageUrl } from "@/lib/contstants";
+import { publicImageUrl } from "@/lib/constants";
 import RecipePdfLink from "@/components/RecipePdfLink";
 import RecipeOwnerActions from "@/components/RecipeOwnerActions";
 import { Suspense } from "react";
@@ -12,15 +12,52 @@ import BackButton from "@/components/BackButton";
 import Image from "next/image";
 import SidebarLayout from "@/components/SidebarLayout";
 import { Clock3, HandPlatter } from "lucide-react";
-import { IRecipe } from "@/database-models/recipe.model";
 
-interface Props {
+import type { Metadata } from "next";
+import { dietaryTagsConst } from "@/constants";
+
+type Props = {
+	params: Promise<{
+		title: string;
+	}>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { title } = await params;
+
+	const result = await getRecipeByTitle({ title: decodeURIComponent(title) });
+
+	if (!result.recipe) {
+		return {
+			title: "Recipe not found",
+		};
+	}
+
+	const recipe = result.recipe;
+
+	return {
+		title: recipe.title,
+		description: recipe.description,
+		openGraph: {
+			title: recipe.title,
+			description: recipe.description,
+			images: [
+				{
+					url: recipe.image,
+					alt: recipe.title,
+				},
+			],
+		},
+	};
+}
+
+interface PageProps {
 	params: {
 		title: string;
 	};
 }
 
-async function Page({ params }: Props) {
+async function Page({ params }: PageProps) {
 	const { title } = await params;
 	const decodedTitle = decodeURIComponent(title);
 
@@ -151,9 +188,9 @@ async function Page({ params }: Props) {
 										<span
 											key={tag}
 											title={tag}
-											className={`px-3 py-1 rounded-full text-xs font-semibold ${color}`}
+											className={`px-3 py-1 rounded-full text-xs font-semibold`}
 										>
-											<Icon className="inline-block w-4 h-4 mr-1" />
+											<Icon className={`inline-block w-4 h-4 mr-1 ${color}`} />
 											{tag}
 										</span>
 									);

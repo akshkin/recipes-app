@@ -1,3 +1,4 @@
+import AllCuisines from "@/components/AllCuisines";
 import BackButton from "@/components/BackButton";
 import FilterAndSort from "@/components/FilterAndSort";
 import Pagination from "@/components/Pagination";
@@ -13,22 +14,25 @@ interface Props extends SearchParamsProps {
 }
 
 async function Page({ params, searchParams }: Props) {
-	const { page, sort } = await searchParams;
+	const { page, sort, diet, time } = await searchParams;
 	const { title } = await params;
 
 	const result = await getRecipesByCuisine({
 		title: title,
 		page: page ? +page : 1,
-		sort: sort ? sort : "",
+		sort: sort ?? "",
+		diet: diet ?? "",
+		time: time ?? "",
 	});
 
 	return (
 		<main className="flex min-h-screen flex-col p-8">
 			<BackButton />
+			<AllCuisines />
 			<h1 className="h1 text-center mt-4">{title.toUpperCase()}</h1>
+			{result?.totalRecipes ? <FilterAndSort filter={false} /> : null}
 			{result?.recipes?.length ? (
 				<>
-					<FilterAndSort filter={false} />
 					<div className="custom-grid my-8">
 						{result?.recipes.map((recipe: Recipe) => (
 							<RecipeCard

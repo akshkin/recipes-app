@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import RatingNumber from "../RatingNumber";
 import { formatNumber } from "@/lib/utils";
-import { publicImageUrl } from "@/lib/contstants";
+import { publicImageUrl } from "@/lib/constants";
 
 interface RecipeProps {
 	_id: string;

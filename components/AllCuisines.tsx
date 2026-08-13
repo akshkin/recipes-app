@@ -1,7 +1,13 @@
+"use client";
+
 import { CUISINES } from "@/constants";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-function Sidebar() {
+function AllCuisines() {
+	const pathname = usePathname();
+	const currentCuisine = pathname.split("/")[2];
+
 	return (
 		<div className="my-6" id="cuisines">
 			<h2 className="h2">Cuisines</h2>
@@ -10,7 +16,7 @@ function Sidebar() {
 					<Link
 						key={cuisine.value}
 						href={`/cuisine/${cuisine.title}`}
-						className="flex flex-col  items-center link border-[1px] border-gray-300 px-6 py-2 rounded-md"
+						className={`flex flex-col  items-center link border-[1px] border-gray-300 px-6 py-2 rounded-md ${currentCuisine === cuisine.title && "text-accent-500"}`}
 					>
 						<span>{cuisine.icon}</span>
 						<span>{cuisine.title}</span>
@@ -21,4 +27,4 @@ function Sidebar() {
 	);
 }
 
-export default Sidebar;
+export default AllCuisines;
