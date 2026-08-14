@@ -14,7 +14,6 @@ import SidebarLayout from "@/components/SidebarLayout";
 import { Clock3, HandPlatter } from "lucide-react";
 
 import type { Metadata } from "next";
-import { dietaryTagsConst } from "@/constants";
 
 type Props = {
 	params: Promise<{
