@@ -14,7 +14,7 @@ function CollectionRecipes({ recipes }: { recipes: Recipe[] }) {
 			) : (
 				<>
 					<p>You have not saved any recipes yet</p>
-					<Link href="/#all-recipes" className="btn block mt-3">
+					<Link href="/#all-recipes" className="btn block mt-3 w-fit">
 						Explore to save recipes
 					</Link>
 				</>
