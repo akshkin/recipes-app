@@ -31,6 +31,8 @@ export interface GetRecipeByCategoryTitleParams {
 	page?: number;
 	pageSize?: number;
 	sort?: string;
+	diet?: string;
+	time?: string;
 }
 
 export interface EditRecipeParams {

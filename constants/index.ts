@@ -1,3 +1,17 @@
+import {
+	Bone,
+	Drumstick,
+	Fish,
+	HeartPulse,
+	Leaf,
+	LeafyGreen,
+	LucideIcon,
+	MilkOff,
+	NutOff,
+	Salad,
+	WheatOff,
+} from "lucide-react";
+
 export const CATEGORIES = [
 	{
 		title: "breakfast",
@@ -57,3 +71,57 @@ export const RECIPETIME = [
 	{ title: "Under 30 minutes", value: 30 },
 	{ title: "30 - 60 minutes", value: 60 },
 ];
+
+export const dietaryTagsConst: Record<
+	string,
+	{ icon: LucideIcon; color: string }
+> = {
+	Vegetarian: {
+		icon: LeafyGreen,
+		color: "text-green-600",
+	},
+
+	Vegan: {
+		icon: Leaf,
+		color: "text-emerald-600",
+	},
+
+	"Gluten-Free": {
+		icon: WheatOff,
+		color: "text-yellow-600",
+	},
+
+	Pescatarian: {
+		icon: Fish,
+		color: "text-blue-500",
+	},
+
+	Keto: {
+		icon: Drumstick,
+		color: "text-orange-500",
+	},
+
+	Paleo: {
+		icon: Bone,
+		color: "text-orange-500",
+	},
+
+	"Low-Carb": {
+		icon: Salad,
+		color: "text-orange-500",
+	},
+	"Low-Fat": {
+		icon: HeartPulse,
+		color: "text-orange-500",
+	},
+
+	"Nut-Free": {
+		icon: NutOff,
+		color: "text-orange-500",
+	},
+
+	"Dairy-Free": {
+		icon: MilkOff,
+		color: "text-white",
+	},
+} as const;

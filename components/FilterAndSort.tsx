@@ -7,12 +7,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "./ui/select";
-import { CATEGORIES, FILTERS, RECIPETIME } from "@/constants";
+import { CATEGORIES, dietaryTagsConst, FILTERS, RECIPETIME } from "@/constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery, removeUrlKeys } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Image from "next/image";
-import { dietaryTagsConst } from "@/lib/contstants";
 
 interface Props {
 	filter?: boolean;

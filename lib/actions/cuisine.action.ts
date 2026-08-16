@@ -11,27 +11,43 @@ export async function getRecipesByCuisine(
 ) {
 	try {
 		connectToDatabase();
-		const { title, page = 1, pageSize = 10, sort } = params;
+		const { title, page = 1, pageSize = 10, sort, diet, time } = params;
 
-		let sortOptions;
+		const cuisine = await Cuisine.findOne({ title });
 
-		if (sort) {
-			sortOptions = returnSortOptions(sort);
+		if (!cuisine) {
+			throw new Error("Cuisine not found");
 		}
 
+		const query: Record<string, any> = {
+			cuisine: cuisine._id,
+		};
+
+		if (diet) {
+			query.dietaryTags = { $all: Array.isArray(diet) ? diet : [diet] };
+		}
+
+		if (time) {
+			query.$expr = {
+				$lte: [{ $add: ["$prepTime", "$cookTime"] }, Number(time)],
+			};
+		}
+
+		const sortOptions = sort ? returnSortOptions(sort) : {};
 		const skipAmount = (page - 1) * pageSize;
 
-		const cuisine = await Cuisine.findOne({ title }).populate({
-			path: "recipes",
-			model: Recipe,
-			options: { skip: skipAmount, limit: pageSize + 1, sort: sortOptions },
-		});
+		const totalRecipes = await Recipe.find({
+			cuisine: cuisine._id,
+		}).countDocuments();
 
-		const recipes = cuisine.recipes;
+		const recipes = await Recipe.find(query)
+			.sort(sortOptions)
+			.skip(skipAmount)
+			.limit(pageSize + 1);
 
 		const isNextPage = recipes.length > pageSize;
 
-		return { recipes, isNextPage };
+		return { recipes, isNextPage, totalRecipes };
 	} catch (error) {
 		console.log(error);
 	}

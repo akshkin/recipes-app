@@ -28,7 +28,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createRecipe, editRecipe } from "@/lib/actions/recipe.action";
 import { toast } from "react-toastify";
 import { getPresignedUrl } from "@/lib/actions/storage";
-import { publicImageUrl } from "@/lib/contstants";
+import { publicImageUrl } from "@/lib/constants";
 import { supabase } from "@/lib/supabase";
 import imageCompression from "browser-image-compression";
 import CancelButton from "../ui/CancelButton";

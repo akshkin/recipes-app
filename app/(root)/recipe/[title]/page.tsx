@@ -3,7 +3,7 @@ import SaveAction from "@/components/SaveAction";
 import { getRecipeByTitle } from "@/lib/actions/recipe.action";
 import { formatNumber } from "@/lib/utils";
 import Link from "next/link";
-import { dietaryTagsConst, publicImageUrl } from "@/lib/contstants";
+import { publicImageUrl } from "@/lib/constants";
 import RecipePdfLink from "@/components/RecipePdfLink";
 import RecipeOwnerActions from "@/components/RecipeOwnerActions";
 import { Suspense } from "react";
@@ -14,6 +14,7 @@ import SidebarLayout from "@/components/SidebarLayout";
 import { Clock3, HandPlatter } from "lucide-react";
 
 import type { Metadata } from "next";
+import { dietaryTagsConst } from "@/constants";
 
 type Props = {
 	params: Promise<{
@@ -187,9 +188,9 @@ async function Page({ params }: PageProps) {
 										<span
 											key={tag}
 											title={tag}
-											className={`px-3 py-1 rounded-full text-xs font-semibold ${color}`}
+											className={`px-3 py-1 rounded-full text-xs font-semibold`}
 										>
-											<Icon className="inline-block w-4 h-4 mr-1" />
+											<Icon className={`inline-block w-4 h-4 mr-1 ${color}`} />
 											{tag}
 										</span>
 									);
