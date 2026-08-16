@@ -10,7 +10,6 @@ async function Page() {
 	}
 
 	const result = await getCollections({ clerkId: userId });
-	console.log(typeof result.collections);
 
 	if (!result?.collections) {
 		return <p>You haven't saved any recipes yet!</p>;

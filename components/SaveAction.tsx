@@ -9,6 +9,13 @@ import { toggleSaveRecipe } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
 import { checkIfRecipeSavedByUser } from "@/lib/actions/recipe.action";
 import Link from "next/link";
+import {
+	checkIfRecipeInCollection,
+	createCollection,
+	toggleRecipeInCollection,
+} from "@/lib/actions/collection.action";
+import { Dialog } from "./ui/dialog";
+import { Input } from "./ui/input";
 
 interface Props {
 	id: string;
@@ -16,32 +23,68 @@ interface Props {
 
 function SaveAction({ id }: Props) {
 	const [isSaved, setIsSaved] = useState(false);
+	const [isSavedClicked, setIsSavedClicked] = useState(false);
+	const [recipeInCollections, setRecipeInCollections] = useState([]);
 	const { userId } = useAuth();
 	const pathname = usePathname();
 
+	const [wantsToCreateNewCollection, setWantsToCreateNewCollection] =
+		useState(false);
+	const [collectionName, setCollectionName] = useState("");
+
 	useEffect(() => {
 		if (!userId) return;
-
 		async function checkSaved() {
-			const isRecipeSaved = await checkIfRecipeSavedByUser(
-				userId?.toString()!,
-				id,
-			);
+			const response = await checkIfRecipeInCollection({
+				clerkId: userId,
+				recipeId: id,
+			});
+			// const isRecipeSaved = await checkIfRecipeSavedByUser(
+			// 	userId?.toString()!,
+			// 	id,
+			// );
 
-			setIsSaved(isRecipeSaved);
+			console.log(response);
+			setIsSaved(response?.isSaved);
+			setRecipeInCollections(response?.collections);
 		}
 
 		checkSaved();
 	}, [id, userId]);
 
-	async function toggleSave() {
+	async function toggleSave(collectionId: string) {
 		try {
 			if (userId) {
-				await toggleSaveRecipe({ userId, recipeId: id, path: pathname });
+				await toggleRecipeInCollection({
+					clerkId: userId,
+					collectionId,
+					recipeId: id,
+					path: pathname,
+				});
+				// await toggleSaveRecipe({ userId, recipeId: id, path: pathname });
 			}
 		} catch (error) {
 			toast.error("Something went wrong");
 		}
+	}
+
+	function handleClick() {
+		// if (isSaved) {
+		// 	toggleSave();
+		// } else {
+		console.log("clicked");
+		setIsSavedClicked(true);
+		// }
+	}
+
+	async function handleCreateNewCollection() {
+		await createCollection({
+			clerkId: userId,
+			name: collectionName,
+			path: pathname,
+			recipeId: id,
+		});
+		setWantsToCreateNewCollection(false);
 	}
 
 	return (
@@ -49,7 +92,8 @@ function SaveAction({ id }: Props) {
 			{userId ? (
 				<Button
 					className="text-accent-500 bg-white border border-accent-500 rounded-md"
-					onClick={toggleSave}
+					// onClick={toggleSave}
+					onClick={handleClick}
 				>
 					{isSaved ? "Saved" : "Save"}
 					{isSaved ? (
@@ -74,6 +118,34 @@ function SaveAction({ id }: Props) {
 				<Link href="/sign-in" className="btn text-center">
 					Sign in to save
 				</Link>
+			)}
+			{isSavedClicked && (
+				// <div className="absolute inset-0 z-100">
+				<div className="w-fit bg-slate-400 text-black">
+					{recipeInCollections.map((collection) => (
+						<p key={collection._id.toString()}>
+							{collection?.name}
+							<Button onClick={() => toggleSave(collection?._id.toString())}>
+								{collection?.isInCollection ? "✅" : "+"}
+							</Button>
+						</p>
+					))}
+					<Button onClick={() => setWantsToCreateNewCollection(true)}>
+						Create a new collection
+					</Button>
+					{wantsToCreateNewCollection && (
+						<>
+							<Input
+								type="text"
+								name="collectionName"
+								value={collectionName}
+								onChange={(e) => setCollectionName(e.target.value)}
+							/>
+							<Button onClick={handleCreateNewCollection}>Save</Button>
+						</>
+					)}
+				</div>
+				// </div>
 			)}
 		</>
 	);
