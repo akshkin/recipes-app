@@ -194,15 +194,7 @@ function CreateRecipeForm({
 					setImageUrl(newImagePath);
 				}
 			}
-			if (!isEditing) {
-				await createRecipe({
-					...values,
-					createdBy: mongoUserId,
-					title: capitalizedTitle,
-					image: newImagePath,
-					path: pathname,
-				});
-			} else if (isEditing) {
+			if (isEditing) {
 				await editRecipe({
 					_id: parsedRecipe._id,
 					updateData: {
@@ -211,6 +203,14 @@ function CreateRecipeForm({
 						image: newImagePath,
 						createdBy: mongoUserId,
 					},
+					path: pathname,
+				});
+			} else {
+				await createRecipe({
+					...values,
+					createdBy: mongoUserId,
+					title: capitalizedTitle,
+					image: newImagePath,
 					path: pathname,
 				});
 			}
