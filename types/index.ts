@@ -11,6 +11,10 @@ export interface CreateRecipeParams {
 	cuisine: string;
 	ingredients: { ingredient: string }[];
 	method: { step: string }[];
+	prepTime: number;
+	cookTime: number;
+	servings: number;
+	servingUnit?: string;
 	path: string;
 }
 
@@ -46,6 +50,10 @@ export interface EditRecipeParams {
 		ingredients: { ingredient: string }[];
 		method: { step: string }[];
 		createdBy: string;
+		prepTime: number;
+		cookTime: number;
+		servings: number;
+		servingUnit?: string;
 	};
 	path: string;
 }
@@ -130,6 +138,7 @@ export interface CreateCollectionParams {
 	clerkId: string;
 	name: string;
 	path: string;
+	recipeId: string;
 }
 
 export interface GetAllCollections {
@@ -137,10 +146,16 @@ export interface GetAllCollections {
 	// path: string;
 }
 
-export interface SaveRecipeInCollectionParams {
+export interface CheckIfRecipeInSaved {
 	clerkId: string;
-	name: string;
 	recipeId: string;
+}
+
+export interface ToggleRecipeInCollectionParams {
+	clerkId: string;
+	collectionId: string;
+	recipeId: string;
+	path: string;
 }
 
 export interface Profile {
