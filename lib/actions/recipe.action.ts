@@ -34,6 +34,10 @@ export async function createRecipe(params: CreateRecipeParams) {
 			ingredients,
 			method,
 			path,
+			prepTime,
+			cookTime,
+			servings,
+			servingUnit,
 		} = params;
 
 		const existingRecipeTitle = await Recipe.findOne({ title });
@@ -51,6 +55,10 @@ export async function createRecipe(params: CreateRecipeParams) {
 			ingredients,
 			method,
 			image,
+			prepTime,
+			cookTime,
+			servings,
+			servingUnit,
 		});
 
 		await recipe.save();
