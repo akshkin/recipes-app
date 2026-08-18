@@ -30,7 +30,7 @@ export async function createCollection(params: CreateCollectionParams) {
 			);
 		}
 
-		await Collection.create({
+		const collection = await Collection.create({
 			createdBy: clerkId,
 			name,
 			default: false,
@@ -51,6 +51,7 @@ export async function createCollection(params: CreateCollectionParams) {
 		}
 
 		revalidatePath(path);
+		return { collection };
 	} catch (error) {
 		throw error;
 	}
@@ -148,6 +149,34 @@ export async function checkIfRecipeInCollection(params: CheckIfRecipeInSaved) {
 	}
 }
 
+export async function unsaveRecipe(params: {
+	clerkId: string;
+	recipeId: string;
+	path: string;
+}) {
+	try {
+		await connectToDatabase();
+
+		const { clerkId, recipeId, path } = params;
+
+		await Collection.updateMany(
+			{
+				createdBy: clerkId,
+				recipes: recipeId,
+			},
+			{
+				$pull: {
+					recipes: recipeId,
+				},
+			},
+		);
+
+		revalidatePath(path);
+	} catch (error) {
+		throw error;
+	}
+}
+
 export async function toggleRecipeInCollection(
 	params: ToggleRecipeInCollectionParams,
 ) {
@@ -166,17 +195,63 @@ export async function toggleRecipeInCollection(
 			createdBy: clerkId,
 			_id: collectionId,
 		});
+
 		if (!collection) {
 			throw new Error("No collection found");
 		}
 
-		if (collection.recipes.includes(recipeId)) {
-			collection.recipes.pull(recipeId);
+		const isInCollection = collection.recipes.some(
+			(id: string) => id.toString() === recipeId,
+		);
+
+		if (isInCollection) {
+			if (collection.isDefault) {
+				console.log("default");
+				await Collection.updateMany(
+					{
+						createdBy: clerkId,
+						recipes: recipeId,
+					},
+					{
+						$pull: {
+							recipes: recipeId,
+						},
+					},
+				);
+			} else {
+				await Collection.updateOne(
+					{ _id: collectionId, createdBy: clerkId },
+					{ $pull: { recipes: recipeId } },
+				);
+			}
 		} else {
-			collection.recipes.push(recipeId);
+			if (!collection.isDefault) {
+				await Collection.updateOne(
+					{ _id: collectionId, createdBy: clerkId },
+					{ $addToSet: { recipes: recipeId } },
+				);
+				await Collection.updateOne(
+					{ isDefault: true, createdBy: clerkId },
+					{ $addToSet: { recipes: recipeId } },
+				);
+			}
 		}
-		await collection.save();
+
 		revalidatePath(path);
+		const collections = await Collection.find({
+			createdBy: clerkId,
+		}).select("_id name default recipes");
+
+		return {
+			collections: collections.map((collection) => ({
+				_id: collection._id.toString(),
+				name: collection.name,
+				default: collection.isDefault,
+				isInCollection: collection.recipes.some(
+					(_id: string) => _id.toString() === recipeId.toString(),
+				),
+			})),
+		};
 	} catch (error) {
 		throw error;
 	}

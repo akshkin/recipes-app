@@ -5,32 +5,42 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "react-toastify";
-import { toggleSaveRecipe } from "@/lib/actions/user.action";
 import { usePathname } from "next/navigation";
-import { checkIfRecipeSavedByUser } from "@/lib/actions/recipe.action";
 import Link from "next/link";
 import {
 	checkIfRecipeInCollection,
 	createCollection,
 	toggleRecipeInCollection,
 } from "@/lib/actions/collection.action";
-import { Dialog } from "./ui/dialog";
 import { Input } from "./ui/input";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
 
 interface Props {
 	id: string;
 }
 
+type RecipeCollectionStatus = {
+	_id: string;
+	name: string;
+	default: boolean;
+	isInCollection: boolean;
+};
+
 function SaveAction({ id }: Props) {
-	const [isSaved, setIsSaved] = useState(false);
-	const [isSavedClicked, setIsSavedClicked] = useState(false);
-	const [recipeInCollections, setRecipeInCollections] = useState([]);
+	const [recipeInCollections, setRecipeInCollections] = useState<
+		RecipeCollectionStatus[]
+	>([]);
 	const { userId } = useAuth();
+
 	const pathname = usePathname();
 
 	const [wantsToCreateNewCollection, setWantsToCreateNewCollection] =
 		useState(false);
 	const [collectionName, setCollectionName] = useState("");
+
+	const isSaved = recipeInCollections.some(
+		(collection) => collection.default && collection.isInCollection,
+	);
 
 	useEffect(() => {
 		if (!userId) return;
@@ -39,13 +49,7 @@ function SaveAction({ id }: Props) {
 				clerkId: userId,
 				recipeId: id,
 			});
-			// const isRecipeSaved = await checkIfRecipeSavedByUser(
-			// 	userId?.toString()!,
-			// 	id,
-			// );
 
-			console.log(response);
-			setIsSaved(response?.isSaved);
 			setRecipeInCollections(response?.collections);
 		}
 
@@ -55,97 +59,125 @@ function SaveAction({ id }: Props) {
 	async function toggleSave(collectionId: string) {
 		try {
 			if (userId) {
-				await toggleRecipeInCollection({
+				const response = await toggleRecipeInCollection({
 					clerkId: userId,
 					collectionId,
 					recipeId: id,
 					path: pathname,
 				});
-				// await toggleSaveRecipe({ userId, recipeId: id, path: pathname });
+
+				setRecipeInCollections(response?.collections);
+
+				// setRecipeInCollections((prev) =>
+				// 	prev.map((collection) => {
+				// 		if (collection._id.toString() === collectionId) {
+				// 			return {
+				// 				...collection,
+				// 				isInCollection: !collection.isInCollection,
+				// 			};
+				// 		} else {
+				// 			return { ...collection };
+				// 		}
+				// 	}),
+				// );
+
+				// // Update the main Save button if the modified collection is Saved
+				// const changedCollection = recipeInCollections.find(
+				// 	(collection) => collection._id.toString() === collectionId,
+				// );
+
+				// if (changedCollection?.default) {
+				// 	// setIsSaved(!changedCollection.isInCollection);
+				// 	setRecipeInCollections([]);
+				// }
 			}
 		} catch (error) {
 			toast.error("Something went wrong");
 		}
 	}
 
-	function handleClick() {
-		// if (isSaved) {
-		// 	toggleSave();
-		// } else {
-		console.log("clicked");
-		setIsSavedClicked(true);
-		// }
-	}
-
 	async function handleCreateNewCollection() {
-		await createCollection({
+		const response = await createCollection({
 			clerkId: userId,
 			name: collectionName,
 			path: pathname,
 			recipeId: id,
 		});
+		if (response?.collection) {
+			setRecipeInCollections((prev) => [...prev, response.collection]);
+		}
+		setCollectionName("");
 		setWantsToCreateNewCollection(false);
 	}
 
 	return (
 		<>
 			{userId ? (
-				<Button
-					className="text-accent-500 bg-white border border-accent-500 rounded-md"
-					// onClick={toggleSave}
-					onClick={handleClick}
-				>
-					{isSaved ? "Saved" : "Save"}
-					{isSaved ? (
-						<Image
-							src="/assets/icons/bookmark-filled.svg"
-							width={20}
-							height={20}
-							alt="saved"
-							className="ml-1 sepia-0"
-						/>
-					) : (
-						<Image
-							src="/assets/icons/bookmark.svg"
-							alt="save"
-							width={20}
-							height={20}
-							className="ml-1 sepia-0"
-						/>
-					)}
-				</Button>
+				<Sheet>
+					<SheetTrigger
+						aria-label="Open saved menu"
+						className="btn flex text-accent-500 bg-white border border-accent-500 rounded-md"
+					>
+						{isSaved ? "Saved" : "Save"}
+						{isSaved ? (
+							<Image
+								src="/assets/icons/bookmark-filled.svg"
+								width={20}
+								height={20}
+								alt="saved"
+								className="ml-1 sepia-0"
+							/>
+						) : (
+							<Image
+								src="/assets/icons/bookmark.svg"
+								alt="save"
+								width={20}
+								height={20}
+								className="ml-1 sepia-0"
+							/>
+						)}
+					</SheetTrigger>
+					<SheetContent className="border-none mx-auto">
+						<div className="w-fit  text-black">
+							{recipeInCollections.map((collection) => (
+								<p key={collection._id.toString()}>
+									{collection?.name}
+									<Button
+										onClick={() => toggleSave(collection?._id.toString())}
+									>
+										{collection?.isInCollection ? "✅" : "+"}
+									</Button>
+								</p>
+							))}
+							<Button onClick={() => setWantsToCreateNewCollection(true)}>
+								Create a new collection
+							</Button>
+							{wantsToCreateNewCollection && (
+								<>
+									<Input
+										type="text"
+										name="collectionName"
+										value={collectionName}
+										onChange={(e) => setCollectionName(e.target.value)}
+									/>
+									<SheetClose asChild>
+										<Button onClick={handleCreateNewCollection}>Save</Button>
+									</SheetClose>
+									<SheetClose asChild>
+										<Button>Cancel</Button>
+									</SheetClose>
+								</>
+							)}
+						</div>
+						<SheetClose asChild>
+							<Button>Done</Button>
+						</SheetClose>
+					</SheetContent>
+				</Sheet>
 			) : (
 				<Link href="/sign-in" className="btn text-center">
 					Sign in to save
 				</Link>
-			)}
-			{isSavedClicked && (
-				// <div className="absolute inset-0 z-100">
-				<div className="w-fit bg-slate-400 text-black">
-					{recipeInCollections.map((collection) => (
-						<p key={collection._id.toString()}>
-							{collection?.name}
-							<Button onClick={() => toggleSave(collection?._id.toString())}>
-								{collection?.isInCollection ? "✅" : "+"}
-							</Button>
-						</p>
-					))}
-					<Button onClick={() => setWantsToCreateNewCollection(true)}>
-						Create a new collection
-					</Button>
-					{wantsToCreateNewCollection && (
-						<>
-							<Input
-								type="text"
-								name="collectionName"
-								value={collectionName}
-								onChange={(e) => setCollectionName(e.target.value)}
-							/>
-							<Button onClick={handleCreateNewCollection}>Save</Button>
-						</>
-					)}
-				</div>
-				// </div>
 			)}
 		</>
 	);
