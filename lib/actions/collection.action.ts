@@ -33,25 +33,34 @@ export async function createCollection(params: CreateCollectionParams) {
 		const collection = await Collection.create({
 			createdBy: clerkId,
 			name,
-			default: false,
+			isDefault: false,
 			recipes: recipeId ? [recipeId] : [],
 		});
 		const defaultCollection = await Collection.findOne({
 			createdBy: clerkId,
-			default: true,
+			isDefault: true,
 		});
 
-		if (
-			defaultCollection &&
-			recipeId &&
-			!defaultCollection.recipes.includes(recipeId)
-		) {
-			defaultCollection.recipes.push(recipeId);
-			await defaultCollection.save();
+		if (defaultCollection && recipeId) {
+			const alreadySaved = defaultCollection.recipes.some(
+				(_id: string) => _id.toString() === recipeId.toString(),
+			);
+
+			if (!alreadySaved) {
+				defaultCollection.recipes.push(recipeId);
+				await defaultCollection.save();
+			}
 		}
 
 		revalidatePath(path);
-		return { collection };
+		return {
+			collection: {
+				_id: collection._id.toString(),
+				name: collection.name,
+				isDefault: collection.isDefault,
+				isInCollection: !!recipeId,
+			},
+		};
 	} catch (error) {
 		throw error;
 	}
@@ -78,7 +87,7 @@ export async function getCollections(params: GetAllCollections) {
 			await Collection.create({
 				createdBy: clerkId,
 				name: "Saved",
-				default: true,
+				isDefault: true,
 			});
 		}
 
@@ -131,14 +140,14 @@ export async function checkIfRecipeInCollection(params: CheckIfRecipeInSaved) {
 
 		const collections = await Collection.find({
 			createdBy: clerkId,
-		}).select("_id name default recipes");
+		}).select("_id name isDefault recipes");
 
 		return {
 			isSaved,
 			collections: collections.map((collection) => ({
 				_id: collection._id.toString(),
 				name: collection.name,
-				default: collection.default,
+				isDefault: collection.isDefault,
 				isInCollection: collection.recipes.some(
 					(_id: string) => _id.toString() === recipeId.toString(),
 				),
@@ -206,7 +215,6 @@ export async function toggleRecipeInCollection(
 
 		if (isInCollection) {
 			if (collection.isDefault) {
-				console.log("default");
 				await Collection.updateMany(
 					{
 						createdBy: clerkId,
@@ -240,13 +248,13 @@ export async function toggleRecipeInCollection(
 		revalidatePath(path);
 		const collections = await Collection.find({
 			createdBy: clerkId,
-		}).select("_id name default recipes");
+		}).select("_id name isDefault recipes");
 
 		return {
 			collections: collections.map((collection) => ({
 				_id: collection._id.toString(),
 				name: collection.name,
-				default: collection.isDefault,
+				isDefault: collection.isDefault,
 				isInCollection: collection.recipes.some(
 					(_id: string) => _id.toString() === recipeId.toString(),
 				),

@@ -14,6 +14,7 @@ import {
 } from "@/lib/actions/collection.action";
 import { Input } from "./ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Plus } from "lucide-react";
 
 interface Props {
 	id: string;
@@ -22,7 +23,7 @@ interface Props {
 type RecipeCollectionStatus = {
 	_id: string;
 	name: string;
-	default: boolean;
+	isDefault: boolean;
 	isInCollection: boolean;
 };
 
@@ -39,18 +40,27 @@ function SaveAction({ id }: Props) {
 	const [collectionName, setCollectionName] = useState("");
 
 	const isSaved = recipeInCollections.some(
-		(collection) => collection.default && collection.isInCollection,
+		(collection) => collection.isDefault && collection.isInCollection,
 	);
 
 	useEffect(() => {
-		if (!userId) return;
 		async function checkSaved() {
-			const response = await checkIfRecipeInCollection({
-				clerkId: userId,
-				recipeId: id,
-			});
+			if (!userId) {
+				toast.error("You must be signed in to create a collection");
+				return;
+			}
+			try {
+				const response = await checkIfRecipeInCollection({
+					clerkId: userId,
+					recipeId: id,
+				});
 
-			setRecipeInCollections(response?.collections);
+				if (response?.collections) {
+					setRecipeInCollections(response?.collections);
+				}
+			} catch (error) {
+				toast.error("Something went wrong");
+			}
 		}
 
 		checkSaved();
@@ -66,30 +76,9 @@ function SaveAction({ id }: Props) {
 					path: pathname,
 				});
 
-				setRecipeInCollections(response?.collections);
-
-				// setRecipeInCollections((prev) =>
-				// 	prev.map((collection) => {
-				// 		if (collection._id.toString() === collectionId) {
-				// 			return {
-				// 				...collection,
-				// 				isInCollection: !collection.isInCollection,
-				// 			};
-				// 		} else {
-				// 			return { ...collection };
-				// 		}
-				// 	}),
-				// );
-
-				// // Update the main Save button if the modified collection is Saved
-				// const changedCollection = recipeInCollections.find(
-				// 	(collection) => collection._id.toString() === collectionId,
-				// );
-
-				// if (changedCollection?.default) {
-				// 	// setIsSaved(!changedCollection.isInCollection);
-				// 	setRecipeInCollections([]);
-				// }
+				if (response?.collections) {
+					setRecipeInCollections(response?.collections);
+				}
 			}
 		} catch (error) {
 			toast.error("Something went wrong");
@@ -97,11 +86,15 @@ function SaveAction({ id }: Props) {
 	}
 
 	async function handleCreateNewCollection() {
+		if (!userId) {
+			toast.error("You must be signed in to create a collection");
+			return;
+		}
 		const response = await createCollection({
 			clerkId: userId,
 			name: collectionName,
 			path: pathname,
-			recipeId: id,
+			recipeId: id.toString(),
 		});
 		if (response?.collection) {
 			setRecipeInCollections((prev) => [...prev, response.collection]);
@@ -116,7 +109,7 @@ function SaveAction({ id }: Props) {
 				<Sheet>
 					<SheetTrigger
 						aria-label="Open saved menu"
-						className="btn flex text-accent-500 bg-white border border-accent-500 rounded-md"
+						className="px-2 py-2 flex justify-center hover:text-primary-700 transition-colors  text-accent-500 bg-white border border-accent-500 rounded-md"
 					>
 						{isSaved ? "Saved" : "Save"}
 						{isSaved ? (
@@ -138,39 +131,67 @@ function SaveAction({ id }: Props) {
 						)}
 					</SheetTrigger>
 					<SheetContent className="border-none mx-auto">
-						<div className="w-fit  text-black">
+						<h2 className="h2 text-center font-bold">My collections</h2>
+						<p className="my-2">
+							Organize your favorite recipes in collections
+						</p>
+						<small>NOTE: You can have a maximum of 10 collections</small>
+						<div className="mt-2 text-black border rounded-t-md border-gray-300 p-2">
 							{recipeInCollections.map((collection) => (
-								<p key={collection._id.toString()}>
-									{collection?.name}
+								<div
+									className="flex justify-between items-center"
+									key={collection._id.toString()}
+								>
+									<p>{collection?.name}</p>
 									<Button
 										onClick={() => toggleSave(collection?._id.toString())}
 									>
-										{collection?.isInCollection ? "✅" : "+"}
+										{collection?.isInCollection ? "✅" : <Plus />}
 									</Button>
-								</p>
+								</div>
 							))}
-							<Button onClick={() => setWantsToCreateNewCollection(true)}>
-								Create a new collection
-							</Button>
+						</div>
+						<div className="border rounded-b-md border-gray-300 p-2">
+							{recipeInCollections.length >= 10 ? null : (
+								<Button onClick={() => setWantsToCreateNewCollection(true)}>
+									<Plus /> Create a new collection
+								</Button>
+							)}
 							{wantsToCreateNewCollection && (
 								<>
+									<label htmlFor="collectionName" className="block mb-2">
+										Colection name
+									</label>
 									<Input
 										type="text"
 										name="collectionName"
 										value={collectionName}
+										placeholder="eg. Easy dinner"
 										onChange={(e) => setCollectionName(e.target.value)}
 									/>
-									<SheetClose asChild>
-										<Button onClick={handleCreateNewCollection}>Save</Button>
-									</SheetClose>
-									<SheetClose asChild>
-										<Button>Cancel</Button>
-									</SheetClose>
+
+									<div className="my-2 flex gap-2">
+										<Button
+											className="btn w-full"
+											onClick={handleCreateNewCollection}
+										>
+											Save
+										</Button>
+
+										<Button
+											onClick={() => setWantsToCreateNewCollection(false)}
+											className="border border-gray-400 w-full"
+										>
+											Cancel
+										</Button>
+									</div>
 								</>
 							)}
 						</div>
 						<SheetClose asChild>
-							<Button>Done</Button>
+							<Button className="w-full border border-gray-400 mt-8">
+								Done
+							</Button>
 						</SheetClose>
 					</SheetContent>
 				</Sheet>
