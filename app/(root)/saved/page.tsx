@@ -16,28 +16,25 @@ async function Page() {
 	}
 
 	return (
-		<main className="flex min-h-screen flex-col items-center mt-6 p-4">
+		<main className="flex min-h-screen flex-col mt-6 p-8">
 			{result?.collections.length ? (
 				<>
 					<h1 className="text-center h1 mb-3">My collections</h1>
 					<p>
-						Here you can organize your recipes in collections to find them
-						easily!
+						Here you will find your recipes organized in collections to find
+						them easily!
 					</p>
 					{result.collections.length ? (
 						result.collections.map((collection) => (
-							<div className="my-4">
+							<div className="my-4" key={collection._id}>
 								<h3 className="text-2xl font-bold">
 									{collection.name} {collection.name === "Saved" && "(default)"}
 								</h3>
-								<CollectionRecipes
-									key={collection._id}
-									recipes={collection.recipes}
-								/>
+								<CollectionRecipes recipes={collection.recipes} />
 							</div>
 						))
 					) : (
-						<p className="text-center">No results found</p>
+						<p className="text-center">No collections found</p>
 					)}
 				</>
 			) : (

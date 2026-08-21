@@ -80,7 +80,7 @@ export async function getCollections(params: GetAllCollections) {
 		}).populate({
 			path: "recipes",
 			model: "Recipe",
-			select: "_id title name averageRating averageCount",
+			select: "_id title averageRating image ratingsCount",
 		});
 
 		if (!collections.length) {
