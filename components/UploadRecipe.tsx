@@ -4,11 +4,14 @@ import { parseRecipe } from "@/lib/actions/recipe.action";
 
 function UploadRecipe({
 	setPrefilledForm,
+	setIsRecipeExtracting,
 }: {
 	setPrefilledForm: (data: string) => void;
+	setIsRecipeExtracting: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [loadingText, setLoadingText] = useState("");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,13 +31,17 @@ function UploadRecipe({
 		const { extractTextFromPDF } = await import("@/lib/pdfExtractor");
 		try {
 			setLoading(true);
+			setIsRecipeExtracting(true);
+			setLoadingText("✨ Extracting text from your file...");
 			setError("");
 
 			// Extract text from PDF
 			const text = await extractTextFromPDF(file);
 
+			setLoadingText("✨ Understanding your recipe...");
+
 			// Parse with LLM
-			const response = await parseRecipe(text);
+			const response = await parseRecipe(text.text);
 			if (response) {
 				setPrefilledForm(response);
 
@@ -49,11 +56,10 @@ function UploadRecipe({
 			}
 		} catch (err) {
 			console.log(err);
-			setError(
-				"Failed to extract recipe. Please try again after some time. Possible reasons could be that the PDF is scanned or the text is in a language other than English.",
-			);
+			setError("Failed to extract recipe. Please try again after some time.");
 		} finally {
 			setLoading(false);
+			setIsRecipeExtracting(false);
 			// Clear the file input value to allow re-uploading the same file if needed
 			if (fileInputRef.current) {
 				fileInputRef.current.value = "";
@@ -74,7 +80,7 @@ function UploadRecipe({
 				/>
 				<div className="text-center">
 					{loading ? (
-						<p>Extracting recipe...</p>
+						<p className="animate-pulse">{loadingText}</p>
 					) : (
 						<>
 							<p className="text-lg font-medium">
@@ -96,9 +102,9 @@ function UploadRecipe({
 				fields as those are not usually populated automatically and the image
 				would have to be manually uploaded.
 			</p>
-			<p className="text-sm text-gray-500 mt-2">
+			{/* <p className="text-sm text-gray-500 mt-2">
 				Right now this feature only supports English recipes.
-			</p>
+			</p> */}
 			{error && (
 				<div>
 					<p className="text-red-500 text-sm mt-2">{error}</p>
