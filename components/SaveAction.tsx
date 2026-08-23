@@ -117,13 +117,13 @@ function SaveAction({ id }: Props) {
 								src="/assets/icons/bookmark-filled.svg"
 								width={20}
 								height={20}
-								alt="saved"
+								alt=""
 								className="ml-1 sepia-0"
 							/>
 						) : (
 							<Image
 								src="/assets/icons/bookmark.svg"
-								alt="save"
+								alt=""
 								width={20}
 								height={20}
 								className="ml-1 sepia-0"
@@ -145,6 +145,8 @@ function SaveAction({ id }: Props) {
 									<p>{collection?.name}</p>
 									<Button
 										onClick={() => toggleSave(collection?._id.toString())}
+										title={`${collection?.isInCollection ? "Remove recipe from collection" : "Add to collection"}`}
+										aria-label={`${collection?.isInCollection ? "Remove recipe from collection" : "Add to collection"}`}
 									>
 										{collection?.isInCollection ? "✅" : <Plus />}
 									</Button>
