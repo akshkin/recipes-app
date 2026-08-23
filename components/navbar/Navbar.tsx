@@ -29,7 +29,7 @@ async function Navbar() {
 								<Link href="/saved" className="flex link">
 									<img
 										src="/assets/icons/bookmark.svg"
-										alt="bookmark"
+										alt=""
 										width={30}
 										height={30}
 										title="saved recipes"
@@ -39,7 +39,7 @@ async function Navbar() {
 								<Link href={`/profile/${userId}`} className="flex gap-1 link">
 									<img
 										src="/assets/icons/profile-circle.svg"
-										alt="profile"
+										alt=""
 										width={30}
 										height={30}
 										title="saved recipes"

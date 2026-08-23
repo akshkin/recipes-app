@@ -11,20 +11,21 @@ interface RecipeProps {
 	title: string;
 	averageRating: number;
 	ratingsCount: number;
+	width?: boolean;
 }
 
-// max-xs:w-full max-sm:w-[190px] max-md:w-[220px] min-w-[190px] w-[342px] max-lg:h-[250px]
 function RecipeCard({
 	title,
 	image,
 	_id,
 	averageRating,
 	ratingsCount,
+	width,
 }: RecipeProps) {
 	return (
 		<Link
 			href={`/recipe/${title}`}
-			className="relative border-[1px] w-full rounded-lg h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md"
+			className={`relative border-[1px] rounded-lg h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md min-w-[250px] ${width ? "" : "w-full"}`}
 		>
 			<div className="relative w-full h-2/3">
 				<Image
