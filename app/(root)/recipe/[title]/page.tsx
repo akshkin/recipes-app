@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			description: recipe.description,
 			images: [
 				{
-					url: recipe.image,
+					url: `${publicImageUrl}/${recipe.image}`,
 				},
 			],
 		},
