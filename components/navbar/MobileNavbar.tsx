@@ -33,7 +33,7 @@ async function MobileNavbar() {
 								<Link href="/saved" className="flex link">
 									<Image
 										src="/assets/icons/bookmark.svg"
-										alt="bookmark"
+										alt=""
 										width={30}
 										height={30}
 										title="saved recipes"
@@ -48,7 +48,7 @@ async function MobileNavbar() {
 								>
 									<Image
 										src="/assets/icons/profile-circle.svg"
-										alt="profile"
+										alt=""
 										width={30}
 										height={30}
 										title="saved recipes"
@@ -61,12 +61,7 @@ async function MobileNavbar() {
 					{CATEGORIES.map((category) => (
 						<SheetClose asChild key={category.title}>
 							<Link href={`/category/${category.title}`} className="flex gap-1">
-								<Image
-									src={category.image}
-									alt={category.title}
-									width={30}
-									height={30}
-								/>
+								<Image src={category.image} alt="" width={30} height={30} />
 								<span className="text-xl uppercase"> {category.title} </span>
 							</Link>
 						</SheetClose>

@@ -49,7 +49,7 @@ function DeleteAction({ userClerkId, type, id, recipeId }: Props) {
 							Delete
 							<Image
 								src="/assets/icons/delete.svg"
-								alt="delete"
+								alt=""
 								width={20}
 								height={20}
 								className="ml-1 grayscale-0"

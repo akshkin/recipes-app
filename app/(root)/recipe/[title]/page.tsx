@@ -39,12 +39,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		title: recipe.title,
 		description: recipe.description,
 		openGraph: {
+			type: "website",
 			title: recipe.title,
 			description: recipe.description,
 			images: [
 				{
 					url: recipe.image,
-					alt: recipe.title,
 				},
 			],
 		},

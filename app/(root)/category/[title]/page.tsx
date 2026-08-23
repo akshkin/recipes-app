@@ -24,8 +24,6 @@ async function Page({ params, searchParams }: Props) {
 		time: time ?? "",
 	});
 
-	console.log(result);
-
 	return (
 		<main className="flex min-h-screen flex-col p-8">
 			<BackButton />
