@@ -6,7 +6,7 @@ import Link from "next/link";
 async function FeaturedRecipe() {
 	const result = await getFeaturedRecipe();
 	if (!result?.recipe) return;
-
+	
 	const { image, title, description, averageRating, ratingsCount } =
 		result?.recipe;
 
