@@ -10,10 +10,42 @@ import { SearchParamsProps } from "@/types";
 import EditProfileButton from "@/components/EditProfileButton";
 import Link from "next/link";
 import SidebarLayout from "@/components/SidebarLayout";
+import { Metadata } from "next";
 
 interface ParamsProps extends SearchParamsProps {
 	params: {
 		id: string;
+	};
+}
+
+export async function generateMetadata({
+	params,
+}: ParamsProps): Promise<Metadata> {
+	const { id: clerkId } = await params;
+
+	const result = await getUserById(clerkId);
+
+	if (!result.user) {
+		return {
+			title: "User not found",
+		};
+	}
+
+	const user = result.user;
+
+	return {
+		title: user.name,
+		description: user.bio,
+		openGraph: {
+			type: "website",
+			title: user.name,
+			description: user.bio,
+			images: [
+				{
+					url: user.image,
+				},
+			],
+		},
 	};
 }
 
