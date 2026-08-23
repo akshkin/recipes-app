@@ -15,6 +15,12 @@ export const metadata: Metadata = {
 	verification: { google: "8bJStQEZR72Tu35oVEk98fnq5lLMtoKdlQY8psrhApI" },
 	description:
 		"Discover, create, and save delicious recipes for every occasion.",
+	openGraph: {
+		title: "Recipes App",
+		description:
+			"Discover, create, and save delicious recipes for every occasion.",
+		images: [{ url: "/assets/logo.jpg" }],
+	},
 };
 
 export default function RootLayout({
