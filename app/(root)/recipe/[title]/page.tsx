@@ -15,6 +15,7 @@ import { Clock3, HandPlatter } from "lucide-react";
 
 import type { Metadata } from "next";
 import { dietaryTagsConst } from "@/constants";
+import { cache } from "react";
 
 type Props = {
 	params: Promise<{
@@ -22,10 +23,14 @@ type Props = {
 	}>;
 };
 
+export const getRecipeByTitleCached = cache(async (title: string) => {
+	return getRecipeByTitle({ title });
+});
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { title } = await params;
 
-	const result = await getRecipeByTitle({ title: decodeURIComponent(title) });
+	const result = await getRecipeByTitleCached(decodeURIComponent(title));
 
 	if (!result.recipe) {
 		return {
@@ -45,23 +50,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			images: [
 				{
 					url: `${publicImageUrl}/${recipe.image}`,
+					height: "400px",
+					width: "500px",
 				},
 			],
 		},
 	};
 }
 
-interface PageProps {
-	params: {
-		title: string;
-	};
-}
-
-async function Page({ params }: PageProps) {
+async function Page({ params }: Props) {
 	const { title } = await params;
 	const decodedTitle = decodeURIComponent(title);
 
-	const result = await getRecipeByTitle({ title: decodedTitle });
+	const result = await getRecipeByTitleCached(decodedTitle);
 
 	if (!result.recipe) {
 		return <p className="h3 text-center">Recipe not found</p>;

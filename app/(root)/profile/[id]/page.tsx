@@ -11,6 +11,7 @@ import EditProfileButton from "@/components/EditProfileButton";
 import Link from "next/link";
 import SidebarLayout from "@/components/SidebarLayout";
 import { Metadata } from "next";
+import { cache } from "react";
 
 interface ParamsProps extends SearchParamsProps {
 	params: {
@@ -18,12 +19,16 @@ interface ParamsProps extends SearchParamsProps {
 	};
 }
 
+export const getUserByClerkIdCached = cache(async (clerkId: string) => {
+	return getUserById(clerkId);
+});
+
 export async function generateMetadata({
 	params,
 }: ParamsProps): Promise<Metadata> {
 	const { id: clerkId } = await params;
 
-	const result = await getUserById(clerkId);
+	const result = await getUserByClerkIdCached(clerkId);
 
 	if (!result.user) {
 		return {
@@ -43,6 +48,8 @@ export async function generateMetadata({
 			images: [
 				{
 					url: user.image,
+					height: "400px",
+					width: "500px",
 				},
 			],
 		},
@@ -56,7 +63,7 @@ async function Page({ params, searchParams }: ParamsProps) {
 	const mongoUser = await getMongoUserFromClerkId(clerkId);
 
 	const [result, userRecipes] = await Promise.all([
-		getUserById(clerkId),
+		getUserByClerkIdCached(clerkId),
 		getRecipesByUserId({
 			id: mongoUser?._id,
 			sort: sort || "",
