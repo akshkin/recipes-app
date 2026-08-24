@@ -48,6 +48,8 @@ export async function generateMetadata({
 			images: [
 				{
 					url: user.image,
+					height: "400px",
+					width: "500px",
 				},
 			],
 		},

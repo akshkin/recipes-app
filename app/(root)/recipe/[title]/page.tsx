@@ -50,6 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			images: [
 				{
 					url: `${publicImageUrl}/${recipe.image}`,
+					height: "400px",
+					width: "500px",
 				},
 			],
 		},
