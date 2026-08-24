@@ -25,7 +25,7 @@ function RecipeCard({
 	return (
 		<Link
 			href={`/recipe/${title}`}
-			className={`relative border-[1px] rounded-lg h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md min-w-[250px] ${width ? "" : "w-full"}`}
+			className={`relative border-[1px] rounded-lg h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md ${width ? "min-w-[250px]" : "w-full"}`}
 		>
 			<div className="relative w-full h-2/3">
 				<Image
