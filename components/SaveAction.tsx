@@ -46,7 +46,7 @@ function SaveAction({ id }: Props) {
 	useEffect(() => {
 		async function checkSaved() {
 			if (!userId) {
-				toast.error("You must be signed in to create a collection");
+				// toast.error("You must be signed in to create a collection");
 				return;
 			}
 			try {
@@ -87,7 +87,7 @@ function SaveAction({ id }: Props) {
 
 	async function handleCreateNewCollection() {
 		if (!userId) {
-			toast.error("You must be signed in to create a collection");
+			// toast.error("You must be signed in to create a collection");
 			return;
 		}
 		const response = await createCollection({
