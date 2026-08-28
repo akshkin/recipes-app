@@ -18,6 +18,7 @@ import { Plus } from "lucide-react";
 
 interface Props {
 	id: string;
+	onRecipeCard?: boolean; // whether this button is on recipe card
 }
 
 type RecipeCollectionStatus = {
@@ -27,7 +28,7 @@ type RecipeCollectionStatus = {
 	isInCollection: boolean;
 };
 
-function SaveAction({ id }: Props) {
+function SaveAction({ id, onRecipeCard = false }: Props) {
 	const [recipeInCollections, setRecipeInCollections] = useState<
 		RecipeCollectionStatus[]
 	>([]);
@@ -111,14 +112,16 @@ function SaveAction({ id }: Props) {
 						aria-label="Open saved menu"
 						className="px-2 py-2 flex justify-center hover:text-primary-700 transition-colors  text-accent-500 bg-white border border-accent-500 rounded-md"
 					>
-						{isSaved ? "Saved" : "Save"}
+						{onRecipeCard ? null : (
+							<span className="mr-1">{isSaved ? "Saved" : "Save"}</span>
+						)}
 						{isSaved ? (
 							<Image
 								src="/assets/icons/bookmark-filled.svg"
 								width={20}
 								height={20}
 								alt=""
-								className="ml-1 sepia-0"
+								className="sepia-0"
 							/>
 						) : (
 							<Image
@@ -126,7 +129,7 @@ function SaveAction({ id }: Props) {
 								alt=""
 								width={20}
 								height={20}
-								className="ml-1 sepia-0"
+								className="sepia-0"
 							/>
 						)}
 					</SheetTrigger>
@@ -198,8 +201,20 @@ function SaveAction({ id }: Props) {
 					</SheetContent>
 				</Sheet>
 			) : (
-				<Link href="/sign-in" className="btn text-center">
-					Sign in to save
+				<Link href="/sign-in">
+					{onRecipeCard ? (
+						<span className="bg-white rounded-full p-2 flex items-center justify-center">
+							<Image
+								src="/assets/icons/bookmark.svg"
+								alt="Save to collection"
+								width={20}
+								height={20}
+								className="sepia-0"
+							/>
+						</span>
+					) : (
+						<span className="btn block text-center">Sign in to save</span>
+					)}
 				</Link>
 			)}
 		</>

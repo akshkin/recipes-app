@@ -4,6 +4,7 @@ import React from "react";
 import RatingNumber from "../RatingNumber";
 import { formatNumber } from "@/lib/utils";
 import { publicImageUrl } from "@/lib/constants";
+import SaveAction from "../SaveAction";
 
 interface RecipeProps {
 	_id: string;
@@ -23,8 +24,7 @@ function RecipeCard({
 	width,
 }: RecipeProps) {
 	return (
-		<Link
-			href={`/recipe/${title}`}
+		<div
 			className={`relative border-[1px] rounded-lg h-[280px] hover:scale-105 focus:scale-105 transition-transform shadow-md ${width ? "min-w-[250px]" : "w-full"}`}
 		>
 			<div className="relative w-full h-2/3">
@@ -38,9 +38,11 @@ function RecipeCard({
 			</div>
 
 			<div className="p-2 flex flex-col">
-				<h2 className=" text-left text-primary-700 h3 capitalize line-clamp-1">
-					{title}
-				</h2>
+				<Link href={`/recipe/${title}`}>
+					<h2 className=" text-left text-primary-700 h3 capitalize line-clamp-1">
+						{title}
+					</h2>
+				</Link>
 				<div className="flex gap-2">
 					<RatingNumber value={averageRating} />
 					<span className={`text-sm text-gray-${ratingsCount ? 700 : 400}`}>
@@ -49,7 +51,10 @@ function RecipeCard({
 					</span>
 				</div>
 			</div>
-		</Link>
+			<div className="absolute z-20 top-3 right-1">
+				<SaveAction id={_id} onRecipeCard={true} />
+			</div>
+		</div>
 	);
 }
 

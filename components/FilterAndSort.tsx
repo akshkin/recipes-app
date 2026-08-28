@@ -14,7 +14,7 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 
 interface Props {
-	filter?: boolean;
+	filter?: boolean; // whether to show filters
 }
 
 function FilterAndSort({ filter }: Props) {
