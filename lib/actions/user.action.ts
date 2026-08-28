@@ -5,7 +5,6 @@ import { connectToDatabase } from "../mongoose";
 import {
 	CreateUserParams,
 	DeleteUserParams,
-	GetSavedRecipesParams,
 	Profile,
 	SaveRecipeParams,
 	UpdateUserBioAndLinksParams,
@@ -13,8 +12,6 @@ import {
 } from "@/types";
 import { revalidatePath } from "next/cache";
 import Recipe from "@/database-models/recipe.model";
-import { returnSortOptions } from "../utils";
-import Category from "@/database-models/category.model";
 import Collection from "@/database-models/collection.model";
 
 export async function createUser(params: CreateUserParams) {
@@ -90,7 +87,10 @@ export async function getUserById(clerkId: string) {
 		if (!user) {
 			return { message: "User not found" };
 		}
-		return { user };
+
+		const totalRecipes = await Recipe.countDocuments({ createdBy: user._id });
+		const recipeCreator = totalRecipes > 0;
+		return { user, recipeCreator };
 	} catch (error: any) {
 		console.log(error);
 		throw new Error(error?.message);

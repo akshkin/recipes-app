@@ -11,7 +11,9 @@ import EditProfileButton from "@/components/EditProfileButton";
 import Link from "next/link";
 import SidebarLayout from "@/components/SidebarLayout";
 import { Metadata } from "next";
-import { cache } from "react";
+import { cache, Suspense } from "react";
+import AuthorRecipes from "@/components/AuthorRecipes";
+import Loading from "@/components/Loading";
 
 interface ParamsProps extends SearchParamsProps {
 	params: {
@@ -58,17 +60,11 @@ export async function generateMetadata({
 
 async function Page({ params, searchParams }: ParamsProps) {
 	const { id: clerkId } = await params;
-	const { sort } = await searchParams;
+	const { sort, page } = await searchParams;
 
 	const mongoUser = await getMongoUserFromClerkId(clerkId);
 
-	const [result, userRecipes] = await Promise.all([
-		getUserByClerkIdCached(clerkId),
-		getRecipesByUserId({
-			id: mongoUser?._id,
-			sort: sort || "",
-		}),
-	]);
+	const result = await getUserByClerkIdCached(clerkId);
 
 	if (!result.user) {
 		return <p className="text-center">User not found</p>;
@@ -101,12 +97,11 @@ async function Page({ params, searchParams }: ParamsProps) {
 							</h1>
 
 							<p className="text-primary-500 my-1">@{result?.user?.username}</p>
-							{userRecipes?.length ? (
+							{result?.recipeCreator ? (
 								<p className="text-primary-700">Recipe creator</p>
 							) : null}
 							{instagram || facebook || youTube ? (
 								<div className="flex gap-3 my-4">
-									{/* <p>Find me here: </p> */}
 									<div className="flex gap-4 items-center">
 										{instagram && (
 											<a href={instagram} target="_blank" className="link">
@@ -147,26 +142,12 @@ async function Page({ params, searchParams }: ParamsProps) {
 				</>
 			}
 			mainChildren={
-				<>
-					{userRecipes && userRecipes.length > 0 && (
-						<>
-							<h2 className="h2 text-center">My recipes</h2>
-							<FilterAndSort filter={false} />
-							<div className="custom-grid mt-6">
-								{userRecipes?.map((recipe: any) => (
-									<RecipeCard
-										key={recipe._id}
-										_id={recipe._id}
-										title={recipe.title}
-										image={recipe.image}
-										averageRating={recipe.averageRating}
-										ratingsCount={recipe.ratingsCount}
-									/>
-								))}
-							</div>
-						</>
-					)}
-				</>
+				<Suspense fallback={<Loading />}>
+					<AuthorRecipes
+						id={mongoUser._id.toString()}
+						page={page ? +page : 1}
+					/>
+				</Suspense>
 			}
 			asideChildren={
 				<>

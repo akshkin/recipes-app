@@ -182,16 +182,26 @@ export async function getRecipeByTitle(params: GetRecipeByTitleParams) {
 export async function getRecipesByUserId(params: GetUserRecipesParams) {
 	try {
 		connectToDatabase();
-		const { id, sort } = params;
+		const { page = 1, pageSize = 20, id, sort } = params;
 
 		let sortOptions;
 
 		if (sort) {
 			sortOptions = returnSortOptions(sort);
 		}
-		const recipes = await Recipe.find({ createdBy: id }).sort(sortOptions);
 
-		return recipes;
+		const skipAmount = (page - 1) * pageSize;
+
+		const recipes = await Recipe.find({ createdBy: id })
+			.limit(pageSize)
+			.skip(skipAmount)
+			.sort(sortOptions);
+
+		const totalRecipes = await Recipe.countDocuments({ createdBy: id });
+
+		const isNextPage = totalRecipes > skipAmount + recipes.length;
+
+		return { recipes, isNextPage };
 	} catch (error) {
 		console.log(error);
 	}

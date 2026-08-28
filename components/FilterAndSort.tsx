@@ -73,36 +73,43 @@ function FilterAndSort({ filter }: Props) {
 					))}
 				</SelectContent>
 			</Select>
-			<Select
-				defaultValue={searchParams.get("diet") || ""}
-				onValueChange={(content) => handleFilterChange("diet", content)}
-			>
-				<SelectTrigger className="w-full" aria-label="Diet specific">
-					<SelectValue placeholder="Diet specific" />
-				</SelectTrigger>
-				<SelectContent className="bg-white">
-					{Object.keys(dietaryTagsConst).map((tag) => (
-						<SelectItem key={tag} value={tag}>
-							{tag}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-			<Select
-				defaultValue={searchParams.get("time") || ""}
-				onValueChange={(content) => handleFilterChange("time", content)}
-			>
-				<SelectTrigger className="w-full" aria-label="By time">
-					<SelectValue placeholder="By time" />
-				</SelectTrigger>
-				<SelectContent className="bg-white">
-					{RECIPETIME.map((time) => (
-						<SelectItem key={time.title} value={time.value.toLocaleString()}>
-							{time.title}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			{filter && (
+				<>
+					<Select
+						defaultValue={searchParams.get("diet") || ""}
+						onValueChange={(content) => handleFilterChange("diet", content)}
+					>
+						<SelectTrigger className="w-full" aria-label="Diet specific">
+							<SelectValue placeholder="Diet specific" />
+						</SelectTrigger>
+						<SelectContent className="bg-white">
+							{Object.keys(dietaryTagsConst).map((tag) => (
+								<SelectItem key={tag} value={tag}>
+									{tag}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+					<Select
+						defaultValue={searchParams.get("time") || ""}
+						onValueChange={(content) => handleFilterChange("time", content)}
+					>
+						<SelectTrigger className="w-full" aria-label="By time">
+							<SelectValue placeholder="By time" />
+						</SelectTrigger>
+						<SelectContent className="bg-white">
+							{RECIPETIME.map((time) => (
+								<SelectItem
+									key={time.title}
+									value={time.value.toLocaleString()}
+								>
+									{time.title}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</>
+			)}
 			{searchParams.toString() && (
 				<Button className="danger-btn w-full" onClick={clearFilters}>
 					Clear filters

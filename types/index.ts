@@ -131,6 +131,8 @@ export interface GetSavedRecipesParams {
 
 export interface GetUserRecipesParams {
 	id: string;
+	page: number;
+	pageSize?: number;
 	sort?: string;
 }
 

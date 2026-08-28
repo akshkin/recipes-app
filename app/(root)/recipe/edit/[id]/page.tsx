@@ -37,8 +37,6 @@ async function Page({ params }: { params: { id: string } }) {
 		method,
 	} = result?.recipe;
 
-	console.log("Recipe data:", result?.recipe);
-
 	const recipe = {
 		_id,
 		title,
