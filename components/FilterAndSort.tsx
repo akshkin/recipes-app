@@ -62,7 +62,10 @@ function FilterAndSort({ filter }: Props) {
 				defaultValue={searchParams.get("sort") || ""}
 				onValueChange={(content) => handleFilterChange("sort", content)}
 			>
-				<SelectTrigger className="w-full" aria-label="Sort by">
+				<SelectTrigger
+					className={`${filter ? "w-full" : "max-md:w-full md:w-[250px]"}`}
+					aria-label="Sort by"
+				>
 					<SelectValue placeholder="Sort by" />
 				</SelectTrigger>
 				<SelectContent className="bg-white">
